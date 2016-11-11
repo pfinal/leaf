@@ -1,0 +1,52 @@
+<?php
+
+namespace Leaf;
+
+use Leaf\Application;
+
+class Url
+{
+    /**
+     * Generate a url for the application.
+     */
+    public static function to($path, array $params = array(), $absoluteUrl = false)
+    {
+        $script = '';
+        if (strpos($_SERVER['REQUEST_URI'], '/' . basename($_SERVER['SCRIPT_NAME'])) !== false) {
+            $script = basename($_SERVER['SCRIPT_NAME']);
+        }
+
+        $query = '';
+        if (count($params) > 0) {
+            $query = '?' . http_build_query($params);
+        }
+
+        $host = '';
+        if ($absoluteUrl) {
+            $host = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
+        }
+
+        return $host . static::asset($script) . '/' . ltrim($path, '/') . $query;
+    }
+
+    /**
+     * 生成入口文件所在目录为基础目录的url，默认最后没有斜线"/"
+     * 例如 Url::asset('images/logo.png')
+     * @param string $asset
+     * @param bool $absoluteUrl 是否生成绝对url(http开头)
+     * @return string
+     */
+    public static function asset($asset = '', $absoluteUrl = false)
+    {
+        if ($asset !== '') {
+            $asset = '/' . ltrim($asset, '/');
+        }
+
+        $host = '';
+        if ($absoluteUrl) {
+            $host = Application::$app['request']->getSchemeAndHttpHost();
+        }
+
+        return $host . Application::$app['request']->getBasePath() . $asset;
+    }
+}
