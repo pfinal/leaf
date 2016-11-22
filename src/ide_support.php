@@ -140,26 +140,50 @@ namespace Leaf {
 
     class Cache implements CacheInterface
     {
+        /**
+         * @return mixed | false
+         */
         public static function get($id)
         {
         }
 
+        /**
+         * @return array | false
+         */
         public static function mget($ids)
         {
         }
 
+        /**
+         * @param $id
+         * @param mixed $value
+         * @param int $expire 缓存过期时间(多少秒后过期)。0表示永不过期.
+         * @return bool
+         */
         public static function set($id, $value, $expire = 0)
         {
         }
 
+        /**
+         * @param $id
+         * @param $value
+         * @param int $expire 缓存过期时间(多少秒后过期)，如果大于30天，请使用UNIX时间戳。0表示永不过期.
+         * @return bool
+         */
         public static function add($id, $value, $expire = 0)
         {
         }
 
+        /**
+         * @return bool
+         */
         public static function delete($id)
         {
         }
 
+        /**
+         * @return bool
+         */
         public static function flush()
         {
         }

@@ -50,6 +50,11 @@
 * console 命令行入口文件
 * phpunit 单元测试入口文件
 
+
+## 开启调式模式
+    
+    
+    
 ## 路由
 
 下面以demo项目为例
@@ -428,7 +433,6 @@ DBQuery连惯操作方法，返回DBQuery对象:
     $query = DB::select('user')->where($condition, $params);
 
     $page = new Pagination();
-    //$page = Pagination::createFromCurrentNumber($p);
     $queryCount = clone $query;
     $page->itemCount = $queryCount->count();
 
