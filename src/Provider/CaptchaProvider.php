@@ -173,7 +173,7 @@ class CaptchaProvider implements ServiceProviderInterface
         return self::SESSION_VAR_PREFIX;
     }
 
-    protected function renderImage($code)
+    public function renderImage($code)
     {
         if ($this->backend === null && self::checkRequirements('imagick') || $this->backend === 'imagick') {
             $this->renderImageImagick($code);
