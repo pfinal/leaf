@@ -1,0 +1,36 @@
+<?php
+
+namespace Entity;
+
+use Leaf\DB;
+use Leaf\Object;
+
+/**
+ * {{ tableComment }}
+ *
+{% for key, value in fieldType %}
+ * @property {{ value }} ${{ key }}
+{% endfor %}
+ */
+class {{ entityName }} extends Object
+{
+    public static function tableName()
+    {
+        return '{{ '{{' }}%{{ tableName }}{{ '}}' }}';
+    }
+
+    public static function labels()
+    {
+        return [
+{% for key, value in attribute %}
+            '{{ key }}' => '{{ value }}',
+{% endfor %}
+        ];
+    }
+
+    public function loadDefaultValues()
+    {
+        return DB::table(static::tableName())->loadDefaultValues($this);
+    }
+
+}
