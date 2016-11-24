@@ -1,6 +1,6 @@
 <?php
 
-namespace Rain;
+namespace Leaf;
 
 use Leaf\Url;
 use Symfony\Component\HttpFoundation\RedirectResponse;
