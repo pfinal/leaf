@@ -265,7 +265,7 @@ class CaptchaProvider implements ServiceProviderInterface
         echo $image;
     }
 
-    private static function header()
+    public static function header()
     {
         header('Pragma: public');
         header('Expires: 0');
