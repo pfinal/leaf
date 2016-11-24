@@ -176,9 +176,9 @@ class CaptchaProvider implements ServiceProviderInterface
     public function renderImage($code)
     {
         if ($this->backend === null && self::checkRequirements('imagick') || $this->backend === 'imagick') {
-            $this->renderImageImagick($code);
+            $this->renderImageImagick((string)$code);
         } else if ($this->backend === null && self::checkRequirements('gd') || $this->backend === 'gd') {
-            $this->renderImageGD($code);
+            $this->renderImageGD((string)$code);
         }
     }
 
