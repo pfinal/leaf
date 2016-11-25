@@ -62,6 +62,11 @@ class BundleCommand extends Command
 
         touch($bundlePath . 'Controller' . DIRECTORY_SEPARATOR . '.gitkeep');
 
+        $output->writeln('');
+        $output->writeln('please register bundle:');
+        $output->writeln('$app->registerBundle(new \\' . $bundleName . '\\' . $bundleName . '());');
+        $output->writeln('');
         $output->writeln('SUCCESS');
+        $output->writeln('');
     }
 }
