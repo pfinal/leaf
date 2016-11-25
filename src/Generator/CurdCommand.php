@@ -153,8 +153,8 @@ class CurdCommand extends Command
         );
 
         $output->writeln('');
-        $output->writeln('please add router:');
-        $output->writeln("\\Leaf\\Route::annotation('TestBundle\\Controller\\ImageController');");
+        $output->writeln('please add route:');
+        $output->writeln("\\Leaf\\Route::annotation('" . $bundleName . "\\Controller\\" . $entityName . "Controller');");
         $output->writeln('');
         $output->writeln('SUCCESS');
         $output->writeln('');
