@@ -46,7 +46,7 @@ class BundleCommand extends Command
         @mkdir($bundlePath . 'resources' . DIRECTORY_SEPARATOR . 'views', 0775);
         file_put_contents(
             $bundlePath . 'resources' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'layout.twig',
-            '{% extends "main.twig" %}');
+            '{% extends "admin.twig" %}');
 
         file_put_contents(
             $bundlePath . 'resources' . DIRECTORY_SEPARATOR . 'routes.php',

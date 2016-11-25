@@ -14,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class EntityCommand extends Command
 {
     protected $name = 'make:entity';
-    protected $description = 'create entity';
+    protected $description = 'create a new entity';
 
     protected function configure()
     {
