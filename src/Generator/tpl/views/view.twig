@@ -1,0 +1,44 @@
+{% extends '@<?php echo $bundleName; ?>/layout.twig' %}
+{% block title %}<?php echo $tableComment; ?>管理{% endblock %}
+{% set leftMenuActive='<?php echo $entityName; ?>' %}
+
+{% block contentRight %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+
+                <div class="page-title"><?php echo $tableComment; ?>管理</div>
+
+                <div class="content-top">
+                    <ul class="top-nav">
+                        <li class="active"><a href="">查看<?php echo $tableComment; ?></a></li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+
+                <div class="mt15">
+                    <div class="pull-right">
+                        <a class="btn btn-success btn-sm" href="{{ url('<?php echo $bundleMiddleName; ?><?php echo $middleName; ?>/update',{'id':entity.id}) }}"><span class="glyphicon glyphicon-edit"></span> 修改</a>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+
+                {# 一次性消息提示 #}
+                {% include 'message.twig' %}
+
+                <table class="table mt15">
+<?php foreach ($attributes as $key=>$value){ ?>
+                    <tr>
+                        <td><?php echo $value; ?></td>
+                        <td>{{ entity.<?php echo $key; ?> }}</td>
+                    </tr>
+
+<?php  } ?>
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

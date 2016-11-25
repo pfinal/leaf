@@ -1,0 +1,12 @@
+
+<?php unset($attributes['id']); foreach ($attributes as $key=>$value){ ?>
+<div class="form-group">
+    <label class="col-sm-2 control-label" for="input-<?php echo $key; ?>"><?php echo $value; ?></label>
+    <div class="col-sm-8">
+        <input type="text" name="<?php echo $entityName; ?>[<?php echo $key; ?>]" class="form-control"
+               value="{{ app.request.get('<?php echo $entityName; ?>').<?php echo $key; ?>|default(entity.<?php echo $key; ?>) }}" id="input-<?php echo $key; ?>" >
+        <span class="help-block">{# 帮助信息 #}</span>
+    </div>
+</div>
+
+<?php } ?>

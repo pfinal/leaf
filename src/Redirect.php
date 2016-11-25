@@ -18,7 +18,7 @@ class Redirect
             $url = Url::to($url);
         }
 
-        return new RedirectResponse(Url::to($url));
+        return new RedirectResponse($url);
     }
 
     /**

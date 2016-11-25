@@ -1,0 +1,44 @@
+{% extends '@<?php echo $bundleName; ?>/layout.twig' %}
+{% block title %}<?php echo $tableComment; ?>管理{% endblock %}
+{% set leftMenuActive='<?php echo $entityName; ?>' %}
+
+{% block contentRight %}
+
+    <div class="page-title"><?php echo $tableComment; ?>管理</div>
+
+    <div class="content-top">
+        <ul class="top-nav">
+            <li class="active"><a href="">新增<?php echo $tableComment; ?></a></li>
+        </ul>
+        <div class="clearfix"></div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+
+                {# 错误提示信息 #}
+                {% if error is defined and error is not empty %}
+                    <div class="ui-tips bg-info">
+                        <span class="icon glyphicon glyphicon-info-sign"></span>
+                        <span>{{ error }}</span>
+                    </div>
+                {% endif %}
+
+                {# 表单 #}
+                <form action="{{ url('<?php echo $bundleMiddleName; ?><?php echo $middleName; ?>/create') }}" method="post" class="form-horizontal mt15">
+
+                    {{ include('@<?php echo $bundleName; ?>/<?php echo $middleName; ?>/_form.twig') }}
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-8">
+                            <button type="submit" class="btn btn-primary">提交</button>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends '@<?php echo $bundleName; ?>/layout.twig' %}
+{% block title %}<?php echo $tableComment; ?>管理{% endblock %}
+{% set leftMenuActive='<?php echo $entityName; ?>' %}
+
+{% block contentRight %}
+    <div class="page-title"><?php echo $tableComment; ?>管理</div>
+
+    <div class="content-top">
+        <ul class="top-nav">
+            <li class="active"><a href=""><?php echo $tableComment; ?>列表</a></li>
+        </ul>
+        <div class="clearfix"></div>
+    </div>
+
+    <div class="container-fluid content-main">
+        <div class="row">
+            <div class="col-md-12">
+
+                <div class="mt15">
+                    <a class="btn btn-sm btn-primary pull-right" href="{{ url('<?php echo $bundleMiddleName; ?><?php echo $middleName; ?>/create') }}"><span class="glyphicon glyphicon-plus"></span> 新增<?php echo $tableComment; ?></a>
+                    <div class="clearfix"></div>
+                </div>
+
+                {# 一次性消息提示 #}
+                {% include 'message.twig' %}
+
+                {# 搜索表单 #}
+                {#<form action="{{ url('<?php echo $bundleMiddleName; ?><?php echo $middleName; ?>/index') }}" method="get" class="form-inline form-search mt15">
+<?php $i=0; foreach ($attributes as $key=>$value){ if ($i++ > 2) { break; } ?>
+                    <div class="form-group">
+                        <label><?php echo $value; ?></label>
+                        <input type="text" name="<?php echo $entityName; ?>[<?php echo $key; ?>]" class="form-control"
+                               value="{{ app.request.get('<?php echo $entityName; ?>').<?php echo $key; ?>|default('') }}">
+                    </div>
+
+<?php } ?>
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <span class="glyphicon glyphicon-search"></span> 搜索
+                    </button>
+
+                    {% if app.request.get('<?php echo $entityName; ?>') %}
+                        <a class="btn btn-default btn-sm" href="{{ url('<?php echo $bundleMiddleName; ?><?php echo $middleName; ?>') }}">
+                            <span class="glyphicon glyphicon-repeat"></span> 清空条件</a>
+                    {% endif %}
+
+                </form>#}
+
+                {# 用户列表 #}
+                {% if list is empty %}
+                    <div class="alert alert-warning mt15" role="alert">暂无信息</div>
+                {% else %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+<?php  $i = 0; foreach ($attributes as $key => $value) {  if ($i++ > 0) { break; } ?>
+                                    <th>ID</th>
+<?php } ?>
+<?php  $i = 0; foreach ($attributesNoId as $key => $value) {  if ($i++ > 2) { break; } ?>
+                                    <th><?php echo $value; ?></th>
+<?php } ?>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                            {% for item in list %}
+                                <tr>
+<?php $i = 0; foreach ($attributes as $key => $value) {  if ($i++ > 3) { break; } ?>
+                                    <td>{{ item.<?php echo $key; ?> }}</td>
+<?php } ?>
+                                    <td>
+                                        {#<a href="{{ url('<?php echo $bundleMiddleName; ?><?php echo $middleName; ?>/view', {'id':item.id}) }}">详情</a>#}
+                                        <a href="{{ url('<?php echo $bundleMiddleName; ?><?php echo $middleName; ?>/update', {'id':item.id}) }}">修改</a>
+                                        <a href="{{ url('<?php echo $bundleMiddleName; ?><?php echo $middleName; ?>/delete', {'id':item.id}) }}" class="leaf-confirm">删除</a>
+                                    </td>
+                                </tr>
+                        {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+
+                {# 分页 #}
+                <div class="pull-right">
+                    <span>共<strong> {{ page.itemCount }} </strong>条记录 </span>
+                    {{ page.createLinks(url('<?php echo $bundleMiddleName; ?><?php echo $middleName; ?>'))|raw }}
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

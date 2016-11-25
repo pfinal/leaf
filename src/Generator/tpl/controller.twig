@@ -1,0 +1,133 @@
+<?php
+
+namespace {{ bundleName }}\Controller;
+
+use Entity\{{ entityName }};
+use Leaf\Exception\HttpException;
+use {{ bundleName }}\Service\{{ entityName }}Service;
+
+use Leaf\Application;
+use Leaf\Pagination;
+use Leaf\Request;
+use Leaf\Session;
+use Leaf\View;
+use Leaf\Redirect;
+
+/**
+ * {{ tableComment }}管理
+ * @author  leafphp curd generator
+ * @since   1.0
+ */
+class {{ entityName }}Controller
+{
+    /**
+     * 列表
+     * @Route {{ bundleMiddleName }}{{ middleName }}
+     */
+    public function getIndex(Request $request)
+    {
+        //查询条件
+        $condition = [];
+        $params = [];
+        $search = $request->get('{{ entityName }}');
+
+        /*if (!empty($search['name'])) {
+            $condition[] = 'name like :name';
+            $params[':name'] = '%' . $search['name'] . '%';
+        }*/
+
+        $condition = implode(' and ', $condition);
+
+        //分页
+        $page = new Pagination();
+
+        //查询数据
+        $list = {{ entityName }}Service::findList($page, $condition, $params, $request->get('sort', '-id'));
+
+        //视图
+        return View::render('@{{ bundleName }}/{{ middleName }}/index.twig', [
+            'list' => $list,
+            'page' => $page,
+        ]);
+    }
+
+    /**
+     * 新增
+     * @Route {{ bundleMiddleName }}{{ middleName }}/create
+     */
+    public function anyCreate(Request $request)
+    {
+        $entity = new {{ entityName }}();
+        $entity->loadDefaultValues();
+
+        //保存
+        $error = '';
+        if ($request->isMethod('post') && {{ entityName }}Service::create($request->get('{{ entityName }}'), $error)) {
+            Session::setFlash('message', '添加成功');
+            return Redirect::to('{{ bundleMiddleName }}{{ middleName }}');
+        }
+
+        //视图
+        return View::render('@{{ bundleName }}/{{ middleName }}/create.twig', [
+            'entity' => $entity,
+            'error' => $error,
+        ]);
+    }
+
+    /**
+     * 更新
+     * @Route {{ bundleMiddleName }}{{ middleName }}/update
+     */
+    public function anyUpdate(Request $request, Application $app)
+    {
+        //查询
+        if (($entity = {{ entityName }}Service::findOne($request->get('id'))) === null) {
+            new HttpException(500, '操作需要的数据不存在');
+        }
+
+        //保存
+        $error = '';
+        if ($request->isMethod('post') && {{ entityName }}Service::update($entity->id, $request->get('{{ entityName }}'), $error)) {
+            Session::setFlash('message', '修改成功');
+            return Redirect::to('{{ bundleMiddleName }}{{ middleName }}');
+        }
+
+        //视图
+        return View::render('@{{ bundleName }}/{{ middleName }}/update.twig', [
+            'entity' => $entity,
+            'error' => $error,
+        ]);
+    }
+
+    /**
+     * 删除
+     * @Route {{ bundleMiddleName }}{{ middleName }}/delete
+     */
+    public function getDelete(Request $request)
+    {
+        if ({{ entityName }}Service::delete($request->get('id'))) {
+            Session::setFlash('message', '删除成功');
+        } else {
+            Session::setFlash('message', '删除失败');
+        }
+        return Redirect::back();
+    }
+
+//    /**
+//     * 详情
+//     * @Route {{ bundleMiddleName }}{{ middleName }}/view
+//     */
+    /*public function getView(Request $request, Application $app)
+    {
+        //查询
+        if ((${{ middleName }} = {{ entityName }}Service::findOne($request->get('id'))) === null) {
+            new HttpException(500, '操作需要的数据不存在');
+        }
+
+        //视图
+        return View::render('@{{ bundleName }}/{{ middleName }}/view.twig', [
+            'entity' => ${{ middleName }},
+        ]);
+    }*/
+
+}
