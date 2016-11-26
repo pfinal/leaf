@@ -14,6 +14,7 @@
         "symfony/console": "2.*",
         "cebe/markdown": ">=1.1",
         "twig/extensions": "1.*",
+        "swiftmailer/swiftmailer": "5.3.*",
         "pfinal/blade": ">=1.0",
         "pfinal/database": ">=1.1",
         "pfinal/session": ">=1.0",

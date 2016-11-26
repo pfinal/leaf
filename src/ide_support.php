@@ -2,6 +2,7 @@
 
 namespace Leaf {
 
+    use Leaf\Facade\MailFacade;
     use PFinal\Session\SessionInterface;
     use PFinal\Cache\CacheInterface;
 
@@ -92,6 +93,11 @@ namespace Leaf {
         public static function getFlash($key, $defaultValue = null)
         {
         }
+
+    }
+
+    class Mail extends MailFacade
+    {
 
     }
 

@@ -47,6 +47,7 @@ class Application extends Container
 
             $aliases = array(
                 'Leaf\Cache' => 'Leaf\Facade\CacheFacade',
+                'Leaf\Mail' => 'Leaf\Facade\MailFacade',
                 'Leaf\Log' => 'Leaf\Facade\LogFacade',
                 'Leaf\Session' => 'Leaf\Facade\SessionFacade',
                 'Leaf\Route' => 'Leaf\Facade\RouteFacade',
@@ -64,7 +65,7 @@ class Application extends Container
 
     public static function getVersion()
     {
-        return '2.0.0';
+        return '2.1.3';
     }
 
     public function init()
