@@ -25,7 +25,7 @@
                 {% include 'message.twig' %}
 
                 {# 搜索表单 #}
-                {#<form action="{{ url('<?php echo $bundleMiddleName; ?><?php echo $middleName; ?>/index') }}" method="get" class="form-inline form-search mt15">
+                {#<form action="{{ url('<?php echo $bundleMiddleName; ?><?php echo $middleName; ?>') }}" method="get" class="form-inline form-search mt15">
 <?php $i=0; foreach ($attributes as $key=>$value){ if ($i++ > 2) { break; } ?>
                     <div class="form-group">
                         <label><?php echo $value; ?></label>
