@@ -19,20 +19,24 @@ namespace Leaf;
  * return json_encode($up->getFiles()); //多文件
  * return json_encode($up->getFile()); //单文件
  *
+ * @property string $rootPath
+ * @property string $basePath
+ * @property string $subPath
+ *
  */
 class UploadedFile
 {
     //根目录 默认为入口文件所在目录  './'
-    public $rootPath;
+    protected $rootPath;
+
+    //上传目录 'uploads/'
+    protected $basePath;
+
+    //子目录 默认以日期作为子目录 '201504/30/'
+    protected $subPath;
 
     //指向根目录的url
     public $baseUrl;
-
-    //上传目录 'uploads/'
-    public $basePath;
-
-    //子目录 默认以日期作为子目录 '201504/30/'
-    public $subPath;
 
     //单位 M
     public $maxSize = 8;
@@ -52,6 +56,19 @@ class UploadedFile
      * @var Request
      */
     private $request;
+
+    public function __set($name, $value)
+    {
+        //$rootPath、$basePath、$subPath
+        if (substr($name, -4) === 'Path') {
+            $this->$name = trim($value, '/\\') . '/';
+        }
+    }
+
+    public function __get($name)
+    {
+        return $this->$name;
+    }
 
     public function __construct($config = array())
     {
