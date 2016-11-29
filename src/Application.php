@@ -20,8 +20,8 @@ class Application extends Container
             'charset' => 'UTF-8',
             'debug' => false,
             'env' => 'local',
-            'params' => [],
-            'aliases' => [],
+            'params' => array(),
+            'aliases' => array(),
         ], $config);
 
         parent::__construct($config);
@@ -46,6 +46,7 @@ class Application extends Container
         spl_autoload_register(function ($class) {
 
             $aliases = array(
+                'Leaf\Auth' => 'Leaf\Auth\AuthManager',
                 'Leaf\Cache' => 'Leaf\Facade\CacheFacade',
                 'Leaf\Mail' => 'Leaf\Facade\MailFacade',
                 'Leaf\Log' => 'Leaf\Facade\LogFacade',
@@ -65,7 +66,7 @@ class Application extends Container
 
     public static function getVersion()
     {
-        return '2.1.3';
+        return '2.1.7';
     }
 
     public function init()

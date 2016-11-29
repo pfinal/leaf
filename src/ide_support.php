@@ -2,6 +2,7 @@
 
 namespace Leaf {
 
+    use Leaf\Auth\AuthManager;
     use Leaf\Facade\MailFacade;
     use PFinal\Session\SessionInterface;
     use PFinal\Cache\CacheInterface;
@@ -97,6 +98,11 @@ namespace Leaf {
     }
 
     class Mail extends MailFacade
+    {
+
+    }
+
+    class Auth extends AuthManager
     {
 
     }
