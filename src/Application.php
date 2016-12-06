@@ -55,7 +55,7 @@ class Application extends Container
         }
 
         spl_autoload_register(function ($class) {
-            if (array_key_exists($class, Application::$app['aliases'][$class])) {
+            if (array_key_exists($class, Application::$app['aliases'])) {
                 class_alias(Application::$app['aliases'][$class], $class);
             }
         });
