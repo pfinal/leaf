@@ -39,8 +39,6 @@ class Application extends Container
 
         static::$app = $this;
 
-        class_alias($config['aliases'][$class], $class);
-
         $services = array(
             'Symfony\Component\HttpFoundation\Request' => function () {
                 return static::$app['request'];
@@ -55,11 +53,17 @@ class Application extends Container
         foreach ($services as $name => $service) {
             $this[$name] = $service;
         }
+
+        spl_autoload_register(function ($class) {
+            if (array_key_exists($class, Application::$app['aliases'][$class])) {
+                class_alias(Application::$app['aliases'][$class], $class);
+            }
+        });
     }
 
     public static function getVersion()
     {
-        return '2.1.9';
+        return '2.1.10';
     }
 
     public function init()
