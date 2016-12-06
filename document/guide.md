@@ -1,6 +1,9 @@
 # Leafphp 快速入门
 ===
 
+## 交流QQ群 
+
+    17778706
 
 ## 编码规范
 
@@ -517,3 +520,6 @@ if (!Validator::validate($data, $rules, $labels)) {
 
 文件上传
 
+认证
+
+权限

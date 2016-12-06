@@ -14,7 +14,7 @@ class Redirect
      */
     public static function to($url)
     {
-        if (!preg_match('/^http(s)?:\/\//i', $url)) { //  'http://'    or  'https://'
+        if (!(stripos($url, '/') === 0 || preg_match('/^http(s)?:\/\//i', $url))) { //  "/" "http://" "https://"
             $url = Url::to($url);
         }
 
