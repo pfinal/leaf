@@ -21,12 +21,25 @@ class Application extends Container
             'debug' => false,
             'env' => 'local',
             'params' => array(),
-            'aliases' => array(),
+            'aliases' => array(
+                'Leaf\Auth' => 'Leaf\Auth\AuthManager',
+                'Leaf\Cache' => 'Leaf\Facade\CacheFacade',
+                'Leaf\Mail' => 'Leaf\Facade\MailFacade',
+                'Leaf\Log' => 'Leaf\Facade\LogFacade',
+                'Leaf\Session' => 'Leaf\Facade\SessionFacade',
+                'Leaf\Route' => 'Leaf\Facade\RouteFacade',
+                'Leaf\DB' => 'Leaf\Facade\DBFacade',
+                'Leaf\Json' => 'Leaf\Facade\JsonFacade',
+                'Leaf\Response' => 'Symfony\Component\HttpFoundation\Response',
+                'Leaf\RedirectResponse' => 'Symfony\Component\HttpFoundation\RedirectResponse',
+            ),
         ], $config);
 
         parent::__construct($config);
 
         static::$app = $this;
+
+        class_alias($config['aliases'][$class], $class);
 
         $services = array(
             'Symfony\Component\HttpFoundation\Request' => function () {
@@ -42,31 +55,11 @@ class Application extends Container
         foreach ($services as $name => $service) {
             $this[$name] = $service;
         }
-
-        spl_autoload_register(function ($class) {
-
-            $aliases = array(
-                'Leaf\Auth' => 'Leaf\Auth\AuthManager',
-                'Leaf\Cache' => 'Leaf\Facade\CacheFacade',
-                'Leaf\Mail' => 'Leaf\Facade\MailFacade',
-                'Leaf\Log' => 'Leaf\Facade\LogFacade',
-                'Leaf\Session' => 'Leaf\Facade\SessionFacade',
-                'Leaf\Route' => 'Leaf\Facade\RouteFacade',
-                'Leaf\DB' => 'Leaf\Facade\DBFacade',
-                'Leaf\Json' => 'Leaf\Facade\JsonFacade',
-                'Leaf\Response' => 'Symfony\Component\HttpFoundation\Response',
-                'Leaf\RedirectResponse' => 'Symfony\Component\HttpFoundation\RedirectResponse',
-            );
-            if (array_key_exists($class, $aliases)) {
-                class_alias($aliases[$class], $class);
-            }
-        });
-
     }
 
     public static function getVersion()
     {
-        return '2.1.7';
+        return '2.1.9';
     }
 
     public function init()
