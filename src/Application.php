@@ -63,7 +63,7 @@ class Application extends Container
 
     public static function getVersion()
     {
-        return '2.1.11';
+        return '2.1.12';
     }
 
     public function init()

@@ -82,7 +82,7 @@ class {{ entityName }}Controller
     {
         //查询
         if (($entity = {{ entityName }}Service::findOne($request->get('id'))) === null) {
-            new HttpException(500, '操作需要的数据不存在');
+            throw new HttpException(500, '操作需要的数据不存在');
         }
 
         //保存
@@ -120,13 +120,13 @@ class {{ entityName }}Controller
 //    public function getView(Request $request, Application $app)
 //    {
 //        //查询
-//        if ((${{ middleName }} = {{ entityName }}Service::findOne($request->get('id'))) === null) {
-//            new HttpException(500, '操作需要的数据不存在');
+//        if (($entity = {{ entityName }}Service::findOne($request->get('id'))) === null) {
+//            throw new HttpException(500, '操作需要的数据不存在');
 //        }
 //
 //        //视图
 //        return View::render('@{{ bundleName }}/{{ middleName }}/view.twig', [
-//            'entity' => ${{ middleName }},
+//            'entity' => $entity,
 //        ]);
 //    }
 
