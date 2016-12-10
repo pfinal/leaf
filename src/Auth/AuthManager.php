@@ -15,7 +15,7 @@ class AuthManager
     /**
      * @var User $user
      */
-    private static $user = null;
+    protected static $user = null;
 
     const LOGIN_REQUIRED = 'LOGIN_REQUIRED';
 
