@@ -10,7 +10,7 @@ use Leaf\Util;
 /**
  * 用户认证管理
  */
-abstract class AuthManager
+class AuthManager
 {
     const LOGIN_REQUIRED = 'LOGIN_REQUIRED';
 
@@ -248,7 +248,10 @@ abstract class AuthManager
      * 通过id取回用户
      *
      * @param int $id
-     * @return User
+     * @return User|null
      */
-    protected abstract static function retrieveById($id);
+    protected static function retrieveById($id)
+    {
+        throw new \Exception('Call to undefined method ' . get_called_class() . '::retrieveById()');
+    }
 }
