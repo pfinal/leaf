@@ -34,15 +34,4 @@ class User extends Object
     {
         return call_user_func_array(array(Application::$app['gate'], 'check'), func_get_args());
     }
-
-    /**
-     * 生成 password hash
-     * @param string $password
-     * @param string $salt
-     * @return string
-     */
-    public static function makePasswordHash($password, $salt = '')
-    {
-        return md5($password . $salt);
-    }
 }

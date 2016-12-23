@@ -77,7 +77,7 @@ class {{ entityName }}Service
             return $id;
         } else {
             $error = '系统错误';
-            Log::error("注册用户失败: " . DB::getConnection()->getLastSql());
+            Log::error("{新增失败: " . DB::getConnection()->getLastSql());
             return 0;
         }
     }

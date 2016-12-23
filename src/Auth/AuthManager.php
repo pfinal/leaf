@@ -2,22 +2,22 @@
 
 namespace Leaf\Auth;
 
-use Leaf\DB;
 use Leaf\Exception\HttpException;
+use Leaf\Request;
 use Leaf\Session;
+use Leaf\Util;
 
 /**
- * 用户认证
- * Class AuthManager
+ * 用户认证管理
  */
-class AuthManager
+abstract class AuthManager
 {
+    const LOGIN_REQUIRED = 'LOGIN_REQUIRED';
+
     /**
      * @var User $user
      */
     protected static $user = null;
-
-    const LOGIN_REQUIRED = 'LOGIN_REQUIRED';
 
     private static function getSessionKey()
     {
@@ -26,13 +26,43 @@ class AuthManager
 
     /**
      * 将用户置为登录状态
+     *
      * @param User $user
+     * @param bool $remember 是否记住
      * @return bool
      */
-    public static function login(User $user)
+    public static function login(User $user, $remember = false)
     {
+        if ($remember) {
+            static::setCookie($user->getId());
+        }
+        return static::_login($user);
+    }
+
+    private static function setCookie($usreId)
+    {
+        setcookie('remember_token', static::updateRememberToken($usreId), time() + 60 * 60 * 24 * 365, '/');
+    }
+
+    /**
+     * 置登录
+     * @param User $user
+     * @param bool $once 一次性登录
+     * @param bool $fromCookie 是否来自cookie中的记住我
+     * @return bool
+     */
+    private static function _login(User $user, $once = false, $fromCookie = false)
+    {
+        if (!static::beforeLogin($user, $fromCookie)) {
+            return false;
+        }
+
         static::$user = $user;
-        Session::set(static::getSessionKey(), $user->getId());
+
+        if (!$once) {
+            Session::set(static::getSessionKey(), $user->getId());
+        }
+
         return true;
     }
 
@@ -54,32 +84,36 @@ class AuthManager
 
     /**
      * 将指定id的用户置为登录状态
+     *
      * @param $id
+     * @param bool $remember 是否记住
      * @return bool
      */
-    public static function loginUsingId($id)
+    public static function loginUsingId($id, $remember = false)
     {
         $user = static::retrieveById($id);
         if ($user == null) {
             return false;
         }
-        static::login($user);
+        if ($remember) {
+            static::setCookie($user->getId());
+        }
+        static::_login($user);
         return true;
     }
 
     /**
-     * 一次性认证
+     * 一次性认证登录
      * @param $id
      * @return bool
      */
-    public function onceUsingId($id)
+    public static function onceUsingId($id)
     {
         $user = static::retrieveById($id);
         if ($user == null) {
             return false;
         }
-        static::$user = $user;
-        return true;
+        return static::_login($user, true);
     }
 
     /**
@@ -88,14 +122,19 @@ class AuthManager
      */
     public static function logout()
     {
-        static::$user = null;
+        if (static::isGuest()) {
+            return true;
+        }
+
+        static::updateRememberToken(static::getUser()->getId());//不操作cookie，直接update token
         Session::remove(static::getSessionKey());
+        static::$user = null;
         return true;
     }
 
     /**
-     * 用户未登录状态返回true
-     * @return bool
+     * 是否在未登录状态
+     * @return bool 未登录状态返回true，已登录返回false
      */
     public static function isGuest()
     {
@@ -121,19 +160,95 @@ class AuthManager
         return !static::isGuest();
     }
 
+    /**
+     * 返回当前用户id
+     *
+     * @return int
+     */
     public static function getId()
     {
         return static::getUser()->getId();
     }
 
     /**
-     * 通过id取回用户
+     * 尝试从Cookie记住我登录
      *
-     * @param  int $id
+     * @param Request $request
+     * @param int $day 记住我多少天内有效
+     */
+    public static function attemptFromRemember(Request $request, $day = 30)
+    {
+        if (!static::isGuest()) {
+            return;
+        }
+        $token = $request->cookies->get('remember_token', '');
+
+        if (strlen($token) <= 32) {
+            return;
+        }
+        $time = substr($token, 32);
+        if (time() - $time > 60 * 60 * 24 * $day) {
+            return;
+        }
+
+        $user = static::retrieveByToken($token);
+
+        if ($user != null) {
+            static::_login($user, false, true);
+        }
+    }
+
+    /**
+     * 更新记住我功能的token值 (用户修改密码时，应调用此方法)
+     *
+     * @return string 返回更新后的token，如果更新失败，返回空字符串
+     */
+    public static function updateRememberToken($userId)
+    {
+        $token = str_replace('-', '', Util::guid()) . time(); // 32位字符串 + 当前时间戳
+        return static::saveRememberToken($userId, $token) ? $token : '';
+    }
+
+    /**
+     * 登录前置操作，此方法返回true时，用户才被允许登录
+     *
+     * @param User $user
+     * @param bool $fromRemember 是否来自记住我功能
+     * @return bool
+     */
+    public static function beforeLogin($user, $fromRemember)
+    {
+        return true;
+    }
+
+    /**
+     * 通过token取回用户
+     *
+     * @param string $token
      * @return User|null
      */
-    protected static function retrieveById($id)
+    protected static function retrieveByToken($token)
     {
-        return DB::table(User::tableName())->asEntity(User::className())->findByPk($id);
+        return null;
     }
+
+    /**
+     * 保存token
+     *
+     * @param int $userId
+     * @param string $token
+     * @return bool
+     */
+    public static function saveRememberToken($userId, $token)
+    {
+        return false;
+    }
+
+    /**
+     * 通过id取回用户
+     *
+     * @param int $id
+     * @return User
+     */
+    protected abstract static function retrieveById($id);
 }

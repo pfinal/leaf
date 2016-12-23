@@ -22,7 +22,6 @@ class Application extends Container
             'env' => 'local',
             'params' => array(),
             'aliases' => array(
-                'Leaf\Auth' => 'Leaf\Auth\AuthManager',
                 'Leaf\Cache' => 'Leaf\Facade\CacheFacade',
                 'Leaf\Mail' => 'Leaf\Facade\MailFacade',
                 'Leaf\Log' => 'Leaf\Facade\LogFacade',
@@ -63,7 +62,7 @@ class Application extends Container
 
     public static function getVersion()
     {
-        return '2.1.13';
+        return '2.1.14';
     }
 
     public function init()
