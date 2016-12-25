@@ -14,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CurdCommand extends Command
 {
     protected $name = 'make:curd';
-    protected $description = 'create a controller and views that implement CURD (Create, Update, Read, Delete) operations for the specified data model.';
+    protected $description = 'create a controller and views that implement CURD (Create, Update, Read, Delete)';
 
     protected function configure()
     {
