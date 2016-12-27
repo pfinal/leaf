@@ -114,8 +114,9 @@ class ErrorHandler
     protected function render()
     {
         if (php_sapi_name() === 'cli') {
+            echo "\n";
             echo $this->_error['type'] . ' ' . $this->_error['message'] . "\n";
-            echo $this->_error['file'] . '(' . $this->_error['line'] . ")\n";
+            echo $this->_error['file'] . '(' . $this->_error['line'] . ")\n\n";
             exit;
         }
 
