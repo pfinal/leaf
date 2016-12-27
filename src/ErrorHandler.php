@@ -1,6 +1,7 @@
 <?php
 
 namespace Leaf;
+
 use PFinal\Routing\Exception\ExceptionInterface;
 
 /**
@@ -95,7 +96,7 @@ class ErrorHandler
             $this->_error['code'] = 500;
             $this->_error['trace'] = $ex->getTraceAsString();
         }
-        
+
         $this->_error['message'] = $ex->getMessage();
         $this->_error['file'] = $ex->getFile();
         $this->_error['line'] = $ex->getLine();
@@ -112,6 +113,12 @@ class ErrorHandler
 
     protected function render()
     {
+        if (php_sapi_name() === 'cli') {
+            echo $this->_error['type'] . ' ' . $this->_error['message'] . "\n";
+            echo $this->_error['file'] . '(' . $this->_error['line'] . ")\n";
+            exit;
+        }
+
         $log = $this->_error['message'] . "\n";
         $log .= "File\t" . $this->_error['file'] . ':' . $this->_error['line'] . "\n";
         if (isset($_SERVER['REQUEST_URI'])) {
@@ -119,6 +126,7 @@ class ErrorHandler
         }
         $log .= "\n";
         $log .= "Trace\n" . $this->_error['trace'];
+
 
         if (isset(Application::$app['log'])) {
             Application::$app['log']->write('app', $log);
@@ -143,7 +151,6 @@ class ErrorHandler
 
             exit;
         }
-
 
         $trace = '';
 
