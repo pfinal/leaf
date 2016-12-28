@@ -18,15 +18,72 @@ namespace Leaf;
 class Image
 {
     /**
+     * 缩放图片
+     * @param string $filename 原图
+     * @param string $dstName 生成的新文件名
+     * @param int $maxWidth 最大宽度 px
+     * @param int $maxHeight 最大高度 px
+     * @return bool
+     */
+    public static function resize($filename, $dstName, $maxWidth, $maxHeight)
+    {
+        //创建原图画板
+        if (($srcImg = self::createImage($filename)) == false) {
+            return false;
+        }
+
+        //原图大小
+        $x = imagesx($srcImg);
+        $y = imagesy($srcImg);
+
+        if ($x / $y > $maxWidth / $maxHeight) {
+            //图片比较宽
+            $m = $maxWidth;
+            $n = $maxWidth * $y / $x;
+        } else {
+            //图片比较高
+            $m = $maxHeight * $x / $y;
+            $n = $maxHeight;
+        }
+
+        //目标图像画板
+        $dstImg = imagecreatetruecolor($m, $n);
+
+        //复制图片
+        imagecopyresampled($dstImg, $srcImg,
+            0, 0,             // 目标起始点
+            0, 0,             // 原图起始点
+            $m, $n,           // 目标宽高
+            $x, $y);          // 原图宽高
+
+        //释放资源
+        imagedestroy($srcImg);
+
+        $basePath = dirname($dstName);
+        if (!file_exists($basePath)) {
+            @mkdir($basePath, 0777, true);
+            @chmod($basePath, 0777);
+        }
+
+        //保存到文件
+        if (self::saveToFile($dstImg, $dstName)) {
+            imagedestroy($dstImg); //释放资源
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * 生成缩略图
      *
      * @param string $filename 待处理的图片名
      * @param string $dstName 文件保存路径名
      * @param int $width 缩略图宽度
      * @param int $height 缩略图高度
+     * @param int $fillColor 填充色 默认 0xFFFFFF
      * @return bool
      */
-    public static function thumb($filename, $dstName, $width, $height, $red = 255, $green = 255, $blue = 255)
+    public static function thumb($filename, $dstName, $width, $height, $fillColor = 0xFFFFFF)
     {
         //创建原图画板
         $src_img = self::createImage($filename);
@@ -37,8 +94,13 @@ class Image
         //目标图像画板
         $dst_img = imagecreatetruecolor($width, $height);
 
-        //填充为白色
-        imagefill($dst_img, 0, 0, imagecolorallocate($dst_img, $red, $green, $blue));
+        //填充颜色
+        $fillColor = imagecolorallocate($dst_img,
+            (int)($fillColor % 0x1000000 / 0x10000),
+            (int)($fillColor % 0x10000 / 0x100),
+            $fillColor % 0x100);
+
+        imagefill($dst_img, 0, 0, $fillColor);
 
         //获到源图片大小
         $x = imagesx($src_img); //最大x坐标值

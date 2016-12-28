@@ -10,7 +10,9 @@ namespace Leaf;
  *      //'baseUrl' => 'http://www.example.com', //默认为空时生成相对url，当需要返回绝对url时请设置此项
  *      'subPath' => 'temp/' . @date('Ym') . '/' . @date('d'),
  *      'thumb' => array(
- *          's' => array('w' => 100, 'h' => 100, 'cut' => true),
+ *          's' => array('w' => 100, 'h' => 100, 'bgcolor' => 0xFFFFFF), //比例不一样时，用背景色填充
+ *          'm' => array('w' => 400, 'h' => 400, 'cut' => true),         //比例不相同时，切掉多余部份
+ *          'l' => array('w' => 800, 'h' => 800, 'resize' => true),      //按最大比例缩放
  *      ),
  * ];
  *
@@ -119,7 +121,8 @@ class UploadedFile
      *
      *  array(
      *       array (
-     *           'name' => 'test.jpg',                               // 上传前客户端的文件名
+     *           'name' => '201504/30/b4a04f05a.jpg',                // 上传后的文件名
+     *           'originalName' => 'test.jpg',                       // 上传前客户端的文件名
      *           'basename' => '5541b4a04f05a.jpg',                  // 上传到服务器的文件名
      *           'basePath' => 'uploads/',                           // 上传总目录
      *           'subPath' => '201504/30/',                          // 子目录
@@ -231,7 +234,8 @@ class UploadedFile
                 $file->move($this->rootPath . $this->basePath . $this->subPath, $basename);
 
                 $arr = array(
-                    'name' => $file->getClientOriginalName(),   // 上传前客户端的文件名 test.jpg
+                    'originalName' => $file->getClientOriginalName(),   // 上传前客户端的文件名 test.jpg
+                    'name' => $this->subPath . $basename,
                     'basename' => $basename,                    // 上传到服务器的文件名 4eed004057dc.jpg
                     'basePath' => $this->basePath,              // 总目录 uploads/
                     'subPath' => $this->subPath,                // 子目录 201502/26/
@@ -251,8 +255,11 @@ class UploadedFile
 
                     if (isset($size['cut']) && $size['cut']) {
                         $bool = Image::thumbCut($fullName, dirname($fullName) . '/' . $thumbPath . $basename, $size['w'], $size['h']);
+                    } else if (isset($size['resize']) && $size['resize']) {
+                        $bool = Image::resize($fullName, dirname($fullName) . '/' . $thumbPath . $basename, $size['w'], $size['h']);
                     } else {
-                        $bool = Image::thumb($fullName, dirname($fullName) . '/' . $thumbPath . $basename, $size['w'], $size['h']);
+                        $bgcolor = isset($size['bgcolor']) ? $size['bgcolor'] : 0xFFFFFF;
+                        $bool = Image::thumb($fullName, dirname($fullName) . '/' . $thumbPath . $basename, $size['w'], $size['h'], $bgcolor);
                     }
 
                     if ($bool) {
