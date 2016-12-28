@@ -205,7 +205,7 @@ class UploadedFile
             //当上传特定扩展名文件时，检查文件内容是否为图片
             if (in_array(strtolower($originalExtension), array('jpg', 'jpeg', 'png', 'gif'))) {
 
-                if (false === ($imageInfo = getimagesize($file->getPathname()))) {
+                if (false === ($imageInfo = @getimagesize($file->getPathname()))) {
                     $this->message = '图片无法识别';
                     return false;
                 }
