@@ -85,7 +85,7 @@ class ErrorHandler
      */
     public function handleException($ex)
     {
-        restore_error_handler();
+        restore_exception_handler();
 
         $this->_error['type'] = get_class($ex);
 
@@ -113,13 +113,6 @@ class ErrorHandler
 
     protected function render()
     {
-        if (php_sapi_name() === 'cli') {
-            echo "\n";
-            echo $this->_error['type'] . ' ' . $this->_error['message'] . "\n";
-            echo $this->_error['file'] . '(' . $this->_error['line'] . ")\n\n";
-            exit;
-        }
-
         $log = $this->_error['message'] . "\n";
         $log .= "File\t" . $this->_error['file'] . ':' . $this->_error['line'] . "\n";
         if (isset($_SERVER['REQUEST_URI'])) {
@@ -128,9 +121,15 @@ class ErrorHandler
         $log .= "\n";
         $log .= "Trace\n" . $this->_error['trace'];
 
-
         if (isset(Application::$app['log'])) {
             Application::$app['log']->write('app', $log);
+        }
+
+        if (php_sapi_name() === 'cli') {
+            echo "\n";
+            echo $this->_error['type'] . ' ' . $this->_error['message'] . "\n";
+            echo $this->_error['file'] . '(' . $this->_error['line'] . ")\n\n";
+            exit;
         }
 
         if (!Application::$app['debug']) {
