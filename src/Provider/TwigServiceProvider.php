@@ -26,7 +26,7 @@ class TwigServiceProvider implements ServiceProviderInterface
      */
     public function register(Container $app)
     {
-        $app['twig.options'] = function ($app) {
+        $app['twig.config'] = function ($app) {
             return array(
                 'charset' => isset($app['charset']) ? $app['charset'] : 'UTF-8',
                 'debug' => isset($app['debug']) ? $app['debug'] : false,
@@ -64,7 +64,7 @@ class TwigServiceProvider implements ServiceProviderInterface
 
 
         $app['twig.environment_factory'] = $app->protect(function ($app) {
-            return new \Twig_Environment($app['twig.loader'], $app['twig.options']);
+            return new \Twig_Environment($app['twig.loader'], $app['twig.config']);
         });
 
         $app['twig.app'] = function (Application $app) {
@@ -80,7 +80,7 @@ class TwigServiceProvider implements ServiceProviderInterface
             $obj['html'] = function () {
                 return new \Leaf\Html();
             };
-            $obj['debug'] = $app['twig.options']['debug'];
+            $obj['debug'] = $app['twig.config']['debug'];
 
             return $obj;
         };
@@ -90,7 +90,7 @@ class TwigServiceProvider implements ServiceProviderInterface
             /** @var $twig \Twig_Environment */
             $twig = $app['twig.environment_factory']($app);
 
-            $twig->addFunction(new \Twig_SimpleFunction('url', function ($name, $params = [], $absoluteUrl = false) use ($app) {
+            $twig->addFunction(new \Twig_SimpleFunction('url', function ($name, $params = array(), $absoluteUrl = false) use ($app) {
                 return \Leaf\Url::to($name, $params, $absoluteUrl);
             }));
 

@@ -2,60 +2,40 @@
 
 namespace Leaf\Log;
 
-use Leaf\Application;
-
-/**
- * 日志
- * $app->register(new \Rain\Provider\LogServiceProvider()); //默认记录到文件
- * $app->register(new \Rain\Provider\LogServiceProvider(), ['log.target' => 'db']);
- */
-class LogFilter
+abstract class LogFilter
 {
+    protected $messages = array();
 
-    public $target;
-
-    /**
-     * @return string|null
-     */
-    protected function getLogFile($type)
+    public function __construct(array $config = array())
     {
-        if (isset(Application::$app['log.path'])) {
-            $path = rtrim(Application::$app['log.path'], '/\\') . '/';
-        } else {
-            $path = rtrim(Application::$app->getRuntimePath(), '/\\') . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR;
+        foreach ($config as $key => $value) {
+            $this->$key = $value;
         }
-
-        $file = $path . lcfirst($type) . '.log';
-
-        if (!file_exists(dirname($file))) {
-            if (!@mkdir(dirname($file), 0777, true)) {
-                return null;
-            }
-        }
-        return $file;
     }
 
-    public function debug($msg)
+    public abstract function export();
+
+    public function debug($message, array $context = array())
     {
-        static::write('Debug', $msg);
+        static::write('debug', $message, $context);
     }
 
-    public function info($msg)
+    public function info($message, array $context = array())
     {
-        static::write('Info', $msg);
+        static::write('info', $message, $context);
     }
 
-    public function warning($msg)
+    public function warning($message, array $context = array())
     {
-        static::write('Warning', $msg);
+        static::write('warning', $message, $context);
     }
 
-    public function error($msg)
+    public function error($message, array $context = array())
     {
-        static::write('Error', $msg);
+        static::write('error', $message, $context);
     }
 
-    public function write($type, $msg)
+    public function write($level, $message, array $context = array(), $channel = null)
     {
         $inFile = '';
         $backtrace = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 4);
@@ -65,47 +45,21 @@ class LogFilter
             $inFile .= ':' . (isset($backtrace[3]['line']) ? $backtrace[3]['line'] : '');
         }
 
-        $log = date('Y-m-d H:i:s') . "\n";
-        $log .= $type . "\t" . static::varToString($msg) . "\n";
-        $log .= $inFile === '' ?: "File\t" . $inFile . "\n";
-        if (isset($_SERVER['REQUEST_URI'])) {
+        $time = date('Y-m-d H:i:s');
+
+        $log = static::varToString($message) . "\n";
+        $log .= $inFile === '' ? '' : ("File\t" . $inFile . "\n");
+        if (!empty($_SERVER['REQUEST_URI'])) {
             $log .= "REQUEST_URI\t" . $_SERVER['REQUEST_URI'];
         }
-        if (isset($_SERVER['HTTP_REFERER'])) {
+        if (!empty($_SERVER['HTTP_REFERER'])) {
             $log .= ("\n" . "HTTP_REFERER\t" . $_SERVER['HTTP_REFERER']);
         }
 
-        $log .= "\n\n";
+        $this->messages[] = array('channel' => $channel, 'level' => $level, 'message' => $log, 'datetime' => $time, 'context' => $context);
 
-        $messages = [[$log, $type, '', time()]];
-
-        $target = [
-            'file' => 'Leaf\Log\FileTarget',
-            'db' => 'Leaf\Log\DbTarget',
-        ];
-
-        $app = Application::$app;
-        $key = isset($app['log.target']) ? $app['log.target'] : 'file';
-
-        if (array_key_exists($key, $target)) {
-            $class = $target[$key];
-        } else {
-            throw new \Exception(sprintf('Log target driver "%s" does not exist.', $key));
-        }
-
-        $param = isset($app['log.config']) ? $app['log.config'] : array();
-
-        $target = new $class($param);
-        $target->messages = $messages;
-
-        if ($key == 'file') {
-            $target->messages = [$log];
-            $target->logFile = static::getLogFile($type);
-        }
-
-        $target->export();
+        $this->export();
     }
-
 
     public function varToString($var)
     {
@@ -114,12 +68,12 @@ class LogFilter
         }
 
         if (is_array($var)) {
-            $a = array();
+            $arr = array();
             foreach ($var as $k => $v) {
-                $a[] = sprintf('%s => %s', $k, static::varToString($v));
+                $arr[] = sprintf('%s => %s', $k, static::varToString($v));
             }
 
-            return sprintf("Array(%s)", implode(', ', $a));
+            return sprintf("Array(%s)", implode(', ', $arr));
         }
 
         if (is_resource($var)) {

@@ -14,10 +14,8 @@ use Leaf\Session;
  *
  * $app->register(new \Leaf\Provider\CaptchaProvider());
  *
+ * //生成验证码图片
  * \Leaf\Route::get('captcha', function (\Leaf\Application $app) {
- *     //$captcha = new \Leaf\Provider\CaptchaProvider();
- *     //$captcha->width=120;
- *     //$captcha->create();
  *     return $app['captcha']->create();
  * });
  *
@@ -60,8 +58,11 @@ class CaptchaProvider implements ServiceProviderInterface
     public function register(Container $app)
     {
         $app['captcha'] = function () {
-            $captcha = new self;
-            return $captcha;
+            $config = isset($app['captcha.config']) ? $app['captcha.config'] : array();
+            $config += array('class' => 'Leaf\Provider\CaptchaProvider');
+            $class = $config['class'];
+            unset($config['class']);
+            return $app->make($class, $config);
         };
     }
 

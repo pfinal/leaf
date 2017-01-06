@@ -2,7 +2,6 @@
 
 namespace Leaf\Provider;
 
-use Leaf\Application;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
@@ -20,26 +19,11 @@ class LogServiceProvider implements ServiceProviderInterface
     public function register(Container $app)
     {
         $app['log'] = function () use ($app) {
-
-            $target = [
-                'file' => 'Leaf\Log\FileTarget',
-                'db' => 'Leaf\Log\DbTarget',
-            ];
-
-            $key = isset($app['log.target']) ? $app['log.target'] : 'file';
-
-            if (array_key_exists($key, $target)) {
-                $class = $target[$key];
-            } else {
-                throw new \Exception(sprintf('Log target driver "%s" does not exist.', $key));
-            }
-
-            $param = isset($app['queue.config']) ? $app['queue.config'] : array();
-
-            $filter = new \Leaf\Log\LogFilter();
-            /* @var $app Application */
-            $filter->target = $app->make($class, $param);
-            return $filter;
+            $config = isset($app['log.config']) ? $app['log.config'] : array();
+            $config += array('class' => 'Leaf\Log\FileTarget');
+            $class = $config['class'];
+            unset($config['class']);
+            return $app->make($class, $config);
         };
     }
 }

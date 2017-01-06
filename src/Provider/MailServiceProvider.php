@@ -10,19 +10,30 @@ use Leaf\Log;
 /**
  * 发送邮件
  *
- * $app->register(new \Leaf\Provider\MailServiceProvider(), [
- *       'mail.host' => 'smtp.qq.com',
- *       'mail.username' => '190196539@qq.com',
- *       'mail.password' => 'xxx',
- *       'mail.name' => 'Ethan',
- *       'mail.port' => '465',
- *       'mail.encryption' => 'ssl', //ssl、tls
+ * composer require swiftmailer/swiftmailer:5.3
+ *
+ * $app->register(new \Leaf\Provider\MailServiceProvider(), ['mail.config'=>[
+ *       'host' => 'smtp.qq.com',
+ *       'username' => '12345@qq.com',
+ *       'password' => 'xxx',
+ *       'name' => 'your name',
+ *       'port' => '465',
+ *       'encryption' => 'ssl', //ssl、tls
+ *      ]
  * ]);
  *
  * @author  Zou Yiliang
  */
 class MailServiceProvider implements ServiceProviderInterface
 {
+    protected $host;
+    protected $port;
+    protected $username;
+    protected $password;
+    protected $encryption;
+
+    protected $name;
+
     /**
      * 在容器中注册服务
      *
@@ -30,36 +41,40 @@ class MailServiceProvider implements ServiceProviderInterface
      */
     public function register(Container $app)
     {
-        $app['mail'] = function () {
-            return new self;
+        $app['mail'] = function () use ($app) {
+            $config = isset($app['mail.config']) ? $app['mail.config'] : array();
+            $config += array('class' => 'Leaf\Provider\MailServiceProvider');
+            $class = $config['class'];
+            unset($config['class']);
+            return $app->make($class, $config);
         };
     }
 
-    public function send($to, $title, $content)
+    /**
+     * 发送邮件
+     * @param string $to
+     * @param string $title
+     * @param string $content
+     * @param null $error
+     * @return bool
+     */
+    public function send($to, $title, $content, &$error = null)
     {
-        $config['host'] = Application::$app['mail.host'];
-        $config['port'] = Application::$app['mail.port'];
-        $config['username'] = Application::$app['mail.username'];
-        $config['password'] = Application::$app['mail.password'];
-        $config['encryption'] = Application::$app['mail.encryption'];
-
-        $config['name'] = Application::$app['mail.name'];
-
         try {
             // message
             $message = \Swift_Message::newInstance();
-            $message->setFrom(array($config['username'] => $config['name']));
+            $message->setFrom(array($this->username => $this->name));
             $message->setTo($to);
             $message->setSubject($title);
             $message->setBody($content, 'text/html', 'utf-8');
             //$message->attach(\Swift_Attachment::fromPath('pic.jpg', 'image/jpeg')->setFilename('rename_pic.jpg'));
 
             //transport
-            $transport = \Swift_SmtpTransport::newInstance($config['host'], $config['port']);
-            $transport->setUsername($config['username']);
-            $transport->setPassword($config['password']);
-            if (isset($config['encryption'])) {
-                $transport->setEncryption($config['encryption']);
+            $transport = \Swift_SmtpTransport::newInstance($this->host, $this->port);
+            $transport->setUsername($this->username);
+            $transport->setPassword($this->password);
+            if ($this->encryption != null) {
+                $transport->setEncryption($this->encryption);
             }
 
             //mailer
@@ -68,7 +83,8 @@ class MailServiceProvider implements ServiceProviderInterface
             $mailer->send($message);
             return true;
         } catch (\Exception $e) {
-            Log::error($e->getMessage());
+            $error = $e->getMessage();
+            Log::error($error);
             return false;
         }
     }
