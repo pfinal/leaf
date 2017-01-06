@@ -119,7 +119,7 @@ class Application extends Container
             $lastTime = max($lastTime, filemtime($file));
         }
 
-        $cacheFile = $this->getRuntimePath() . '/route/cache.' . count($files);
+        $cacheFile = $this->getRuntimePath() . '/route/' . md5(join('', $files));
         if (!file_exists(dirname($cacheFile))) {
             mkdir(dirname($cacheFile), 0777, true);
         }
