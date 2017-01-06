@@ -2,13 +2,11 @@
 
 namespace Leaf\Auth;
 
-use Leaf\Application;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
 /**
- * $app->register(new \Leaf\Auth\GateProvider());
- * $app->register(new \Leaf\Auth\GateProvider(), ['auth.class' => 'AuthAdmin']);  // AuthAdmin extends |Leaf\Auth
+ * $app->register(new \Leaf\Auth\GateProvider(), ['auth' => 'MyAuth']);  // class MyAuth extends \Leaf\AuthManager
  *
  * @package Leaf\Auth
  */
@@ -17,17 +15,19 @@ class GateProvider implements ServiceProviderInterface
     /**
      * 在容器中注册服务
      *
-     * @param Application $app
+     * @param Container $app
      */
     public function register(Container $app)
     {
         $app['gate'] = function () use ($app) {
-            return new Gate(function () use ($app) {
-
-                $auth = isset($app['auth.class']) ? $app['auth.class'] : 'Leaf\\Auth';
-
-                return forward_static_call([$auth, 'getUser']);
+            $config = isset($app['gate.config']) ? $app['gate.config'] : array();
+            $config += array('class' => 'Leaf\Auth\Gate', 'userResolver' => function () use ($app) {
+                $authClass = $app['auth'];
+                return forward_static_call([$authClass, 'getUser']);
             });
+            $class = $config['class'];
+            unset($config['class']);
+            return $app->make($class, $config);
         };
     }
 }
