@@ -62,7 +62,7 @@ class Application extends Container
 
     public static function getVersion()
     {
-        return '2.1.18';
+        return '2.1.19';
     }
 
     public function init()
@@ -95,14 +95,47 @@ class Application extends Container
 
     private function route($app)
     {
+        $files = array();
         if (file_exists($app['path'] . '/config/routes.php')) {
-            require $app['path'] . '/config/routes.php';
+            $files[] = $app['path'] . '/config/routes.php';
         }
+
         foreach ($this->bundles as $bundle) {
             if (file_exists($bundle->getPath() . '/resources/routes.php')) {
-                require $bundle->getPath() . '/resources/routes.php';
+                $files[] = $bundle->getPath() . '/resources/routes.php';
             }
         }
+
+        $useCache = isset($app['route.cache']) ? $app['route.cache'] : false;
+        if (!$useCache) {
+            foreach ($files as $file) {
+                require $file;
+            }
+            return;
+        }
+
+        $lastTime = 0;
+        foreach ($files as $file) {
+            $lastTime = max($lastTime, filemtime($file));
+        }
+
+        $cacheFile = $this->getRuntimePath() . '/route/cache.' . count($files);
+        if (!file_exists(dirname($cacheFile))) {
+            mkdir(dirname($cacheFile), 0777, true);
+        }
+
+        if (file_exists($cacheFile) && filemtime($cacheFile) == $lastTime
+        ) {
+            $app['router']->setNodeData(unserialize(file_get_contents($cacheFile)));
+            return;
+        }
+
+        foreach ($files as $file) {
+            require $file;
+        }
+
+        file_put_contents($cacheFile, serialize($app['router']->getNodeData()), LOCK_EX);
+        touch($cacheFile, $lastTime);
     }
 
     private function errorHandler()
