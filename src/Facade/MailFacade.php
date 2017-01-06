@@ -11,11 +11,11 @@ class MailFacade
      * @param string $to
      * @param string $title
      * @param string $content
+     * @param null $error
      * @return bool
      */
-    public static function send($to, $title, $content)
+    public static function send($to, $title, $content, &$error = null)
     {
-        return Application::$app['mail']->send($to, $title, $content);
+        return Application::$app['mail']->send($to, $title, $content, $error);
     }
-
 }
