@@ -15,7 +15,6 @@ use Leaf\DB;
  *  PRIMARY KEY (`id`)
  *  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
  *
- * @package Rain\Log
  */
 class DbTarget
 {
@@ -38,7 +37,7 @@ class DbTarget
             list($text, $level, $category, $timestamp) = $message;
 
             if (!is_string($text)) {
-                $text = Log::varToString($text);
+                $text = \Leaf\Log::varToString($text);
             }
 
             DB::getConnection()->execute($sql, [

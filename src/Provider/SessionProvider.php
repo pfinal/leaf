@@ -17,7 +17,8 @@ class SessionProvider implements ServiceProviderInterface
     {
         $app['session'] = function () use ($app) {
             $class = isset($app['session.class']) ? $app['session.class'] : 'PFinal\Session\NativeSession';
-            $session = $app->make($class);
+            $config = isset($app['session.config']) ? $app['session.config'] : array();
+            $session = $app->make($class, $config);
             return $session;
         };
     }
