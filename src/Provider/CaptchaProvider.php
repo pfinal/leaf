@@ -50,6 +50,13 @@ class CaptchaProvider implements ServiceProviderInterface
     public $fixedVerifyCode;
     public $backend;
 
+    public function __construct($config = array())
+    {
+        foreach ($config as $key => $value) {
+            $this->$key = $value;
+        }
+    }
+
     /**
      * 在容器中注册服务
      *
@@ -62,7 +69,7 @@ class CaptchaProvider implements ServiceProviderInterface
             $config += array('class' => 'Leaf\Provider\CaptchaProvider');
             $class = $config['class'];
             unset($config['class']);
-            return $app->make($class, $config);
+            return $app->make($class, array('config' => $config));
         };
     }
 

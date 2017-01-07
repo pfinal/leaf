@@ -19,7 +19,7 @@ class CacheProvider implements ServiceProviderInterface
             $config += array('class' => 'PFinal\Cache\FileCache');
             $class = $config['class'];
             unset($config['class']);
-            return $app->make($class, $config);
+            return $app->make($class, array('config' => $config));
         };
     }
 }

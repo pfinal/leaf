@@ -10,17 +10,16 @@ use Leaf\Log;
 /**
  * 发送邮件
  *
- * composer require swiftmailer/swiftmailer:5.3
+ * composer require swiftmailer/swiftmailer:5.*
  *
  * $app->register(new \Leaf\Provider\MailServiceProvider(), ['mail.config'=>[
- *       'host' => 'smtp.qq.com',
- *       'username' => '12345@qq.com',
- *       'password' => 'xxx',
- *       'name' => 'your name',
- *       'port' => '465',
- *       'encryption' => 'ssl', //ssl、tls
- *      ]
- * ]);
+ *   'host' => 'smtp.qq.com',
+ *   'username' => '123456@qq.com',
+ *   'password' => 'xxx',
+ *   'name' => 'your name',
+ *   'port' => '465',
+ *   'encryption' => 'ssl', //ssl、tls
+ * ]]);
  *
  * @author  Zou Yiliang
  */
@@ -34,6 +33,13 @@ class MailServiceProvider implements ServiceProviderInterface
 
     protected $name;
 
+    public function __construct($config = array())
+    {
+        foreach ($config as $key => $value) {
+            $this->$key = $value;
+        }
+    }
+
     /**
      * 在容器中注册服务
      *
@@ -46,7 +52,7 @@ class MailServiceProvider implements ServiceProviderInterface
             $config += array('class' => 'Leaf\Provider\MailServiceProvider');
             $class = $config['class'];
             unset($config['class']);
-            return $app->make($class, $config);
+            return $app->make($class, array('config' => $config));
         };
     }
 

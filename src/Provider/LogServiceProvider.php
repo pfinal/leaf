@@ -23,7 +23,7 @@ class LogServiceProvider implements ServiceProviderInterface
             $config += array('class' => 'Leaf\Log\FileTarget');
             $class = $config['class'];
             unset($config['class']);
-            return $app->make($class, $config);
+            return $app->make($class, array('config' => $config));
         };
     }
 }

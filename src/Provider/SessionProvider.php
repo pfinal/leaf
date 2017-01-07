@@ -20,7 +20,7 @@ class SessionProvider implements ServiceProviderInterface
             $config += array('class' => 'PFinal\Session\NativeSession');
             $class = $config['class'];
             unset($config['class']);
-            return $app->make($class, $config);
+            return $app->make($class, array('config' => $config));
         };
     }
 }
