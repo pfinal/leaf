@@ -12,13 +12,11 @@
         "php": ">=5.4",
         "symfony/http-foundation": "2.*",
         "symfony/console": "2.*",
-        "cebe/markdown": ">=1.1",
-        "twig/extensions": "1.*",
         "pfinal/blade": ">=1.0",
         "pfinal/database": ">=1.1",
         "pfinal/session": ">=1.0",
         "pfinal/routing": ">=1.3",
-        "pfinal/cache": ">=1.0"
+        "twig/extensions": ">=1.0"
     },
     "autoload": {
         "files": [
