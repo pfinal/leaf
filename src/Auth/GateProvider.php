@@ -6,9 +6,7 @@ use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
 /**
- * $app->register(new \Leaf\Auth\GateProvider(), ['gate.config'=>['authClass' => 'MyAuth']]);  // class MyAuth extends \Leaf\AuthManager
- *
- * @package Leaf\Auth
+ * $app->register(new \Leaf\Auth\GateProvider());
  */
 class GateProvider implements ServiceProviderInterface
 {
@@ -21,7 +19,8 @@ class GateProvider implements ServiceProviderInterface
     {
         $app['gate'] = function () use ($app) {
             $config = isset($app['gate.config']) ? $app['gate.config'] : array();
-            $config += array('class' => 'Leaf\Auth\Gate', 'userResolver' => function () use ($app, $config) {
+            $config += array('class' => 'Leaf\Auth\Gate', 'authClass' => 'Service\Auth'); // Service\Auth extends \Leaf\AuthManager
+            $config += array('userResolver' => function () use ($app, $config) {
                 $authClass = $config['authClass'];
                 return forward_static_call([$authClass, 'getUser']);
             });
