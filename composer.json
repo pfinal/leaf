@@ -14,7 +14,7 @@
         "symfony/console": "2.*",
         "pfinal/blade": ">=1.0",
         "pfinal/database": ">=1.1",
-        "pfinal/session": ">=1.0",
+        "pfinal/session": ">=1.3",
         "pfinal/routing": ">=1.3",
         "twig/extensions": ">=1.0"
     },
