@@ -62,7 +62,7 @@ class Application extends Container
 
     public static function getVersion()
     {
-        return '2.2.0';
+        return '2.2.1';
     }
 
     public function init()
@@ -96,8 +96,11 @@ class Application extends Container
     private function route($app)
     {
         $files = array();
-        if (file_exists($app['path'] . '/config/routes.php')) {
-            $files[] = $app['path'] . '/config/routes.php';
+
+        $routeFile = isset($app['router.file']) ? $app['router.file'] : $app['path'] . '/config/routes.php';
+
+        if (file_exists($routeFile)) {
+            $files[] = $routeFile;
         }
 
         foreach ($this->bundles as $bundle) {
@@ -106,7 +109,7 @@ class Application extends Container
             }
         }
 
-        $useCache = isset($app['route.cache']) ? $app['route.cache'] : false;
+        $useCache = isset($app['router.cache']) ? $app['router.cache'] : false;
         if (!$useCache) {
             foreach ($files as $file) {
                 require $file;
@@ -119,7 +122,7 @@ class Application extends Container
             $lastTime = max($lastTime, filemtime($file));
         }
 
-        $cacheFile = $this->getRuntimePath() . '/route/' . md5(join('', $files));
+        $cacheFile = $this->getRuntimePath() . '/router/' . md5(join('', $files));
         if (!file_exists(dirname($cacheFile))) {
             mkdir(dirname($cacheFile), 0777, true);
         }
