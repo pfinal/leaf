@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 /**
  * 验证码
  *
+ * 支持GD扩展或ImageMagick扩展
+ *
  * //注册
  * $app->register(new \Leaf\Provider\CaptchaProvider());
  *
@@ -42,6 +44,21 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
  *         // 'Verification code is invalid.';
  *     }
  * });
+ *
+ * //生成较难识别的验证码, 可使用第三方组件:
+ *
+ * //composer require gregwar/captcha
+ *
+ * //初始化验证码对象
+ * $captcha = new \Gregwar\Captcha\CaptchaBuilder();
+ *
+ * //将验证码内容存入Session
+ * \Leaf\Session::set('code', $captcha->getPhrase());
+ *
+ * //输出jpeg图片到浏览器
+ * header('Content-type: image/jpeg');
+ * $captcha->build()->output();
+ *
  */
 class CaptchaProvider implements ServiceProviderInterface
 {
