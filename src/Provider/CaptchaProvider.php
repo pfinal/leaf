@@ -8,10 +8,12 @@ use ImagickPixel;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Leaf\Session;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * 验证码
  *
+ * //注册
  * $app->register(new \Leaf\Provider\CaptchaProvider());
  *
  * //生成验证码图片
@@ -19,23 +21,30 @@ use Leaf\Session;
  *     return $app['captcha']->create();
  * });
  *
+ * //表单中使用验证码
  * \Leaf\Route::any('show', function () {
- *     //<img src="/app.php/captcha" onclick="this.src='/app.php/captcha?refresh='+Math.random()" style="cursor:pointer;">
- *     return '<form method="post" action="' . \Leaf\Url::to('validate') . '"><img alt="captcha" src="' . \Leaf\Url::to('captcha') . '" onclick="this.src=\'' . \Leaf\Url::to('captcha') . '?refresh=\'+Math.random()" style="cursor:pointer;"><input name="captcha"> <button type="submit">Submit</button></form>';
+ *     $html = <<<TAG
+ * <form method="post" action="{{ url('validate') }}">
+ *     <img src="{{ url('captcha') }}" onclick="this.src='{{ url('captcha') }}?refresh='+Math.random()" style="cursor:pointer" alt="captcha">
+ *     <input name="code">
+ *     <button type="submit">提交</button>
+ * </form>
+ * TAG;
+ *
+ *     return View::renderText($html);
  * });
  *
+ * //提交表单时验证输入是否正确
  * \Leaf\Route::post('validate', function (\Leaf\Application $app, \Leaf\Request $request) {
- *     if ($app['captcha']->validate($request->get('captcha'))) {
- *         return 'success';
+ *     if ($app['captcha']->validate($request->get('code'))) {
+ *         // 'success';
  *     } else {
- *         return 'Verification code is invalid.';
+ *         // 'Verification code is invalid.';
  *     }
  * });
  */
 class CaptchaProvider implements ServiceProviderInterface
 {
-    const REFRESH_GET_VAR = 'refresh';
-    const SESSION_VAR_PREFIX = 'CaptchaCode';
     public $testLimit = 3;             //尝试次数，默认3次错误更换验证码
     public $width = 85;
     public $height = 40;
@@ -64,7 +73,7 @@ class CaptchaProvider implements ServiceProviderInterface
      */
     public function register(Container $app)
     {
-        $app['captcha'] = function () {
+        $app['captcha'] = function () use ($app) {
             $config = isset($app['captcha.config']) ? $app['captcha.config'] : array();
             $config += array('class' => 'Leaf\Provider\CaptchaProvider');
             $class = $config['class'];
@@ -75,16 +84,28 @@ class CaptchaProvider implements ServiceProviderInterface
 
     /**
      * 直接输出图像
+     * @return StreamedResponse
      */
     public function create()
     {
-        self::header();
+        $header = array('Content-type' => 'image/png');
 
-        if (isset($_GET[self::REFRESH_GET_VAR])) {
+        return new StreamedResponse(function () {
             $this->renderImage($this->getVerifyCode(true));
-        } else {
-            $this->renderImage($this->getVerifyCode());
-        }
+        }, 200, $header);
+    }
+
+    /**
+     * 返回 HTML inline base64
+     * @return string
+     */
+    public function inline()
+    {
+        ob_start();
+
+        $this->renderImage($this->getVerifyCode(true));
+
+        return 'data:image/png;base64,' . base64_encode(ob_get_clean());
     }
 
     /**
@@ -93,22 +114,15 @@ class CaptchaProvider implements ServiceProviderInterface
      */
     public function img()
     {
-        ob_start();
-        if (isset($_GET[self::REFRESH_GET_VAR])) {
-            $this->renderImage($this->getVerifyCode(true));
-        } else {
-            $this->renderImage($this->getVerifyCode());
-        }
-        $img = ob_get_clean();
-
         //部份浏览器不兼容base64编码
-        return '<img alt="captcha" src="data:image/png;base64,' . base64_encode($img) . '">';
+        return '<img alt="captcha" src="' . self::inline() . '">';
     }
 
     public function generateValidationHash($code)
     {
-        for ($h = 0, $i = strlen($code) - 1; $i >= 0; --$i)
+        for ($h = 0, $i = strlen($code) - 1; $i >= 0; --$i) {
             $h += ord($code[$i]);
+        }
         return $h;
     }
 
@@ -132,6 +146,12 @@ class CaptchaProvider implements ServiceProviderInterface
         return Session::get($name);
     }
 
+    /**
+     * 验证
+     * @param string $input
+     * @param bool $caseSensitive
+     * @return bool
+     */
     public function validate($input, $caseSensitive = false)
     {
         $code = $this->getVerifyCode();
@@ -146,8 +166,8 @@ class CaptchaProvider implements ServiceProviderInterface
         $name = $this->getSessionKey() . 'count';
 
         Session::set($name, Session::get($name) + 1);
+
         if (Session::get($name) > $this->testLimit && $this->testLimit > 0) {
-            //更换验证码
             $this->getVerifyCode(true);
         }
         return false;
@@ -167,10 +187,11 @@ class CaptchaProvider implements ServiceProviderInterface
         $vowels = 'aeiou';
         $code = '';
         for ($i = 0; $i < $length; ++$i) {
-            if ($i % 2 && mt_rand(0, 10) > 2 || !($i % 2) && mt_rand(0, 10) > 9)
+            if ($i % 2 && mt_rand(0, 10) > 2 || !($i % 2) && mt_rand(0, 10) > 9) {
                 $code .= $vowels[mt_rand(0, 4)];
-            else
+            } else {
                 $code .= $letters[mt_rand(0, 20)];
+            }
         }
 
         return $code;
@@ -178,7 +199,7 @@ class CaptchaProvider implements ServiceProviderInterface
 
     protected function getSessionKey()
     {
-        return self::SESSION_VAR_PREFIX;
+        return 'CaptchaCode';
     }
 
     public function renderImage($code)
@@ -273,19 +294,10 @@ class CaptchaProvider implements ServiceProviderInterface
         echo $image;
     }
 
-    public static function header()
-    {
-        header('Pragma: public');
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-        header('Content-Transfer-Encoding: binary');
-        header("Content-type: image/png");
-    }
-
     /**
      * 检查扩展支持
      * @param string $extension 'gd', 'imagick' and null
-     * @return boolean true if ImageMagick extension with PNG support or GD with FreeType support is loaded, otherwise false
+     * @return boolean 安装了ImageMagick扩展并支持PNG 或 安装了GD扩展并支持FreeType, 返回true, 否则返回false
      */
     public static function checkRequirements($extension = null)
     {
@@ -293,18 +305,24 @@ class CaptchaProvider implements ServiceProviderInterface
             $imagick = new Imagick();
             $imagickFormats = $imagick->queryFormats('PNG');
         }
+
         if (extension_loaded('gd')) {
             $gdInfo = gd_info();
         }
+
         if ($extension === null) {
-            if (isset($imagickFormats) && in_array('PNG', $imagickFormats))
+            if (isset($imagickFormats) && in_array('PNG', $imagickFormats)) {
                 return true;
-            if (isset($gdInfo) && $gdInfo['FreeType Support'])
+            }
+            if (isset($gdInfo) && $gdInfo['FreeType Support']) {
                 return true;
-        } elseif ($extension == 'imagick' && isset($imagickFormats) && in_array('PNG', $imagickFormats))
+            }
+        } elseif ($extension == 'imagick' && isset($imagickFormats) && in_array('PNG', $imagickFormats)) {
             return true;
-        elseif ($extension == 'gd' && isset($gdInfo) && $gdInfo['FreeType Support'])
+        } elseif ($extension == 'gd' && isset($gdInfo) && $gdInfo['FreeType Support']) {
             return true;
+        }
+
         return false;
     }
 }

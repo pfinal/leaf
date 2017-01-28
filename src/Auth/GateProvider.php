@@ -22,7 +22,7 @@ class GateProvider implements ServiceProviderInterface
             $config += array('class' => 'Leaf\Auth\Gate', 'authClass' => 'Service\Auth'); // Service\Auth extends \Leaf\AuthManager
             $config += array('userResolver' => function () use ($app, $config) {
                 $authClass = $config['authClass'];
-                return forward_static_call([$authClass, 'getUser']);
+                return forward_static_call(array($authClass, 'getUser'));
             });
             $class = $config['class'];
             unset($config['class']);
