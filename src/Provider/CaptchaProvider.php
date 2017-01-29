@@ -225,6 +225,8 @@ class CaptchaProvider implements ServiceProviderInterface
             $this->renderImageImagick((string)$code);
         } else if ($this->backend === null && self::checkRequirements('gd') || $this->backend === 'gd') {
             $this->renderImageGD((string)$code);
+        } else {
+            $this->renderImageOutFreeType((string)$code);
         }
     }
 
@@ -309,6 +311,36 @@ class CaptchaProvider implements ServiceProviderInterface
 
         $image->setImageFormat('png');
         echo $image;
+    }
+
+    protected function renderImageOutFreeType($code)
+    {
+        $width = $this->width;
+        $height = $this->height;
+
+        $image = imagecreatetruecolor($width, $height);
+
+        $bg = imagecolorallocate($image,
+            (int)($this->backColor % 0x1000000 / 0x10000),
+            (int)($this->backColor % 0x10000 / 0x100),
+            $this->backColor % 0x100);
+
+        $textColor = imagecolorallocate($image, 0, 0, 255);
+
+        imagefill($image, 0, 0, $bg);
+
+        imagestring($image, 5, 10, 5, $code, $textColor);
+
+        $x1 = $width * rand(0, 20) / 100;
+        $y1 = $height * rand(0, 100) / 100;
+
+        $x2 = $width * rand(80, 100) / 100;
+        $y2 = $height * rand(0, 90) / 100;
+
+        imageline($image, $x1, $y1, $x2, $y2, $bg);
+
+        imagepng($image);
+        imagedestroy($image);
     }
 
     /**
