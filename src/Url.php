@@ -38,6 +38,10 @@ class Url
      */
     public static function asset($asset = '', $absoluteUrl = false)
     {
+        if (preg_match('/^http(s)?:\/\//i', $asset)) { // "http://" "https://"
+            return $asset;
+        }
+
         if ($asset !== '') {
             $asset = '/' . ltrim($asset, '/');
         }
