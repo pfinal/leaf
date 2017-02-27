@@ -4,8 +4,6 @@ namespace Leaf\Provider;
 
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
-use Leaf\Application;
-use Leaf\Log;
 
 /**
  * 发送邮件
@@ -90,7 +88,6 @@ class MailServiceProvider implements ServiceProviderInterface
             return true;
         } catch (\Exception $e) {
             $error = $e->getMessage();
-            Log::error($error);
             return false;
         }
     }
