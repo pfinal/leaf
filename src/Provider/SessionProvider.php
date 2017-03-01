@@ -11,6 +11,16 @@ class SessionProvider implements ServiceProviderInterface
     /**
      * 在容器中注册服务
      *
+     * 使用Reids存储Session:
+     * $app->register(new \Leaf\Provider\SessionProvider(), ['session.config' => [
+     *     'class' => 'PFinal\Session\RedisSession',
+     *     'server' => [
+     *         'scheme' => 'tcp',
+     *         'host' => '192.168.0.2',
+     *         'port' => 6379,
+     *     ]
+     * ]]);
+     *
      * @param Container $app
      */
     public function register(Container $app)
