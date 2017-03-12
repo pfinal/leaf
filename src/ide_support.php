@@ -102,11 +102,6 @@ namespace Leaf {
 
     }
 
-    class Auth extends AuthManager
-    {
-
-    }
-
     class Log
     {
         public static function debug($var)
@@ -169,20 +164,20 @@ namespace Leaf {
         /**
          * @param $id
          * @param mixed $value
-         * @param int $expire 缓存过期时间(多少秒后过期)。0表示永不过期.
+         * @param int $expire 缓存过期时间(多少秒后过期)，0表示永不过期.
          * @return bool
          */
-        public static function set($id, $value, $expire = 0)
+        public static function set($id, $value, $expire)
         {
         }
 
         /**
          * @param $id
          * @param $value
-         * @param int $expire 缓存过期时间(多少秒后过期)，如果大于30天，请使用UNIX时间戳。0表示永不过期.
+         * @param int $expire 缓存过期时间(多少秒后过期)，0表示永不过期.
          * @return bool
          */
-        public static function add($id, $value, $expire = 0)
+        public static function add($id, $value, $expire)
         {
         }
 
@@ -190,13 +185,6 @@ namespace Leaf {
          * @return bool
          */
         public static function delete($id)
-        {
-        }
-
-        /**
-         * @return bool
-         */
-        public static function flush()
         {
         }
     }
