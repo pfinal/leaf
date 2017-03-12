@@ -90,14 +90,14 @@ class ErrorHandler
 
         $this->_error['type'] = get_class($ex);
 
-        if ($ex instanceof ExceptionInterface) {
+        if ($ex instanceof ExceptionInterface) { //Routing
             $this->_error['code'] = 404;
             $this->_error['trace'] = $ex->getTraceAsString();
-        } else if ($ex instanceof HttpException) {
+        } else if ($ex instanceof HttpException) { //HttpException
             $this->_error['code'] = $ex->getStatusCode();
             $this->_error['trace'] = $ex->getTraceAsString();
         } else {
-            $this->_error['code'] = 500;
+            $this->_error['code'] = 500;  //Internal Server Error
             $this->_error['trace'] = $ex->getTraceAsString();
         }
 
