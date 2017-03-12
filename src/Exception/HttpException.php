@@ -4,8 +4,8 @@ namespace Leaf\Exception;
 
 class HttpException extends \RuntimeException
 {
-    private $statusCode;
-    private $headers;
+    protected $statusCode;
+    protected $headers;
 
     public function __construct($statusCode, $message = null, \Exception $previous = null, array $headers = array(), $code = 0)
     {

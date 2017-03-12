@@ -2,6 +2,7 @@
 
 namespace Leaf;
 
+use Leaf\Exception\HttpException;
 use PFinal\Routing\Exception\ExceptionInterface;
 
 /**
@@ -91,6 +92,9 @@ class ErrorHandler
 
         if ($ex instanceof ExceptionInterface) {
             $this->_error['code'] = 404;
+            $this->_error['trace'] = $ex->getTraceAsString();
+        } else if ($ex instanceof HttpException) {
+            $this->_error['code'] = $ex->getStatusCode();
             $this->_error['trace'] = $ex->getTraceAsString();
         } else {
             $this->_error['code'] = 500;
