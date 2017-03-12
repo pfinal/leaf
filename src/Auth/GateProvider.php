@@ -6,7 +6,30 @@ use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
 /**
- * $app->register(new \Leaf\Auth\GateProvider());
+ * 权限
+ *
+ * $app->register(new \Leaf\Auth\GateProvider(), ['gate.config'=>['authClass' => 'Auth']]);
+ *
+ * $app['gate'] = $app->extend('gate', function ($gate, $app) {
+ *     // @var  $app \Leaf\Application
+ *     // @var $gate  \Leaf\Auth\Gate
+ *
+ *     $gate->define('delete', function (\Entity\User $user) {
+ *         return $user->isSupper();
+ *     });
+ *
+ *     $gate->define('update', function (\Entity\User $user, $post) {
+ *         return $user->isSupper() || $post->user_id = $user->id;
+ *     });
+ *
+ *     return $gate;
+ *
+ *  });
+ *
+ * //判断是否有权限
+ * if($user->can('delete')){ // delete... }
+ * if($user->can('update', $post)){ //update ... }
+ *
  */
 class GateProvider implements ServiceProviderInterface
 {
