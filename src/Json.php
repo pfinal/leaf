@@ -52,6 +52,6 @@ class Json
      */
     public static function renderWithFalse($data = null, $code = '-1')
     {
-        return static::render(array('status' => false, 'data' => $data, 'code' => $code));
+        return static::render(array('status' => false, 'data' => $data, 'code' => (string)$code));
     }
 }
