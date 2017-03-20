@@ -46,11 +46,12 @@ class Json
 
     /**
      * render json response with status `false`
-     * @param $data
+     * @param string $data 错误消息
+     * @param string $code 错误码
      * @return Response
      */
-    public static function renderWithFalse($data = null)
+    public static function renderWithFalse($data = null, $code = '-1')
     {
-        return static::render(array('status' => false, 'data' => $data));
+        return static::render(array('status' => false, 'data' => $data, 'code' => $code));
     }
 }
