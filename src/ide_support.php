@@ -4,6 +4,7 @@ namespace Leaf {
 
     use Leaf\Auth\AuthManager;
     use Leaf\Facade\MailFacade;
+    use Leaf\Facade\QueueFacade;
     use PFinal\Session\SessionInterface;
     use PFinal\Cache\CacheInterface;
 
@@ -100,6 +101,27 @@ namespace Leaf {
     class Mail extends MailFacade
     {
 
+    }
+
+    class Queue extends QueueFacade
+    {
+        /**
+         * 推送一个新任务到队列中
+         * @param string $class 处理任务的类的名称，默认调用fire方法。自定义方法示例：'SendEmail@send'。
+         *            fire方法接受一个 Job 实例对像 和一个data 数组
+         *            public function fire($job, $data){
+         *                //处理这个job ...
+         *                //当处理完成，从队列中将它删除
+         *                $job->delete();
+         *                //或处理失败时，将一个任务放回队列
+         *                $job->release();
+         *            }
+         * @param $data 需要传递给处理器的数据
+         * @return int
+         */
+        public static function push($class, $data = null, $queue = null)
+        {
+        }
     }
 
     class Log
