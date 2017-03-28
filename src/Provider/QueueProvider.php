@@ -4,6 +4,11 @@ namespace Leaf\Provider;
 
 use Pimple\ServiceProviderInterface;
 
+/**
+ * 队列
+ * $app->register(new \Leaf\Provider\QueueProvider());//sync
+ * $app->register(new \Leaf\Provider\QueueProvider(), ['queue.config' => ['class' => 'PFinal\Queue\Driver\Database']]);
+ */
 class QueueProvider implements ServiceProviderInterface
 {
     /**
