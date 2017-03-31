@@ -75,6 +75,7 @@ class CaptchaProvider implements ServiceProviderInterface
     public $fontFile;
     public $fixedVerifyCode;
     public $backend;
+    public $numberOnly = false;
 
     public function __construct($config = array())
     {
@@ -192,13 +193,22 @@ class CaptchaProvider implements ServiceProviderInterface
 
     protected function generateVerifyCode()
     {
-        if ($this->minLength < 3)
+        if ($this->minLength < 3) {
             $this->minLength = 3;
-        if ($this->maxLength > 20)
+        }
+        if ($this->maxLength > 20) {
             $this->maxLength = 20;
-        if ($this->minLength > $this->maxLength)
+        }
+        if ($this->minLength > $this->maxLength) {
             $this->maxLength = $this->minLength;
+        }
         $length = mt_rand($this->minLength, $this->maxLength);
+
+        if ($this->numberOnly) {
+            $a = '1' . str_repeat('0', $length - 1);
+            $b = '9' . str_repeat('9', $length - 1);
+            return mt_rand($a, $b);
+        }
 
         $letters = 'bcdfghjklmnpqrstvwxyz';
         $vowels = 'aeiou';
