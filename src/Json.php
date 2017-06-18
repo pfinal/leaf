@@ -39,9 +39,9 @@ class Json
      * @param $data
      * @return Response
      */
-    public static function renderWithTrue($data = null)
+    public static function renderWithTrue($data = null, $code = '')
     {
-        return static::render(array('status' => true, 'data' => $data));
+        return static::render(array('status' => true, 'data' => $data, 'code' => (string)$code));
     }
 
     /**
