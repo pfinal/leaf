@@ -330,6 +330,8 @@ class UserController
 twig 
 [http://twig.sensiolabs.org](http://twig.sensiolabs.org)
 
+生成url时，如果有多个参数，需要加raw过滤器防止`&`符号被编码 `{{ url(user/update, {id:1, tag:3}) | raw }}`
+
 blade	[http://laravel.com/docs/5.1/blade](http://laravel.com/docs/5.1/blade)
 
 ```
@@ -353,7 +355,7 @@ return View::render('home', [
 \Leaf\View::share('url', 'http://leafphp.com');
 ```
 
-扩展twig模板 增加一个count函数,用于在模板中统计数组成员数量
+扩展twig模板 增加一个count函数,用于在模板中统计数组成员数量(twig提供了length过滤器)
 
 ```
 $app->extend('twig', function ($twig, $app) {

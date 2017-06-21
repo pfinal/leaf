@@ -37,6 +37,7 @@ class Json
     /**
      * render json response with status `true`
      * @param $data
+     * @param string $code
      * @return Response
      */
     public static function renderWithTrue($data = null, $code = '')
