@@ -81,12 +81,17 @@ class Application extends Container
         self::errorHandler();
     }
 
-    public function run()
+    public function run($request = null)
     {
         $this->init();
 
         $this['router'] = new \PFinal\Routing\Router($this);
-        $this['request'] = \Leaf\Request::createFromGlobals();
+
+        if ($request === null) {
+            $this['request'] = \Leaf\Request::createFromGlobals();
+        } else {
+            $this['request'] = $request;
+        }
 
         $this->route($this);
 
