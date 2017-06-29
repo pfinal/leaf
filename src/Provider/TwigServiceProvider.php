@@ -78,7 +78,7 @@ class TwigServiceProvider implements ServiceProviderInterface
                 return $app['session'];
             };
             $obj['html'] = function () {
-                return new \Leaf\Html();
+                return new TwigHtml();
             };
             $obj['debug'] = $app['twig.config']['debug'];
 
