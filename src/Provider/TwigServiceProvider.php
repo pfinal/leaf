@@ -91,7 +91,9 @@ class TwigServiceProvider implements ServiceProviderInterface
             $twig = $app['twig.environment_factory']($app);
 
             $twig->addFunction(new \Twig_SimpleFunction('url', function ($name, $params = array(), $absoluteUrl = false) use ($app) {
-                return \Leaf\Url::to($name, $params, $absoluteUrl);
+                //使用Twig_Markup对象，不做html实体转义
+                //否则 {{url('test',{a:1,b:2})}} 会被转义为 test?a=1&amp;b=2
+                return new \Twig_Markup(\Leaf\Url::to($name, $params, $absoluteUrl), 'utf-8');
             }));
 
             $twig->addFunction(new \Twig_SimpleFunction('asset', function ($asset = '', $absoluteUrl = false) use ($app) {

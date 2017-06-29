@@ -330,8 +330,6 @@ class UserController
 twig 
 [http://twig.sensiolabs.org](http://twig.sensiolabs.org)
 
-生成url时，如果有多个参数，需要加raw过滤器防止`&`符号被编码 `{{ url(user/update, {id:1, tag:3}) | raw }}`
-
 blade	[http://laravel.com/docs/5.1/blade](http://laravel.com/docs/5.1/blade)
 
 ```
