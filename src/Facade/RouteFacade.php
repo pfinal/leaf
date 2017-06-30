@@ -6,6 +6,7 @@ use Leaf\Application;
 
 /**
  * RouteFacade
+ *
  * @author  Zou Yiliang
  * @since   1.0
  */
@@ -13,6 +14,7 @@ class RouteFacade
 {
     /**
      * 注解
+     *
      * @param array|string $controllers
      */
     public static function annotation($controllers)
@@ -21,6 +23,14 @@ class RouteFacade
         //根据注解注册路由
         foreach ($controllers as $controller) {
             $ref = new \ReflectionClass($controller);
+
+            //使用缓存
+            $cacheFile = Application::$app->getRuntimePath() . '/route/' . md5($ref->getFileName());
+            if (file_exists($cacheFile) && filemtime($cacheFile) > filemtime($ref->getFileName())) {
+                $routeArguments = unserialize(file_get_contents($cacheFile));
+                call_user_func_array(array(Application::$app['router'], 'add'), $routeArguments);
+                return;
+            }
 
             $group = self::parseDocCommentTags($ref);
             $groupMiddleware = array();
@@ -47,8 +57,18 @@ class RouteFacade
                                 $middleware = explode('|', $arr['Middleware']);
                             }
 
-                            //echo "Route::add('$httpMethod', '$path', '$callback');<br>";
-                            static::add($httpMethod, $path, $callback, array_merge($groupMiddleware, $middleware));
+                            //static::add($httpMethod, $path, $callback, array_merge($groupMiddleware, $middleware));
+
+                            $routeArguments = array(
+                                $httpMethod, $path, $callback, array_merge($groupMiddleware, $middleware)
+                            );
+                            call_user_func_array(array(Application::$app['router'], 'add'), $routeArguments);
+
+                            //缓存到文件
+                            if (!file_exists(dirname($cacheFile))) {
+                                mkdir(dirname($cacheFile), 0777, true);
+                            }
+                            file_put_contents($cacheFile, serialize($routeArguments), LOCK_EX);
                         }
                     }
                 }
@@ -56,6 +76,10 @@ class RouteFacade
         }
     }
 
+    /**
+     * @param \ReflectionClass | \ReflectionMethod $reflection
+     * @return array
+     */
     private static function parseDocCommentTags($reflection)
     {
         $comment = $reflection->getDocComment();
