@@ -6,7 +6,6 @@ use Leaf\Application;
 
 /**
  * RouteFacade
- *
  * @author  Zou Yiliang
  * @since   1.0
  */
@@ -25,11 +24,13 @@ class RouteFacade
             $ref = new \ReflectionClass($controller);
 
             //使用缓存
-            $cacheFile = Application::$app->getRuntimePath() . '/route/' . md5($ref->getFileName());
+            $cacheFile = Application::$app->getRuntimePath() . '/routes/' . md5($ref->getFileName());
             if (file_exists($cacheFile) && filemtime($cacheFile) > filemtime($ref->getFileName())) {
                 $routeArguments = unserialize(file_get_contents($cacheFile));
-                call_user_func_array(array(Application::$app['router'], 'add'), $routeArguments);
-                return;
+                foreach ($routeArguments as $one) {
+                    call_user_func_array(array(Application::$app['router'], 'add'), $one);
+                }
+                continue;
             }
 
             $group = self::parseDocCommentTags($ref);
@@ -38,6 +39,7 @@ class RouteFacade
                 $groupMiddleware = explode('|', $group['Middleware']);
             }
 
+            $routeArguments = array();
             $methods = $ref->getMethods(\ReflectionMethod::IS_PUBLIC);
             foreach ($methods as $method) {
                 $arr = self::parseDocCommentTags($method);
@@ -58,21 +60,19 @@ class RouteFacade
                             }
 
                             //static::add($httpMethod, $path, $callback, array_merge($groupMiddleware, $middleware));
-
-                            $routeArguments = array(
-                                $httpMethod, $path, $callback, array_merge($groupMiddleware, $middleware)
-                            );
-                            call_user_func_array(array(Application::$app['router'], 'add'), $routeArguments);
-
-                            //缓存到文件
-                            if (!file_exists(dirname($cacheFile))) {
-                                mkdir(dirname($cacheFile), 0777, true);
-                            }
-                            file_put_contents($cacheFile, serialize($routeArguments), LOCK_EX);
+                            $temp = array($httpMethod, $path, $callback, array_merge($groupMiddleware, $middleware));
+                            call_user_func_array(array(Application::$app['router'], 'add'), $temp);
+                            $routeArguments[] = $temp;
                         }
                     }
                 }
             }
+
+            //缓存到文件
+            if (!file_exists(dirname($cacheFile))) {
+                mkdir(dirname($cacheFile), 0777, true);
+            }
+            file_put_contents($cacheFile, serialize($routeArguments), LOCK_EX);
         }
     }
 
