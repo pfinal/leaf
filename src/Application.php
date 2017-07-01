@@ -11,6 +11,16 @@ class Application extends Container
      */
     static $app;
 
+    /**
+     * @var array
+     */
+    protected $bundles = array();
+
+    /**
+     * Application constructor.
+     *
+     * @param array $config
+     */
     public function __construct(array $config = array())
     {
         $config = array_replace_recursive([
@@ -60,11 +70,19 @@ class Application extends Container
         });
     }
 
+    /**
+     * 框架版本
+     *
+     * @return string
+     */
     public static function getVersion()
     {
-        return '2.2.2';
+        return '2.2.3';
     }
 
+    /**
+     * 初始化
+     */
     public function init()
     {
         if (empty($this['path'])) {
@@ -81,6 +99,11 @@ class Application extends Container
         self::errorHandler();
     }
 
+    /**
+     * Start
+     *
+     * @param null $request
+     */
     public function run($request = null)
     {
         $this->init();
@@ -98,54 +121,43 @@ class Application extends Container
         $this['router']->dispatch($this['request'])->send();
     }
 
+    /**
+     * 加载路由
+     *
+     * @param $app
+     */
     private function route($app)
     {
-        $files = array();
-
-        $routeFile = isset($app['router.file']) ? $app['router.file'] : $app['path'] . '/config/routes.php';
-
-        if (file_exists($routeFile)) {
-            $files[] = $routeFile;
-        }
-
-        foreach ($this->bundles as $bundle) {
-            if (file_exists($bundle->getPath() . '/resources/routes.php')) {
-                $files[] = $bundle->getPath() . '/resources/routes.php';
-            }
-        }
-
+        //使用缓存
+        $cacheFile = $this->getRuntimePath() . '/routes/_cache';
         $useCache = isset($app['router.cache']) ? $app['router.cache'] : false;
-        if (!$useCache) {
-            foreach ($files as $file) {
-                require $file;
-            }
-            return;
-        }
-
-        $lastTime = 0;
-        foreach ($files as $file) {
-            $lastTime = max($lastTime, filemtime($file));
-        }
-
-        $cacheFile = $this->getRuntimePath() . '/router/' . md5(join('', $files));
-        if (!file_exists(dirname($cacheFile))) {
-            mkdir(dirname($cacheFile), 0777, true);
-        }
-
-        if (file_exists($cacheFile) && filemtime($cacheFile) == $lastTime
-        ) {
+        if ($useCache && file_exists($cacheFile)) {
             $app['router']->setNodeData(unserialize(file_get_contents($cacheFile)));
             return;
         }
 
-        foreach ($files as $file) {
-            require $file;
+        //基础路由文件
+        $routeFile = isset($app['router.file']) ? $app['router.file'] : $app['path'] . '/config/routes.php';
+
+        if (file_exists($routeFile)) {
+            require $routeFile;
         }
 
-        file_put_contents($cacheFile, serialize($app['router']->getNodeData()), LOCK_EX);
-        touch($cacheFile, $lastTime);
+        //Bundle中的路由文件
+        foreach ($this->bundles as $bundle) {
+            if (file_exists($bundle->getPath() . '/resources/routes.php')) {
+                require $bundle->getPath() . '/resources/routes.php';
+            }
+        }
+
+        if ($useCache) {
+            file_put_contents($cacheFile, serialize($app['router']->getNodeData()), LOCK_EX);
+        }
     }
 
+    /**
+     * 错误处理
+     */
     private function errorHandler()
     {
         //开启错误报告
@@ -158,8 +170,11 @@ class Application extends Container
         set_exception_handler(array($errorHandler, 'handleException'));
     }
 
-    protected $bundles = array();
-
+    /**
+     * 注册Bundle
+     *
+     * @param Bundle $bundle
+     */
     public function registerBundle(Bundle $bundle)
     {
         $name = $bundle->getName();
@@ -170,6 +185,8 @@ class Application extends Container
     }
 
     /**
+     * 跟据Bundle名，获取Bundle对象
+     *
      * @param $name
      * @return Bundle
      */
@@ -184,6 +201,7 @@ class Application extends Container
 
     /**
      * 返回runtime目录，该目录需要写入权限
+     *
      * @return string
      */
     public function getRuntimePath()
@@ -200,8 +218,8 @@ class Application extends Container
     }
 
     /**
-     * 返回当前环境
-     * 默认 $app['env'] = 'local';
+     * 返回当前环境 默认为"local"
+     *
      * @return string
      */
     public function getEnv()
