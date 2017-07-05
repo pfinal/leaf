@@ -77,7 +77,7 @@ class Html
                 $dis = $v;
             }
 
-            if ($select == $val) {
+            if (!strcmp($select, $val)) {
                 $selected = 'selected="selected"';
             } else {
                 $selected = '';
