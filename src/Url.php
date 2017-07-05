@@ -2,15 +2,24 @@
 
 namespace Leaf;
 
-use Leaf\Application;
-
 class Url
 {
     /**
-     * Generate a url for the application.
+     * 生成Url
+     *
+     * @param $path
+     * @param array $params
+     * @param bool $absoluteUrl
+     * @return string
      */
-    public static function to($path, array $params = array(), $absoluteUrl = false)
+    public static function to($path, $params = array(), $absoluteUrl = false)
     {
+        //兼容第二个参数是bool值，简化在没有参数时，生成绝对路径url
+        if (is_bool($params)) {
+            $params = array();
+            $absoluteUrl = $params;
+        }
+
         $script = '';
         if (strpos($_SERVER['REQUEST_URI'], '/' . basename($_SERVER['SCRIPT_NAME'])) !== false) {
             $script = basename($_SERVER['SCRIPT_NAME']);

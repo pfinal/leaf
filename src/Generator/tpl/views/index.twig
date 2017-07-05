@@ -84,7 +84,7 @@
                 {# 分页 #}
                 <div class="pull-right">
                     <span>共<strong> {{ page.itemCount }} </strong>条记录 </span>
-                    {{ page.createLinks(url('<?php echo $bundleMiddleName; ?><?php echo $middleName; ?>'))|raw }}
+                    {{ page.createLinks(url('<?php echo $bundleMiddleName; ?><?php echo $middleName; ?>')) }}
                 </div>
 
             </div>
