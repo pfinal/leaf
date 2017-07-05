@@ -18,7 +18,7 @@ class Pagination implements \JsonSerializable
     protected $itemCount;         //总记录数
     protected $currentPage;       //当前页码
     protected $offset;            //数据库查询的偏移量(查询开始的记录)
-    protected $pageSize = 20;          //每页显示记录数
+    protected $pageSize = 20;     //每页显示记录数
     protected $pageCount;         //总页数
     protected $prevPage;          //当前的上一页码
     protected $nextPage;          //当前的下一页码
@@ -59,6 +59,11 @@ class Pagination implements \JsonSerializable
         $this->url = $baseUrl;
         $this->prefix = $prefix;
         $this->suffix = $suffix;
+
+        if (class_exists('Twig_Markup')) { // twig template
+            return new \Twig_Markup($this->createPageLinks(), 'utf-8');
+        }
+
         return $this->createPageLinks();
     }
 

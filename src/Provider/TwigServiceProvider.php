@@ -97,7 +97,7 @@ class TwigServiceProvider implements ServiceProviderInterface
             }));
 
             $twig->addFunction(new \Twig_SimpleFunction('asset', function ($asset = '', $absoluteUrl = false) use ($app) {
-                return \Leaf\Url::asset($asset, $absoluteUrl);
+                return new \Twig_Markup(\Leaf\Url::asset($asset, $absoluteUrl), 'utf-8');
             }));
 
             if (isset($app['debug']) && $app['debug']) {
@@ -108,7 +108,6 @@ class TwigServiceProvider implements ServiceProviderInterface
 
             return $twig;
         };
-
     }
 }
 
