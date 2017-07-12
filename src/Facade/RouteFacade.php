@@ -59,8 +59,14 @@ class RouteFacade
                                 $middleware = explode('|', $arr['Middleware']);
                             }
 
-                            //static::add($httpMethod, $path, $callback, array_merge($groupMiddleware, $middleware));
-                            $temp = array($httpMethod, $path, $callback, array_merge($groupMiddleware, $middleware));
+
+                            $clearMiddleware = array();
+                            if (isset($arr['ClearMiddleware'])) {
+                                $clearMiddleware = explode('|', $arr['ClearMiddleware']);
+                            }
+
+                            //static::add($httpMethod, $path, $callback, array_merge($groupMiddleware, $middleware), $clearMiddleware);
+                            $temp = array($httpMethod, $path, $callback, array_merge($groupMiddleware, $middleware), $clearMiddleware);
                             call_user_func_array(array(Application::$app['router'], 'add'), $temp);
                             $routeArguments[] = $temp;
                         }
