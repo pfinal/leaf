@@ -4,6 +4,14 @@ namespace Leaf\Log;
 
 use Leaf\Json;
 
+/**
+ * composer require textalk/websocket
+ *
+ * $app->register(new \Leaf\Provider\LogServiceProvider(), ['log.config' => [
+ *      'class' => 'Leaf\Log\WebSocketTarget',
+ *      'server' => 'ws://127.0.0.1:8081',
+ * ]]);
+ */
 class WebSocketTarget extends LogFilter
 {
     protected $server = 'ws://127.0.0.1:8081';
