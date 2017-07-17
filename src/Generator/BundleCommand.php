@@ -50,8 +50,9 @@ class BundleCommand extends Command
 
         file_put_contents(
             $bundlePath . 'resources' . DIRECTORY_SEPARATOR . 'routes.php',
-            "<?php\n");
-
+            "<?php\n\nuse Leaf\Route;\n\nRoute::group(['middleware' => ['auth', 'csrf']], function () {
+    
+});");
 
         file_put_contents(
             $bundlePath . $bundleName . '.php',

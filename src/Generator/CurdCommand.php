@@ -155,7 +155,7 @@ class CurdCommand extends Command
 
         $output->writeln('');
         $output->writeln('Please add route:');
-        $output->writeln("\\Leaf\\Route::annotation('" . $bundleName . "\\Controller\\" . $entityName . "Controller');");
+        $output->writeln("Route::annotation('" . $bundleName . "\\Controller\\" . $entityName . "Controller');");
         $output->writeln('');
         $output->writeln('SUCCESS');
         $output->writeln('');
