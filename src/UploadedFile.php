@@ -63,7 +63,7 @@ class UploadedFile
     {
         //$rootPath、$basePath、$subPath
         if (substr($name, -4) === 'Path') {
-            $this->$name = trim($value, '/\\') . '/';
+            $this->$name = rtrim($value, '/\\') . '/';
         }
     }
 
@@ -89,19 +89,19 @@ class UploadedFile
         if ($this->rootPath === null) {
             $this->rootPath = realpath('.') . '/';
         } else {
-            $this->rootPath = trim($this->rootPath, '/\\') . '/';
+            $this->rootPath = rtrim($this->rootPath, '/\\') . '/';
         }
 
         if ($this->subPath === null) {
             $this->subPath = @date('Ym') . '/' . @date('d') . '/';
         } else {
-            $this->subPath = trim($this->subPath, '/\\') . '/';
+            $this->subPath = rtrim($this->subPath, '/\\') . '/';
         }
 
         if ($this->basePath === null) {
             $this->basePath = 'uploads' . '/';
         } else {
-            $this->basePath = trim($this->basePath, '/\\') . '/';
+            $this->basePath = rtrim($this->basePath, '/\\') . '/';
         }
     }
 
