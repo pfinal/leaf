@@ -24,14 +24,14 @@ class RouteFacade
             $ref = new \ReflectionClass($controller);
 
             //使用缓存
-            $cacheFile = Application::$app->getRuntimePath() . '/routes/' . md5($ref->getFileName());
+            /*$cacheFile = Application::$app->getRuntimePath() . '/routes/' . md5($ref->getFileName());
             if (file_exists($cacheFile) && filemtime($cacheFile) > filemtime($ref->getFileName())) {
                 $routeArguments = unserialize(file_get_contents($cacheFile));
                 foreach ($routeArguments as $one) {
                     call_user_func_array(array(Application::$app['router'], 'add'), $one);
                 }
                 continue;
-            }
+            }*/
 
             $group = self::parseDocCommentTags($ref);
             $groupMiddleware = array();
@@ -75,10 +75,10 @@ class RouteFacade
             }
 
             //缓存到文件
-            if (!file_exists(dirname($cacheFile))) {
+            /*if (!file_exists(dirname($cacheFile))) {
                 mkdir(dirname($cacheFile), 0777, true);
             }
-            file_put_contents($cacheFile, serialize($routeArguments), LOCK_EX);
+            file_put_contents($cacheFile, serialize($routeArguments), LOCK_EX);*/
         }
     }
 
