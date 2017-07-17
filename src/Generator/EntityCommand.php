@@ -81,10 +81,10 @@ class EntityCommand extends Command
 
         $arr = DB::table($tableName)->findOneBySql($sql);
 
-        if (isset($arr['TABLE_COMMENT'])) {
+        if (isset($arr['TABLE_COMMENT']) && !empty($arr['TABLE_COMMENT'])) {
             return $arr['TABLE_COMMENT'];
         }
-        return $tableName;
+        return self::convert($tableName, false);
     }
 
 

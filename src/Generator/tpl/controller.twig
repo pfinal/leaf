@@ -3,19 +3,18 @@
 namespace {{ bundleName }}\Controller;
 
 use Entity\{{ entityName }};
-use Leaf\Exception\HttpException;
-use {{ bundleName }}\Service\{{ entityName }}Service;
-
 use Leaf\Application;
-use Leaf\Pagination;
+use Leaf\DB;
+use Leaf\Exception\HttpException;
 use Leaf\Request;
 use Leaf\Session;
+use Leaf\Validator;
 use Leaf\View;
 use Leaf\Redirect;
 
 /**
  * {{ tableComment }}管理
- * @author  leafphp curd generator
+ * @author  curd generator
  * @since   1.0
  */
 class {{ entityName }}Controller
@@ -31,23 +30,26 @@ class {{ entityName }}Controller
         $params = [];
         $search = $request->get('{{ entityName }}');
 
+        if (!empty($search['id'])) {
+            $condition[] = 'id = :id';
+            $params[':id'] = $search['id'];
+        }
+
         /*if (!empty($search['name'])) {
             $condition[] = 'name like :name';
             $params[':name'] = '%' . $search['name'] . '%';
         }*/
 
-        $condition = implode(' and ', $condition);
-
-        //分页
-        $page = new Pagination();
-
-        //查询数据
-        $list = {{ entityName }}Service::findList($page, $condition, $params, $request->get('sort', '-id'));
+        //数据
+        $dataProvider = DB::table({{ entityName }}::tableName())
+            ->where(implode(' and ', $condition), $params)
+            ->asEntity({{ entityName }}::className())
+            ->orderBy($request->get('sort', '-id'))
+            ->paginate();
 
         //视图
         return View::render('@{{ bundleName }}/{{ middleName }}/index.twig', [
-            'list' => $list,
-            'page' => $page,
+            'dataProvider' => $dataProvider,
         ]);
     }
 
@@ -62,9 +64,23 @@ class {{ entityName }}Controller
 
         //保存
         $error = '';
-        if ($request->isMethod('post') && {{ entityName }}Service::create($request->get('{{ entityName }}'), $error)) {
-            Session::setFlash('message', '添加成功');
-            return Redirect::to('{{ bundleMiddleName }}{{ middleName }}');
+        if ($request->isMethod('POST')) {
+
+            $data = $request->get('{{ entityName }}');
+
+            if (Validator::validate($data, self::getRules('create'), {{ entityName }}::labels())) {
+
+                $data['created_at'] = $data['updated_at'] = date('Y-m-d H:i:s');
+
+                if (DB::table({{ entityName }}::tableName())->insert($data)) {
+                    Session::setFlash('message', '添加成功');
+                    return Redirect::to('{{ bundleMiddleName }}{{ middleName }}');
+                } else {
+                    $error = '系统错误';
+                }
+            } else {
+                $error = Validator::getFirstError();
+            }
         }
 
         //视图
@@ -81,15 +97,30 @@ class {{ entityName }}Controller
     public function update(Request $request, Application $app)
     {
         //查询
-        if (($entity = {{ entityName }}Service::findOne($request->get('id'))) === null) {
-            throw new HttpException(500, '操作需要的数据不存在');
-        }
+        $entity = self::findOrFail($request->get('id'));
 
         //保存
         $error = '';
-        if ($request->isMethod('post') && {{ entityName }}Service::update($entity->id, $request->get('{{ entityName }}'), $error)) {
-            Session::setFlash('message', '修改成功');
-            return Redirect::to('{{ bundleMiddleName }}{{ middleName }}');
+        if ($request->isMethod('POST')) {
+
+            $data = $request->get('{{ entityName }}');
+
+            //验证
+            if (Validator::validate($data, self::getRules('update'))) {
+
+                $data['updated_at'] = date('Y-m-d H:i:s');
+
+                //更新
+                if (DB::table({{ entityName }}::tableName())->wherePk($entity->id)->update($data)) {
+                    Session::setFlash('message', '修改成功');
+                    return Redirect::to('{{ bundleMiddleName }}{{ middleName }}');
+                } else {
+                    $error = '系统错误';
+                }
+
+            } else {
+                $error = Validator::getFirstError();
+            }
         }
 
         //视图
@@ -102,10 +133,12 @@ class {{ entityName }}Controller
     /**
      * 删除
      * @Route {{ bundleMiddleName }}{{ middleName }}/delete
+     * @Method post
      */
     public function delete(Request $request)
     {
-        if ({{ entityName }}Service::delete($request->get('id'))) {
+        $result = DB::table({{ entityName }}::tableName())->wherePk($request->get('id'))->delete();
+        if ($result) {
             Session::setFlash('message', '删除成功');
         } else {
             Session::setFlash('message', '删除失败');
@@ -120,14 +153,44 @@ class {{ entityName }}Controller
 //    public function getView(Request $request, Application $app)
 //    {
 //        //查询
-//        if (($entity = {{ entityName }}Service::findOne($request->get('id'))) === null) {
-//            throw new HttpException(500, '操作需要的数据不存在');
-//        }
+//        $entity = self::findOrFail($request->get('id'));
 //
 //        //视图
 //        return View::render('@{{ bundleName }}/{{ middleName }}/view.twig', [
 //            'entity' => $entity,
 //        ]);
 //    }
+
+    /**
+     * 验证规则
+     * @param string $scene create|update
+     * @return array
+     */
+    protected function getRules($scene)
+    {
+        $rules = [
+            [[{% for key,value in attributes  %}'{{ key }}',{% endfor %}], 'safe'],
+        ];
+
+        return $rules;
+    }
+
+    /**
+     * 根据主键查询单条
+     * @param int $id
+     * @return {{ entityName }}
+     */
+    protected function findOrFail($id)
+    {
+        $entity = DB::table({{ entityName }}::tableName())
+            ->asEntity({{ entityName }}::className())
+            ->findByPk($id);
+
+        if ($entity == null) {
+            throw new HttpException(500, "数据不存在: #" . $id);
+        }
+
+        return $entity;
+    }
 
 }

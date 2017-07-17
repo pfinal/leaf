@@ -56,7 +56,7 @@ class CurdCommand extends Command
         unset($attributesNoId['id']);
 
         $checkList = [
-            $bundlePath . 'Service' . DIRECTORY_SEPARATOR . $entityName . 'Service.php',
+            //$bundlePath . 'Service' . DIRECTORY_SEPARATOR . $entityName . 'Service.php',
             $bundlePath . 'Controller' . DIRECTORY_SEPARATOR . $entityName . 'Controller.php',
             $bundlePath . 'resources' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . $middleName,
         ];
@@ -67,7 +67,7 @@ class CurdCommand extends Command
             }
         }
 
-        file_put_contents(
+        /*file_put_contents(
             $bundlePath . 'Service' . DIRECTORY_SEPARATOR . $entityName . 'Service.php',
             View::renderText(file_get_contents(__DIR__ . '/tpl/service.twig'), [
                 'bundleName' => $bundleName,
@@ -76,7 +76,7 @@ class CurdCommand extends Command
                 'bundleMiddleName' => $bundleMiddleName,
                 'tableComment' => $tableComment,
             ])
-        );
+        );*/
 
         file_put_contents(
             $bundlePath . 'Controller' . DIRECTORY_SEPARATOR . $entityName . 'Controller.php',
@@ -86,6 +86,7 @@ class CurdCommand extends Command
                 'middleName' => $middleName,
                 'bundleMiddleName' => $bundleMiddleName,
                 'tableComment' => $tableComment,
+                'attributes' => $attributesNoId,
             ])
         );
 
@@ -153,7 +154,7 @@ class CurdCommand extends Command
         );
 
         $output->writeln('');
-        $output->writeln('please add route:');
+        $output->writeln('Please add route:');
         $output->writeln("\\Leaf\\Route::annotation('" . $bundleName . "\\Controller\\" . $entityName . "Controller');");
         $output->writeln('');
         $output->writeln('SUCCESS');
