@@ -3,11 +3,10 @@
 namespace Leaf\Validators;
 
 /**
- * ImageValidator verifies if an attribute is receiving a valid image.
+ * 图片验证器
  */
-class ImageValidator extends Validator
+class ImageValidator extends BaseValidator
 {
-
     /**
      * @var string 图片所在目录
      */
@@ -18,17 +17,20 @@ class ImageValidator extends Validator
      * @see underWidth
      */
     public $minWidth;
+
     /**
      * @var integer 最大宽度px。默认为null不做限制
      * @see overWidth
      */
     public $maxWidth;
+
     /**
      * @var integer the minimum height in pixels.
      * Defaults to null, meaning no limit.
      * @see underHeight
      */
     public $minHeight;
+
     /**
      * @var integer the maximum width in pixels.
      * Defaults to null, meaning no limit.
@@ -52,6 +54,7 @@ class ImageValidator extends Validator
      * - {limit}: the value of [[minWidth]]
      */
     public $underWidth;
+
     /**
      * @var string the error message used when the image is over [[maxWidth]].
      * You may use the following tokens in the message:
@@ -60,6 +63,7 @@ class ImageValidator extends Validator
      * - {limit}: the value of [[maxWidth]]
      */
     public $overWidth;
+
     /**
      * @var string the error message used when the image is under [[minHeight]].
      * You may use the following tokens in the message:
@@ -68,6 +72,7 @@ class ImageValidator extends Validator
      * - {limit}: the value of [[minHeight]]
      */
     public $underHeight;
+
     /**
      * @var string the error message used when the image is over [[maxHeight]].
      * You may use the following tokens in the message:
@@ -76,7 +81,6 @@ class ImageValidator extends Validator
      * - {limit}: the value of [[maxHeight]]
      */
     public $overHeight;
-
 
     /**
      * @inheritdoc

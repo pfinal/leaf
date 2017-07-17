@@ -5,42 +5,46 @@ namespace Leaf\Validators;
 /**
  * 验证是否为数字
  *
- * The format of the number must match the regular expression specified in [[integerPattern]] or [[numberPattern]].
- * Optionally, you may configure the [[max]] and [[min]] properties to ensure the number
- * is within certain range.
+ * 该数字的格式必须与 [[integerPattern]] 或 [[[numberPattern]] 中指定的正则表达式匹配。
+ * 或者, 可以配置 [[最大]] 和 [[最小]] 属性, 以确保数字在一定范围内。
  */
-class NumberValidator extends Validator
+class NumberValidator extends BaseValidator
 {
     /**
      * @var boolean whether the attribute value can only be an integer. Defaults to false.
      */
     public $integerOnly = false;
+
     /**
      * @var integer|float upper limit of the number. Defaults to null, meaning no upper limit.
      */
     public $max;
+
     /**
      * @var integer|float lower limit of the number. Defaults to null, meaning no lower limit.
      */
     public $min;
+
     /**
      * @var string user-defined error message used when the value is bigger than [[max]].
      */
     public $tooBig;
+
     /**
      * @var string user-defined error message used when the value is smaller than [[min]].
      */
     public $tooSmall;
+
     /**
      * @var string the regular expression for matching integers.
      */
     public $integerPattern = '/^\s*[+-]?\d+\s*$/';
+
     /**
      * @var string the regular expression for matching numbers. It defaults to a pattern
      * that matches floating numbers with optional exponential part (e.g. -1.23e-10).
      */
     public $numberPattern = '/^\s*[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?\s*$/';
-
 
     /**
      * @inheritdoc

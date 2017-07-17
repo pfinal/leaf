@@ -2,16 +2,15 @@
 
 namespace Leaf\Validators;
 
-use \Exception;
+use Exception;
 
 /**
- * Validator is the base class for all validators.
- *
+ * 验证器基类
  */
-class Validator
+class BaseValidator
 {
     /**
-     * @var array list of built-in validators (name => class or configuration)
+     * @var array 验证器列表 (name => class or configuration)
      */
     public static $builtInValidators = [
         'required' => 'Leaf\Validators\RequiredValidator',
@@ -23,7 +22,6 @@ class Validator
             'filter' => 'trim',
             'skipOnArray' => true,
         ],
-
         'email' => 'Leaf\Validators\EmailValidator',
         'match' => 'Leaf\Validators\RegularExpressionValidator',
         'string' => 'Leaf\Validators\StringValidator',
@@ -32,97 +30,72 @@ class Validator
         'in' => 'Leaf\Validators\RangeValidator',
         'date' => 'Leaf\Validators\DateValidator',
         'url' => 'Leaf\Validators\UrlValidator',
-
+        'number' => 'Leaf\Validators\NumberValidator',
         'double' => 'Leaf\Validators\NumberValidator',
         'integer' => [
             'class' => 'Leaf\Validators\NumberValidator',
             'integerOnly' => true,
         ],
-        'number' => 'Leaf\Validators\NumberValidator',
-
         'exist' => 'Leaf\Validators\ExistValidator',
         'unique' => 'Leaf\Validators\UniqueValidator',
-
-        //'file' => 'Leaf\Validators\FileValidator',
         'image' => 'Leaf\Validators\ImageValidator',
-
     ];
+
     /**
-     * @var array|string attributes to be validated by this validator. For multiple attributes,
-     * please specify them as an array; for single attribute, you may use either a string or an array.
+     * @var array 需要验证的字段
      */
     public $attributes = [];
+
     /**
-     * @var string the user-defined error message. It may contain the following placeholders which
-     * will be replaced accordingly by the validator:
+     * @var string 自定义错误消息
      *
-     * - `{attribute}`: the label of the attribute being validated
-     * - `{value}`: the value of the attribute being validated
+     *  `{attribute}`: 当前正在验证的字段
+     *  `{value}`: 当前验证字段对应的址
      *
-     * Note that some validators may introduce other properties for error messages used when specific
-     * validation conditions are not met. Please refer to individual class API documentation for details
-     * about these properties. By convention, this property represents the primary error message
-     * used when the most important validation condition is not met.
+     * 注意：某些验证器可能引入更多的的错误信息
      */
     public $message;
+
     /**
-     * @var array|string scenarios that the validator can be applied to. For multiple scenarios,
-     * please specify them as an array; for single scenario, you may use either a string or an array.
+     * @var array
      */
     public $on = [];
+
     /**
-     * @var array|string scenarios that the validator should not be applied to. For multiple scenarios,
-     * please specify them as an array; for single scenario, you may use either a string or an array.
+     * @var array
      */
     public $except = [];
+
     /**
-     * @var boolean whether this validation rule should be skipped if the attribute being validated
-     * already has some validation error according to some previous rules. Defaults to true.
+     * @var boolean
      */
     public $skipOnError = true;
+
     /**
-     * @var boolean whether this validation rule should be skipped if the attribute value
-     * is null or an empty string.
+     * @var boolean
      */
     public $skipOnEmpty = true;
 
     /**
-     * @var callable a PHP callable that replaces the default implementation of [[isEmpty()]].
-     * If not set, [[isEmpty()]] will be used to check if a value is empty. The signature
-     * of the callable should be `function ($value)` which returns a boolean indicating
-     * whether the value is empty.
+     * @var callable 取代了 [[isEmpty ()]] 的默认实现。
+     * 如果未设置, [[isEmpty()]] 将用于检查值是否为空。 它返回一个布尔值, 表示示值是否为空。
      */
     public $isEmpty;
+
     /**
-     * @var callable a PHP callable whose return value determines whether this validator should be applied.
-     * The signature of the callable should be `function ($model, $attribute)`, where `$model` and `$attribute`
-     * refer to the model and the attribute currently being validated. The callable should return a boolean value.
-     *
-     * This property is mainly provided to support conditional validation on the server side.
-     * If this property is not set, this validator will be always applied on the server side.
-     *
-     * The following example will enable the validator only when the country currently selected is USA:
-     *
-     * ```php
-     * function ($model) {
-     *     return $model->country == Country::USA;
-     * }
-     * ```
-     *
-     * @see whenClient
+     * @var callable
      */
     public $when;
 
     public static function runValidate($rules, &$data, $labels)
     {
-
         $allow = array(
-            'string', 'email', 'match', 'date', 'url', // string
-            'number', 'integer', 'double', // number
+            'string', 'email', 'match', 'date', 'url',
+            'number', 'integer', 'double',
             'compare',
-            'boolean',// boolean
-            'in',// in
-            'safe', // safe
+            'boolean',
+            'in',
+            'safe',
             'exist', 'unique',
             'image',
         );
@@ -147,7 +120,7 @@ class Validator
                         $data[$attribute] = null;
                     } else {
                         if (!isset($errors[$attribute])) {
-                            $errors[$attribute] = [$attribute . ' is not exist.'];
+                            $errors[$attribute] = [$attribute . ' 未传入值'];
                         }
                         continue;
                     }
@@ -209,8 +182,9 @@ class Validator
     }
 
     /**
-     * Creates a validator object.
-     * @return Validator the validator
+     * 创建验证器对象
+     *
+     * @return BaseValidator
      */
     public static function createValidator($type, $params = [])
     {
@@ -229,6 +203,8 @@ class Validator
     {
         $class = $type['class'];
         unset($type['class']);
+
+        /** @var static $object */
         $object = new $class;
         foreach ($type as $name => $value) {
             $object->$name = $value;
@@ -248,12 +224,11 @@ class Validator
     }
 
     /**
-     * Validates a value.
-     * A validator class can implement this method to support data validation out of the context of a data model.
-     * @param mixed $value the data value to be validated.
-     * @return array|null the error message and the parameters to be inserted into the error message.
-     * Null should be returned if the data is valid.
-     * @throws Exception if the validator does not supporting data validation without a model
+     * 验证一个值
+     *
+     * @param $value
+     * @return array|null
+     * @throws Exception
      */
     protected function validateValue(&$value)
     {
@@ -262,11 +237,9 @@ class Validator
 
 
     /**
-     * Checks if the given value is empty.
-     * A value is considered empty if it is null, an empty array, or the trimmed result is an empty string.
-     * Note that this method is different from PHP empty(). It will return false when the value is 0.
-     * @param mixed $value the value to be checked
-     * @return boolean whether the value is empty
+     * 检查给定的值是否为空
+     *
+     * @return boolean
      */
     public function isEmpty($value)
     {

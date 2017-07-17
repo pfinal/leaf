@@ -7,7 +7,7 @@ namespace Leaf\Validators;
  *
  * If the [[not]] property is set true, the validator will ensure the attribute value do NOT match the [[pattern]].
  */
-class RegularExpressionValidator extends Validator
+class RegularExpressionValidator extends BaseValidator
 {
     /**
      * @var string the regular expression to be matched with
@@ -18,7 +18,6 @@ class RegularExpressionValidator extends Validator
      * the regular expression defined via [[pattern]] should NOT match the attribute value.
      */
     public $not = false;
-
 
     /**
      * @inheritdoc

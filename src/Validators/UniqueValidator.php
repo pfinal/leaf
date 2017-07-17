@@ -4,14 +4,13 @@ namespace Leaf\Validators;
 
 use Leaf\DB;
 
-
 /**
- * UniqueValidator validates that the attribute value is unique in the specified database table.
+ * 唯一验证器
  *
- * ['username', 'unique', 'table' => 'users', 'filter' => ['id != ?', [$id]]]
+ * 示例 ['username', 'unique', 'table' => 'users', 'filter' => ['id != ?', [$id]]]
  *
  */
-class UniqueValidator extends Validator
+class UniqueValidator extends BaseValidator
 {
     public $table;
     public $field;
@@ -21,7 +20,6 @@ class UniqueValidator extends Validator
      * @var string|array 与DB的where方法参数对应 例如 ['id != ?', [$id]]
      */
     public $filter;
-
 
     /**
      * @inheritdoc
@@ -64,6 +62,5 @@ class UniqueValidator extends Validator
 
         $query = $query->where("[[$this->field]]=?", [$value]);
         return $query->count() == 0 ? null : [$this->message, ['value' => $value]];
-
     }
 }

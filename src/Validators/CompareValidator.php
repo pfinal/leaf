@@ -5,66 +5,51 @@ namespace Leaf\Validators;
 use Exception;
 
 /**
- * 将指定值与另一个值进行比较
- *
- * The value being compared with can be another attribute value
- * (specified via [[compareAttribute]]) or a constant (specified via
- * [[compareValue]]. When both are specified, the latter takes
- * precedence. If neither is specified, the attribute will be compared
- * with another attribute whose name is by appending "_repeat" to the source
- * attribute name.
- *
- * CompareValidator supports different comparison operators, specified
- * via the [[operator]] property.
+ * 将指定值与另一个值进行比较.
  */
-class CompareValidator extends Validator
+class CompareValidator extends BaseValidator
 {
     /**
-     * @var string the name of the attribute to be compared with. When both this property
-     * and [[compareValue]] are set, the latter takes precedence. If neither is set,
-     * it assumes the comparison is against another attribute whose name is formed by
-     * appending '_repeat' to the attribute being validated. For example, if 'password' is
-     * being validated, then the attribute to be compared would be 'password_repeat'.
-     * @see compareValue
+     * @var string
      */
     public $compareAttribute;
+
     /**
-     * @var mixed the constant value to be compared with. When both this property
-     * and [[compareAttribute]] are set, this property takes precedence.
-     * @see compareAttribute
+     * @var mixed
      */
     public $compareValue;
+
     /**
-     * @var string the type of the values being compared. The follow types are supported:
+     * @var string 要比较的值的类型。支持以下类型:
      *
-     * - string: the values are being compared as strings. No conversion will be done before comparison.
-     * - number: the values are being compared as numbers. String values will be converted into numbers before comparison.
+     *  string: 将这些值作为字符串进行比较。在进行比较之前不会进行转换。
+     *  number: 将这些值作为数字进行比较。在比较之前, 字符串值将转换为数字。
      */
     public $type = 'string';
+
     /**
-     * @var string the operator for comparison. The following operators are supported:
+     * @var string 用于比较的运算符。支持以下运算符:
      *
-     * - `==`: check if two values are equal. The comparison is done is non-strict mode.
-     * - `===`: check if two values are equal. The comparison is done is strict mode.
-     * - `!=`: check if two values are NOT equal. The comparison is done is non-strict mode.
-     * - `!==`: check if two values are NOT equal. The comparison is done is strict mode.
-     * - `>`: check if value being validated is greater than the value being compared with.
-     * - `>=`: check if value being validated is greater than or equal to the value being compared with.
-     * - `<`: check if value being validated is less than the value being compared with.
-     * - `<=`: check if value being validated is less than or equal to the value being compared with.
+     * `==`: check if two values are equal. The comparison is done is non-strict mode.
+     * `===`: check if two values are equal. The comparison is done is strict mode.
+     * `!=`: check if two values are NOT equal. The comparison is done is non-strict mode.
+     * `!==`: check if two values are NOT equal. The comparison is done is strict mode.
+     * `>`: check if value being validated is greater than the value being compared with.
+     * `>=`: check if value being validated is greater than or equal to the value being compared with.
+     * `<`: check if value being validated is less than the value being compared with.
+     * `<=`: check if value being validated is less than or equal to the value being compared with.
      */
     public $operator = '==';
+
     /**
-     * @var string the user-defined error message. It may contain the following placeholders which
-     * will be replaced accordingly by the validator:
+     * @var string 用户定义的错误消息。它可能包含以下占位符 将由验证器相应地替换:
      *
-     * - `{attribute}`: the label of the attribute being validated
-     * - `{value}`: the value of the attribute being validated
-     * - `{compareValue}`: the value or the attribute label to be compared with
-     * - `{compareAttribute}`: the label of the attribute to be compared with
+     * `{attribute}`
+     * `{value}`
+     * `{compareValue}`
+     * `{compareAttribute}`
      */
     public $message;
-
 
     /**
      * @inheritdoc
@@ -123,7 +108,8 @@ class CompareValidator extends Validator
     }
 
     /**
-     * Compares two values with the specified operator.
+     * 将两个值与指定的运算符进行比较
+     *
      * @param string $operator the comparison operator
      * @param string $type the type of the values being compared
      * @param mixed $value the value being compared

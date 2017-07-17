@@ -2,33 +2,35 @@
 namespace Leaf\Validators;
 
 /**
- * RangeValidator validates that the attribute value is among a list of values.
+ * 验证是否在指定范围中
  *
  * The range can be specified via the [[range]] property.
  * If the [[not]] property is set true, the validator will ensure the attribute value
  * is NOT among the specified range.
  *
  */
-class RangeValidator extends Validator
+class RangeValidator extends BaseValidator
 {
     /**
      * @var array list of valid values that the attribute value should be among
      */
     public $range;
+
     /**
      * @var boolean whether the comparison is strict (both type and value must be the same)
      */
     public $strict = false;
+
     /**
      * @var boolean whether to invert the validation logic. Defaults to false. If set to true,
      * the attribute value should NOT be among the list of values defined via [[range]].
      */
     public $not = false;
+
     /**
      * @var boolean whether to allow array type attribute.
      */
     public $allowArray = false;
-
 
     /**
      * @inheritdoc

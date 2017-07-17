@@ -2,7 +2,7 @@
 
 namespace Leaf;
 
-use Leaf\Validators\Validator as BaseValidator;
+use Leaf\Validators\BaseValidator;
 
 /**
  * 数据验证帮助类

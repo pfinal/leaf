@@ -22,9 +22,8 @@ use Leaf\DB;
  * 将生成如下sql查询
  * SELECT COUNT(*) FROM `pre_config` WHERE (`name`='grade') AND (`value`='A')
  */
-class ExistValidator extends Validator
+class ExistValidator extends BaseValidator
 {
-
     public $table;
     public $field;
 

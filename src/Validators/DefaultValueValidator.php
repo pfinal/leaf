@@ -4,25 +4,18 @@ namespace Leaf\Validators;
 
 /**
  * 设置默认值
- *
- * DefaultValueValidator is not really a validator. It is provided mainly to allow
- * specifying attribute default values when they are empty.
  */
-class DefaultValueValidator extends Validator
+class DefaultValueValidator extends BaseValidator
 {
     /**
-     * @var mixed the default value or a PHP callable that returns the default value which will
-     * be assigned to the attributes being validated if they are empty. The signature of the PHP callable
-     * should be as follows,
-     *
+     * @var mixed 默认值 或 php回调函数
      */
     public $value;
+
     /**
-     * @var boolean this property is overwritten to be false so that this validator will
-     * be applied when the value being validated is empty.
+     * @var boolean
      */
     public $skipOnEmpty = false;
-
 
     /**
      * @inheritdoc

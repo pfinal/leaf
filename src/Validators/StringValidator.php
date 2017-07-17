@@ -9,7 +9,7 @@ use Leaf\Application;
  *
  * 这个验证器只能使用字符串类型的值
  */
-class StringValidator extends Validator
+class StringValidator extends BaseValidator
 {
     /**
      * @var integer|array specifies the length limit of the value to be validated.
@@ -22,35 +22,41 @@ class StringValidator extends Validator
      *   For example, `[8, 128]`. This will overwrite both [[min]] and [[max]].
      */
     public $length;
+
     /**
      * @var integer maximum length. If not set, it means no maximum length limit.
      */
     public $max;
+
     /**
      * @var integer minimum length. If not set, it means no minimum length limit.
      */
     public $min;
+
     /**
      * @var string user-defined error message used when the value is not a string
      */
     public $message;
+
     /**
      * @var string user-defined error message used when the length of the value is smaller than [[min]].
      */
     public $tooShort;
+
     /**
      * @var string user-defined error message used when the length of the value is greater than [[max]].
      */
     public $tooLong;
+
     /**
      * @var string user-defined error message used when the length of the value is not equal to [[length]].
      */
     public $notEqual;
+
     /**
      * @var string the encoding of the string value to be validated (e.g. 'UTF-8').
      */
     public $encoding;
-
 
     /**
      * @inheritdoc
@@ -87,7 +93,6 @@ class StringValidator extends Validator
         }
     }
 
-
     /**
      * @inheritdoc
      */
@@ -111,5 +116,4 @@ class StringValidator extends Validator
 
         return null;
     }
-
 }

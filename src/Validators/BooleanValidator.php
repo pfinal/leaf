@@ -4,28 +4,23 @@ namespace Leaf\Validators;
 
 /**
  * 验证是否为boolean值
- *
- * Possible boolean values can be configured via the [[trueValue]] and [[falseValue]] properties.
- * And the comparison can be either [[strict]] or not.
- *
  */
-class BooleanValidator extends Validator
+class BooleanValidator extends BaseValidator
 {
     /**
-     * @var mixed the value representing true status. Defaults to '1'.
+     * @var mixed
      */
     public $trueValue = '1';
+
     /**
-     * @var mixed the value representing false status. Defaults to '0'.
+     * @var mixed
      */
     public $falseValue = '0';
+
     /**
-     * @var boolean whether the comparison to [[trueValue]] and [[falseValue]] is strict.
-     * When this is true, the attribute value and type must both match those of [[trueValue]] or [[falseValue]].
-     * Defaults to false, meaning only the value needs to be matched.
+     * @var boolean
      */
     public $strict = false;
-
 
     /**
      * @inheritdoc

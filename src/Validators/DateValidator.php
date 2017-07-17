@@ -8,7 +8,7 @@ use DateTime;
 /**
  * 验证是否以指定格式表示的日期或时间
  */
-class DateValidator extends Validator
+class DateValidator extends BaseValidator
 {
     /**
      * Here are some example values:
