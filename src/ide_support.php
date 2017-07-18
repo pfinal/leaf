@@ -167,6 +167,30 @@ namespace Leaf {
 
     }
 
+    class EM{
+        /**
+         * @param $class
+         * @return \PFinal\Database\Builder
+         */
+        public static function entity($class)
+        {
+        }
+
+        /**
+         * @return bool
+         */
+        public static function save($entity)
+        {
+        }
+
+        /**
+         * @param bool
+         */
+        public static function remove($entity){
+
+        }
+    }
+
     class Cache implements CacheInterface
     {
         /**

@@ -552,3 +552,12 @@ if (!Validator::validate($data, $rules, $labels)) {
 认证
 
 权限
+
+//分页样式
+$app['Leaf\\Pagination'] = function () {
+    $page = new \Leaf\Pagination();
+    $page->pageSize = 15;
+    $page->prevPageLabel = '<span class="glyphicon glyphicon-chevron-left"></span>';
+    $page->nextPageLabel = '<span class="glyphicon glyphicon-chevron-right"></span>';
+    return $page;
+};
