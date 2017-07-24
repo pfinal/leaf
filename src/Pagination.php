@@ -112,18 +112,15 @@ class Pagination implements \JsonSerializable
             return '';
         }
 
-        //当前页码的位置
-        $cur = $this->maxButtonCount + 1;
-
         $buttonCount = $this->maxButtonCount * 2 + 1;
 
         //开始数字
-        if ($this->currentPage <= $cur || $this->pageCount <= $buttonCount) {
+        if ($this->currentPage <= $this->maxButtonCount || $this->pageCount <= $buttonCount) {
             $ctrl_begin = 1;
-        } else if ($this->currentPage > $this->pageCount - $buttonCount) {
-            $ctrl_begin = $this->pageCount - $buttonCount + 1;
+        } else if ($this->currentPage > $this->pageCount - ($this->maxButtonCount)) {
+            $ctrl_begin = $this->pageCount - ($this->maxButtonCount * 2);
         } else {
-            $ctrl_begin = $this->currentPage - $cur;
+            $ctrl_begin = $this->currentPage - $this->maxButtonCount;
         }
 
         //结束数字
