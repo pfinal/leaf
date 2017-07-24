@@ -54,7 +54,7 @@ class Pagination implements \JsonSerializable
      *      首页url   $baseUrl + $suffix + query_string($_SERVER['QUERY_STRING'])
      *      其它页面   $baseUrl + $prefix + $suffix + query_string
      */
-    public function createLinks($baseUrl = '', $prefix = null, $suffix = null)
+    public function createLinks($baseUrl, $prefix = null, $suffix = null)
     {
         $this->url = $baseUrl;
         $this->prefix = $prefix;

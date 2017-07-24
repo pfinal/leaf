@@ -38,7 +38,6 @@ class Application extends Container
                 'Leaf\Session' => 'Leaf\Facade\SessionFacade',
                 'Leaf\Route' => 'Leaf\Facade\RouteFacade',
                 'Leaf\DB' => 'Leaf\Facade\DBFacade',
-                'Leaf\EM' => 'Leaf\Facade\EMFacade',
                 'Leaf\Json' => 'Leaf\Facade\JsonFacade',
                 'Leaf\Response' => 'Symfony\Component\HttpFoundation\Response',
                 'Leaf\RedirectResponse' => 'Symfony\Component\HttpFoundation\RedirectResponse',
@@ -78,7 +77,7 @@ class Application extends Container
      */
     public static function getVersion()
     {
-        return '2.4.0';
+        return '2.4.1';
     }
 
     /**
