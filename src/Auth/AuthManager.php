@@ -15,7 +15,7 @@ class AuthManager
     const LOGIN_REQUIRED = 'LOGIN_REQUIRED';
 
     /**
-     * @var User $user
+     * @var Authenticatable $user
      */
     protected static $user = null;
 
@@ -27,11 +27,11 @@ class AuthManager
     /**
      * 将用户置为登录状态
      *
-     * @param User $user
+     * @param Authenticatable $user
      * @param bool $remember 是否记住
      * @return bool
      */
-    public static function login(User $user, $remember = false)
+    public static function login(Authenticatable $user, $remember = false)
     {
         if ($remember) {
             static::setCookie($user->getId());
@@ -46,12 +46,12 @@ class AuthManager
 
     /**
      * 置登录
-     * @param User $user
+     * @param Authenticatable $user
      * @param bool $once 一次性登录
      * @param bool $fromCookie 是否来自cookie中的记住我
      * @return bool
      */
-    private static function _login(User $user, $once = false, $fromCookie = false)
+    private static function _login(Authenticatable $user, $once = false, $fromCookie = false)
     {
         if (!static::beforeLogin($user, $fromCookie)) {
             return false;
@@ -69,7 +69,7 @@ class AuthManager
     /**
      * 返回当前登录用户
      * 如果未登录状调用此方法，会得到500异常，应先调用check()方法检查是否已登录
-     * @return User
+     * @return Authenticatable
      */
     public static function getUser()
     {
@@ -212,7 +212,7 @@ class AuthManager
     /**
      * 登录前置操作，此方法返回true时，用户才被允许登录
      *
-     * @param User $user
+     * @param Authenticatable $user
      * @param bool $fromRemember 是否来自记住我功能
      * @return bool
      */
@@ -225,7 +225,7 @@ class AuthManager
      * 通过token取回用户
      *
      * @param string $token
-     * @return User|null
+     * @return Authenticatable|null
      */
     protected static function retrieveByToken($token)
     {
@@ -248,7 +248,8 @@ class AuthManager
      * 通过id取回用户
      *
      * @param int $id
-     * @return User|null
+     * @return Authenticatable|null
+     * @throws \Exception
      */
     protected static function retrieveById($id)
     {
