@@ -2,38 +2,45 @@
 
 namespace Leaf {
 
+    use Closure;
     use Leaf\Auth\AuthManager;
     use Leaf\Facade\MailFacade;
     use Leaf\Facade\QueueFacade;
     use PFinal\Database\Builder;
     use PFinal\Routing\Router;
+    use PFinal\Session\NativeSession;
     use PFinal\Session\SessionInterface;
     use PFinal\Cache\CacheInterface;
 
-    class Route extends Router
+    class Route
     {
         public static function annotation($controller)
         {
+            return (new Route())->annotation($controller);
         }
 
         public static function get($path, $callback, $middleware = array())
         {
+            return (new Route())->get($path, $callback, $middleware);
         }
 
         public static function post($path, $callback, $middleware = array())
         {
+            return (new Route())->post($path, $callback, $middleware);
         }
 
         public static function any($path, $callback, $middleware = array())
         {
+            return (new Route())->any($path, $callback, $middleware);
         }
 
         public static function group(array $attributes, \Closure $callback)
         {
+            return (new Route())->group($attributes, $callback);
         }
     }
 
-    class Session implements SessionInterface
+    class Session
     {
         /**
          * 储存数据到Session中
@@ -42,6 +49,7 @@ namespace Leaf {
          */
         public static function set($key, $value)
         {
+            (new NativeSession())->set($key, $value);
         }
 
         /**
@@ -52,6 +60,7 @@ namespace Leaf {
          */
         public static function get($key, $defaultValue = null)
         {
+            return (new NativeSession())->get($key, $defaultValue);
         }
 
         /**
@@ -61,6 +70,7 @@ namespace Leaf {
          */
         public static function remove($key)
         {
+            return (new NativeSession())->remove($key);
         }
 
         /**
@@ -68,6 +78,7 @@ namespace Leaf {
          */
         public static function clear()
         {
+            (new NativeSession())->clear();
         }
 
         /**
@@ -77,6 +88,7 @@ namespace Leaf {
          */
         public static function setFlash($key, $value)
         {
+            (new NativeSession())->setFlash($key, $value);
         }
 
         /**
@@ -86,6 +98,7 @@ namespace Leaf {
          */
         public static function hasFlash($key)
         {
+            return (new NativeSession())->hasFlash($key);
         }
 
         /**
@@ -96,6 +109,7 @@ namespace Leaf {
          */
         public static function getFlash($key, $defaultValue = null)
         {
+            return (new NativeSession())->getFlash($key, $defaultValue);
         }
 
     }
@@ -118,7 +132,7 @@ namespace Leaf {
          *                //或处理失败时，将一个任务放回队列
          *                $job->release();
          *            }
-         * @param $data 需要传递给处理器的数据
+         * @param mixed $data 需要传递给处理器的数据
          * @return int
          */
         public static function push($class, $data = null, $queue = null)
@@ -145,13 +159,14 @@ namespace Leaf {
         }
     }
 
-    class DB extends Builder
+    class DB
     {
         /**
          * @return \PFinal\Database\Connection
          */
         public static function getConnection()
         {
+            return (new Builder())->getConnection();
         }
 
         /**
@@ -165,8 +180,24 @@ namespace Leaf {
          */
         public static function table($tableName = '')
         {
+            return (new Builder())->table($tableName);
         }
 
+        /**
+         * 在一个 try/catch 块中执行给定的回调，如果回调用没有抛出任何异常，将自动提交事务
+         *
+         * 如果捕获到任何异常, 将自动回滚事务后，继续抛出异常
+         *
+         * @param  \Closure $callback
+         * @param  int $attempts 事务会重试的次数。如果重试结束还没有成功执行，将会抛出一个异常
+         * @return mixed
+         *
+         * @throws \Exception|\Throwable
+         */
+        public function transaction(Closure $callback, $attempts = 1)
+        {
+            return (new Builder())->transaction($callback, $attempts);
+        }
     }
 
     class Cache implements CacheInterface
