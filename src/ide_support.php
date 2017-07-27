@@ -194,7 +194,7 @@ namespace Leaf {
          *
          * @throws \Exception|\Throwable
          */
-        public function transaction(Closure $callback, $attempts = 1)
+        public static function transaction(Closure $callback, $attempts = 1)
         {
             return (new Builder())->transaction($callback, $attempts);
         }
