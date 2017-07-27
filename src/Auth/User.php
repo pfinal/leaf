@@ -8,7 +8,8 @@ use Leaf\Object;
 class User extends Object implements Authenticatable
 {
     /**
-     * 返回数据库中的表名
+     * 返回数据库的表名
+     *
      * @return string
      */
     public static function tableName()
@@ -18,6 +19,7 @@ class User extends Object implements Authenticatable
 
     /**
      * 返回用户ID
+     *
      * @return int
      */
     public function getId()
@@ -27,6 +29,7 @@ class User extends Object implements Authenticatable
 
     /**
      * 权限检查
+     *
      * @param string $ability 权限名称
      * @return bool
      */
