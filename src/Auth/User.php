@@ -13,7 +13,7 @@ class User extends Object implements Authenticatable
      */
     public static function tableName()
     {
-        return 'user';
+        return '{{%user}}';
     }
 
     /**

@@ -14,13 +14,6 @@ use Leaf\Object;
  */
 class {{ entityName }} extends Object
 {
-    public static function timestamp()
-    {
-        return [
-            'create' => ['created_at', 'updated_at'],
-            'update' => 'updated_at',
-        ];
-    }
 
     public static function tableName()
     {

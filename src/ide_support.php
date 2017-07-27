@@ -5,10 +5,12 @@ namespace Leaf {
     use Leaf\Auth\AuthManager;
     use Leaf\Facade\MailFacade;
     use Leaf\Facade\QueueFacade;
+    use PFinal\Database\Builder;
+    use PFinal\Routing\Router;
     use PFinal\Session\SessionInterface;
     use PFinal\Cache\CacheInterface;
 
-    class Route
+    class Route extends Router
     {
         public static function annotation($controller)
         {
@@ -143,7 +145,7 @@ namespace Leaf {
         }
     }
 
-    class DB
+    class DB extends Builder
     {
         /**
          * @return \PFinal\Database\Connection
@@ -161,34 +163,10 @@ namespace Leaf {
          * @param string $tableName
          * @return \PFinal\Database\Builder
          */
-        public static function table($tableName)
+        public static function table($tableName = '')
         {
         }
 
-    }
-
-    class EM{
-        /**
-         * @param $class
-         * @return \PFinal\Database\Builder
-         */
-        public static function entity($class)
-        {
-        }
-
-        /**
-         * @return bool
-         */
-        public static function save($entity)
-        {
-        }
-
-        /**
-         * @param bool
-         */
-        public static function remove($entity){
-
-        }
     }
 
     class Cache implements CacheInterface
