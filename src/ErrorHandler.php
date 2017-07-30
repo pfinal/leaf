@@ -145,7 +145,7 @@ class ErrorHandler
 
         if ($this->isAjax()) {
             header('Content-Type: application/json; charset=UTF-8');
-            echo Json::encode(['status' => false, 'data' => $this->_error['message'], 'code' => 'error']);
+            echo Json::encode(['status' => false, 'data' => $this->_error['message'], 'code' => 'error:' . $this->_error['code']]);
             exit;
         }
 
