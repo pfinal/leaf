@@ -74,9 +74,11 @@ class ErrorHandler
 
         $this->_error['trace'] = $log;
 
-        if (!headers_sent()) {
-            header('Access-Control-Allow-Origin: *');
-            header("HTTP/1.0 500 Internal Server Error", true, 500);
+        if (!$this->isAjax()) {
+            if (!headers_sent()) {
+                header('Access-Control-Allow-Origin: *');
+                header("HTTP/1.0 500 Internal Server Error", true, 500);
+            }
         }
 
         $this->render();
@@ -110,9 +112,11 @@ class ErrorHandler
 
         $data = $this->_error;
 
-        if (!headers_sent()) {
-            header('Access-Control-Allow-Origin: *');
-            header("HTTP/1.0 {$data['code']} " . $this->getHttpHeader($data['code'], get_class($ex)), true, $this->_error['code']);
+        if (!$this->isAjax()) {
+            if (!headers_sent()) {
+                header('Access-Control-Allow-Origin: *');
+                header("HTTP/1.0 {$data['code']} " . $this->getHttpHeader($data['code'], get_class($ex)), true, $this->_error['code']);
+            }
         }
 
         $this->render();
@@ -136,6 +140,12 @@ class ErrorHandler
             echo "\n";
             echo $this->_error['type'] . ' ' . $this->_error['message'] . "\n";
             echo $this->_error['file'] . '(' . $this->_error['line'] . ")\n\n";
+            exit;
+        }
+
+        if ($this->isAjax()) {
+            header('Content-Type: application/json; charset=UTF-8');
+            echo Json::encode(['status' => false, 'data' => $this->_error['message'], 'code' => 'error']);
             exit;
         }
 
@@ -280,5 +290,11 @@ TAG;
     {
         $unit = array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
         return @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . $unit[$i];
+    }
+
+    protected function isAjax()
+    {
+        $str = isset($_SERVER['HTTP_X_REQUESTED_WITH']) ? $_SERVER['HTTP_X_REQUESTED_WITH'] : '';
+        return strtolower($str) == 'xmlhttprequest';
     }
 }
