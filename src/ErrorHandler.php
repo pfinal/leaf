@@ -7,11 +7,12 @@ use PFinal\Routing\Exception\ExceptionInterface;
 
 /**
  * 错误和异常处理
- * @author  Zou Yiliang
  */
 class ErrorHandler
 {
     protected $_error = array();
+
+    protected $writeToFile = true;
 
     function handleError($num, $message, $file, $line)
     {
@@ -90,14 +91,16 @@ class ErrorHandler
 
         $this->_error['type'] = get_class($ex);
 
-        if ($ex instanceof ExceptionInterface) { //Routing
-            $this->_error['code'] = 404;
-            $this->_error['trace'] = $ex->getTraceAsString();
-        } else if ($ex instanceof HttpException) { //HttpException
+        if ($ex instanceof HttpException) {                    //业务逻辑抛出的异常
             $this->_error['code'] = $ex->getStatusCode();
             $this->_error['trace'] = $ex->getTraceAsString();
+            $this->writeToFile = false;
+        } else if ($ex instanceof ExceptionInterface) {        //路由异常(页面不存在或方法不允许)
+            $this->_error['code'] = 404;
+            $this->_error['trace'] = $ex->getTraceAsString();
+            $this->writeToFile = false;
         } else {
-            $this->_error['code'] = 500;  //Internal Server Error
+            $this->_error['code'] = 500;                       //Internal Server Error
             $this->_error['trace'] = $ex->getTraceAsString();
         }
 
@@ -125,7 +128,7 @@ class ErrorHandler
         $log .= "\n";
         $log .= "Trace\n" . $this->_error['trace'];
 
-        if (isset(Application::$app['log'])) {
+        if ($this->writeToFile && isset(Application::$app['log'])) {
             Application::$app['log']->write('app', $log);
         }
 
