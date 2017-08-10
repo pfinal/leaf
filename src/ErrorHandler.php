@@ -4,6 +4,7 @@ namespace Leaf;
 
 use Leaf\Exception\HttpException;
 use PFinal\Routing\Exception\ExceptionInterface;
+use PFinal\Database\NotFoundException;
 
 /**
  * 错误和异常处理
@@ -98,6 +99,10 @@ class ErrorHandler
             $this->_error['trace'] = $ex->getTraceAsString();
             $this->writeToFile = false;
         } else if ($ex instanceof ExceptionInterface) {        //路由异常(页面不存在或方法不允许)
+            $this->_error['code'] = 404;
+            $this->_error['trace'] = $ex->getTraceAsString();
+            $this->writeToFile = false;
+        } else if ($ex instanceof NotFoundException) {
             $this->_error['code'] = 404;
             $this->_error['trace'] = $ex->getTraceAsString();
             $this->writeToFile = false;
