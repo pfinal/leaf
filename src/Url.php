@@ -16,8 +16,8 @@ class Url
     {
         //兼容第二个参数是bool值，简化在没有参数时，生成绝对路径url
         if (is_bool($params)) {
-            $params = array();
             $absoluteUrl = $params;
+            $params = array();
         }
 
         $script = '';
