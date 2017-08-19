@@ -56,6 +56,7 @@ abstract class LogFilter
             $log .= ("\n" . "HTTP_REFERER\t" . $_SERVER['HTTP_REFERER']);
         }
 
+        $this->messages = [];
         $this->messages[] = array('channel' => $channel, 'level' => $level, 'message' => $log, 'datetime' => $time, 'context' => $context);
 
         $this->export();
