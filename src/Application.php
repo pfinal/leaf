@@ -33,6 +33,7 @@ class Application extends Container
             'params' => array(),
             'aliases' => array(
                 'Leaf\Cache' => 'Leaf\Facade\CacheFacade',
+                'Leaf\Queue' => 'Leaf\Facade\QueueFacade',
                 'Leaf\Mail' => 'Leaf\Facade\MailFacade',
                 'Leaf\Log' => 'Leaf\Facade\LogFacade',
                 'Leaf\Session' => 'Leaf\Facade\SessionFacade',
