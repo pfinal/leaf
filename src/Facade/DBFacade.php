@@ -25,4 +25,27 @@ class DBFacade
         }
         throw new \Exception('Call to undefined method ' . __CLASS__ . '::' . $name . '()');
     }
+
+    /**
+     * 通过指定的DB操作数据库
+     *
+     * 使用前先配置
+     *
+     * $app['db2'] = function () use ($app) {
+     *     return new \PFinal\Database\Builder([
+     *         'dsn' => 'mysql:host=localhost;dbname=yuntu',
+     *         'username' => 'root',
+     *         'password' => '',
+     *         'charset' => 'utf8mb4',
+     *         'tablePrefix' => '',
+     *     ]);
+     * };
+     *
+     * @param string $db 例如 'db2'
+     * @return \PFinal\Database\Builder
+     */
+    public static function via($db)
+    {
+        return Application::$app[$db];
+    }
 }

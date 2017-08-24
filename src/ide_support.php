@@ -3,40 +3,38 @@
 namespace Leaf {
 
     use Closure;
-    use Leaf\Auth\AuthManager;
     use Leaf\Facade\MailFacade;
     use Leaf\Facade\QueueFacade;
+    use Leaf\Log\FileTarget;
+    use PFinal\Cache\FileCache;
     use PFinal\Database\Builder;
-    use PFinal\Routing\Router;
     use PFinal\Session\NativeSession;
-    use PFinal\Session\SessionInterface;
-    use PFinal\Cache\CacheInterface;
 
     class Route
     {
         public static function annotation($controller)
         {
-            return (new Route())->annotation($controller);
+            (new \Leaf\Facade\RouteFacade())->annotation($controller);
         }
 
         public static function get($path, $callback, $middleware = array())
         {
-            return (new Route())->get($path, $callback, $middleware);
+            return (new \PFinal\Routing\Router(new Application()))->get($path, $callback, $middleware);
         }
 
         public static function post($path, $callback, $middleware = array())
         {
-            return (new Route())->post($path, $callback, $middleware);
+            return (new \PFinal\Routing\Router(new Application()))->post($path, $callback, $middleware);
         }
 
         public static function any($path, $callback, $middleware = array())
         {
-            return (new Route())->any($path, $callback, $middleware);
+            return (new \PFinal\Routing\Router(new Application()))->any($path, $callback, $middleware);
         }
 
         public static function group(array $attributes, \Closure $callback)
         {
-            return (new Route())->group($attributes, $callback);
+            (new \PFinal\Routing\Router(new Application()))->group($attributes, $callback);
         }
     }
 
@@ -111,20 +109,33 @@ namespace Leaf {
         {
             return (new NativeSession())->getFlash($key, $defaultValue);
         }
-
     }
 
     class Mail extends MailFacade
     {
-
+        /**
+         * 发送邮件
+         * @param string $to
+         * @param string $title
+         * @param string $content
+         * @param null $error
+         * @return bool
+         */
+        public static function send($to, $title, $content, &$error = null)
+        {
+            return parent::send($to, $title, $content, $error);
+        }
     }
 
     class Queue extends QueueFacade
     {
         /**
          * 推送一个新任务到队列中
-         * @param string $class 处理任务的类的名称，默认调用fire方法。自定义方法示例：'SendEmail@send'。
+         * @param string $class 自定义方法示例：'SendEmail@send'
+         *
+         *            如果只传入类名，默认调用fire方法
          *            fire方法接受一个 Job 实例对像 和一个data 数组
+         *
          *            public function fire($job, $data){
          *                //处理这个job ...
          *                //当处理完成，从队列中将它删除
@@ -144,18 +155,22 @@ namespace Leaf {
     {
         public static function debug($var)
         {
+            (new FileTarget())->debug($var);
         }
 
         public static function error($var)
         {
+            (new FileTarget())->error($var);
         }
 
         public static function warning($var)
         {
+            (new FileTarget())->warning($var);
         }
 
         public static function info($var)
         {
+            (new FileTarget())->info($var);
         }
     }
 
@@ -184,6 +199,15 @@ namespace Leaf {
         }
 
         /**
+         * @param string $db
+         * @return  \PFinal\Database\Builder
+         */
+        public static function via($db)
+        {
+            return Application::$app[$db];
+        }
+
+        /**
          * 在一个 try/catch 块中执行给定的回调，如果回调用没有抛出任何异常，将自动提交事务
          *
          * 如果捕获到任何异常, 将自动回滚事务后，继续抛出异常
@@ -200,13 +224,14 @@ namespace Leaf {
         }
     }
 
-    class Cache implements CacheInterface
+    class Cache
     {
         /**
          * @return mixed | false
          */
         public static function get($id)
         {
+            return (new FileCache())->get($id);
         }
 
         /**
@@ -214,6 +239,7 @@ namespace Leaf {
          */
         public static function mget($ids)
         {
+            return (new FileCache())->mget($ids);
         }
 
         /**
@@ -224,6 +250,7 @@ namespace Leaf {
          */
         public static function set($id, $value, $expire)
         {
+            return (new FileCache())->set($id, $value, $expire);
         }
 
         /**
@@ -234,6 +261,7 @@ namespace Leaf {
          */
         public static function add($id, $value, $expire)
         {
+            return (new FileCache())->add($id, $value, $expire);
         }
 
         /**
@@ -241,6 +269,7 @@ namespace Leaf {
          */
         public static function delete($id)
         {
+            return (new FileCache())->delete($id);
         }
     }
 
