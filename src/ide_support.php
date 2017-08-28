@@ -119,11 +119,12 @@ namespace Leaf {
          * @param string $title
          * @param string $content
          * @param null $error
+         * @param array|string $attach 附件(一个文件名或多个文件名)
          * @return bool
          */
-        public static function send($to, $title, $content, &$error = null)
+        public static function send($to, $title, $content, &$error = null, $attach = array())
         {
-            return parent::send($to, $title, $content, $error);
+            return (new \Leaf\Provider\MailServiceProvider())->send($to, $title, $content, $error, $attach);
         }
     }
 

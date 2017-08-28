@@ -60,9 +60,10 @@ class MailServiceProvider implements ServiceProviderInterface
      * @param string $title
      * @param string $content
      * @param null $error
+     * @param array|string $attach 附件(一个文件名或多个文件名)
      * @return bool
      */
-    public function send($to, $title, $content, &$error = null)
+    public function send($to, $title, $content, &$error = null, $attach = array())
     {
         try {
             // message
@@ -71,7 +72,11 @@ class MailServiceProvider implements ServiceProviderInterface
             $message->setTo($to);
             $message->setSubject($title);
             $message->setBody($content, 'text/html', 'utf-8');
-            //$message->attach(\Swift_Attachment::fromPath('pic.jpg', 'image/jpeg')->setFilename('rename_pic.jpg'));
+
+            foreach ((array)$attach as $item) {
+                //$message->attach(\Swift_Attachment::fromPath('pic.jpg', 'image/jpeg')->setFilename('rename_pic.jpg'));
+                $message->attach(\Swift_Attachment::fromPath($item));
+            }
 
             //transport
             $transport = \Swift_SmtpTransport::newInstance($this->host, $this->port);

@@ -14,8 +14,8 @@ class MailFacade
      * @param null $error
      * @return bool
      */
-    public static function send($to, $title, $content, &$error = null)
+    public static function send($to, $title, $content, &$error = null, $attach = array())
     {
-        return Application::$app['mail']->send($to, $title, $content, $error);
+        return Application::$app['mail']->send($to, $title, $content, $error, $attach);
     }
 }
