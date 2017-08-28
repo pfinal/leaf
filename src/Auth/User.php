@@ -35,6 +35,7 @@ class User extends Object implements Authenticatable
      */
     public function can($ability)
     {
-        return call_user_func_array(array(Application::$app['gate'], 'check'), func_get_args());
+        //return call_user_func_array(array(Application::$app['gate'], 'check'), func_get_args());
+        return call_user_func_array(array(Application::$app['gate']->forUser($this), 'check'), func_get_args());
     }
 }
