@@ -97,7 +97,13 @@ class Application extends Container
 
         date_default_timezone_set($this['timezone']);
 
-        self::errorHandler();
+        if ($this['debug'] && class_exists('Whoops\\Run')) {
+            $whoops = new \Whoops\Run();
+            $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler());
+            $whoops->register();
+        } else {
+            self::errorHandler();
+        }
     }
 
     /**
