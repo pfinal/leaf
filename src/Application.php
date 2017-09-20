@@ -42,6 +42,7 @@ class Application extends Container
                 'Leaf\Json' => 'Leaf\Facade\JsonFacade',
                 'Leaf\Response' => 'Symfony\Component\HttpFoundation\Response',
                 'Leaf\RedirectResponse' => 'Symfony\Component\HttpFoundation\RedirectResponse',
+                'Leaf\Pagination' => 'PFinal\Database\Pagination',
             ),
         ], $config);
 
@@ -78,7 +79,7 @@ class Application extends Container
      */
     public static function getVersion()
     {
-        return '2.4.2';
+        return '2.4.14';
     }
 
     /**

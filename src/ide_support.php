@@ -282,4 +282,7 @@ namespace Leaf {
     {
     }
 
+    class Pagination extends \PFinal\Database\Pagination
+    {
+    }
 }

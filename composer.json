@@ -18,6 +18,9 @@
         "pfinal/routing": "*",
         "twig/extensions": ">=1.0"
     },
+    "require-dev": {
+        "filp/whoops": "^2.1"
+    },
     "autoload": {
         "files": [
             "src/functions.php"
