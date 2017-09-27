@@ -389,6 +389,20 @@ class Util
      */
     public static function random($length = 16)
     {
+        if (function_exists('random_bytes')) {
+            $string = '';
+
+            while (($len = strlen($string)) < $length) {
+                $size = $length - $len;
+
+                $bytes = random_bytes($size);
+
+                $string .= substr(str_replace(['/', '+', '='], '', base64_encode($bytes)), 0, $size);
+            }
+
+            return $string;
+        }
+
         if (function_exists('openssl_random_pseudo_bytes')) {
             $bytes = openssl_random_pseudo_bytes($length * 2);
 
