@@ -145,9 +145,11 @@ namespace Leaf {
          *                $job->release();
          *            }
          * @param mixed $data 需要传递给处理器的数据
-         * @return int
+         * @param string $queue 队列 默认为"default"
+         * @param int $delay 延时 (秒)
+         * @return int|string 返回JobID
          */
-        public static function push($class, $data = null, $queue = null)
+        public static function push($class, $data = null, $queue = null, $delay = 0)
         {
         }
     }
