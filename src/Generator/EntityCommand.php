@@ -68,10 +68,14 @@ class EntityCommand extends Command
     {
         $config = Application::$app['db.config'];
 
-        if (preg_match('/dbname=(.*)/', $config['dsn'], $arr)) {
-            $database = $arr[1];
+        if (isset($config['dsn'])) {
+            if (preg_match('/dbname=(.*)/', $config['dsn'], $arr)) {
+                $database = $arr[1];
+            } else {
+                die('database error');
+            }
         } else {
-            die('database error');
+            $database = $config['database'];
         }
 
         //SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE table_name = 'pre_point' AND table_schema = 'shop_dev'
