@@ -24,19 +24,44 @@ class CurdCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-
         $output->write("BundleName:");
         $bundleName = trim(fgets(STDIN));
 
         $bundle = Application::$app->getBundle($bundleName);
 
-        $output->write("TableName:");
-        $tableName = trim(fgets(STDIN));
+        //$output->write("TableName:");
+        //$tableName = trim(fgets(STDIN));
+        //$entityName = $this->convert($tableName, false);
 
-        $entityName = $this->convert($tableName, false);
+        $output->write("EntityName:");
+        $fullEntityName = trim(fgets(STDIN));
+
+        //命名空间
+        if (($ind = strrpos($fullEntityName, '\\')) !== false) {
+            $entityName = substr($fullEntityName, $ind + 1);
+            $entityNamespace = substr($fullEntityName, 0, strlen($fullEntityName) - strlen($entityName));
+        } else {
+            $entityName = $fullEntityName;
+            $entityNamespace = 'Entity\\';
+        }
+
+        //获取表名 User::tableName()
+        $tableName = call_user_func(array($entityNamespace . $entityName, 'tableName'));
+
+        //去掉占位符 例如 "{{%user}}" 得到 "user"
+        $tableName = preg_replace_callback(
+            '/(\\{\\{(%?[\w\-\.\$ ]+%?)\\}\\}|\\[\\[([\w\-\. ]+)\\]\\])/',
+            function ($matches) {
+                if (isset($matches[3])) {
+                    return $matches[3];
+                } else {
+                    return str_replace('%', '', $matches[2]);
+                }
+            },
+            $tableName
+        );
 
         $middleName = $this->convertToMiddle($entityName);
-
         $bundlePath = $bundle->getPath() . DIRECTORY_SEPARATOR;
 
         //AppBundle不使用Url前缀
@@ -87,6 +112,7 @@ class CurdCommand extends Command
                 'bundleMiddleName' => $bundleMiddleName,
                 'tableComment' => $tableComment,
                 'attributes' => $attributesNoId,
+                'entityNamespace' => $entityNamespace,
             ])
         );
 
