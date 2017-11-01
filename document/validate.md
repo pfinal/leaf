@@ -106,13 +106,16 @@ if (Validator::validate($data, $rule, $labels)) {
     string      字符串
     email       电子邮箱
     match       正则匹配
-    date        日期时间
+    date        日期
+    datetime    日期时间
+    time        时间
     url         链接
     
     number      数字
     double      数字
     integer     整数
-        
+    mobile      手机号码
+    
     boolean     Boolean
     in          范围
     unique      唯一
