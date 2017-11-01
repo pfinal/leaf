@@ -29,12 +29,27 @@ class BaseValidator
         'boolean' => 'Leaf\Validators\BooleanValidator',
         'in' => 'Leaf\Validators\RangeValidator',
         'date' => 'Leaf\Validators\DateValidator',
+        'datetime' => [
+            'class' => 'Leaf\Validators\RegularExpressionValidator',
+            'format' => 'Y-m-d H:i:s',
+            'message' => '{attribute}不是有效的日期时间'
+        ],
+        'time' => [
+            'class' => 'Leaf\Validators\RegularExpressionValidator',
+            'format' => 'H:i:s',
+            'message' => '{attribute}不是有效的时间'
+        ],
         'url' => 'Leaf\Validators\UrlValidator',
         'number' => 'Leaf\Validators\NumberValidator',
         'double' => 'Leaf\Validators\NumberValidator',
         'integer' => [
             'class' => 'Leaf\Validators\NumberValidator',
             'integerOnly' => true,
+        ],
+        'mobile' => [
+            'class' => 'Leaf\Validators\RegularExpressionValidator',
+            'pattern' => '/^1[0-9]{10}$/',
+            'message' => '{attribute}格式无效'
         ],
         'exist' => 'Leaf\Validators\ExistValidator',
         'unique' => 'Leaf\Validators\UniqueValidator',
@@ -94,6 +109,7 @@ class BaseValidator
             'number', 'integer', 'double',
             'compare',
             'boolean',
+            'mobile', 'datetime', 'time',
             'in',
             'safe',
             'exist', 'unique',

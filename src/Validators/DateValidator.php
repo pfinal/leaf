@@ -42,7 +42,7 @@ class DateValidator extends BaseValidator
             $this->message = '{attribute}格式无效';
         }
         if ($this->format === null) {
-            $this->format = 'Y-m-d H:i:s';
+            $this->format = 'Y-m-d';
         }
         if ($this->locale === null) {
             //Application::$app['language'];
