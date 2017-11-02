@@ -46,19 +46,10 @@ class Object implements \ArrayAccess, \JsonSerializable
     }
 
     /**
-     * 实现JsonSerializable接口，方便转为json时自定义数据。
+     * 实现JsonSerializable接口，方便转为json时自定义数据
      * @return array
      */
     public function jsonSerialize()
-    {
-        return $this->toArray();
-    }
-
-    /**
-     * 返回属性值组成的数组，将对象转为json时，会调用此方法。
-     * @return array
-     */
-    protected function toArray()
     {
         return (array)$this;
     }
