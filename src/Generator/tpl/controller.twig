@@ -2,6 +2,7 @@
 
 namespace {{ bundleName }}\Controller;
 
+use Carbon\Carbon;
 use {{ entityNamespace }}{{ entityName }};
 use Leaf\Application;
 use Leaf\DB;
@@ -70,7 +71,7 @@ class {{ entityName }}Controller
 
             if (Validator::validate($data, self::getRules('create'), {{ entityName }}::labels())) {
 
-                $data['created_at'] = $data['updated_at'] = date('Y-m-d H:i:s');
+                $data['created_at'] = $data['updated_at'] = Carbon::now();
 
                 if (DB::table({{ entityName }}::tableName())->insert($data)) {
                     Session::setFlash('message', '添加成功');
@@ -108,7 +109,7 @@ class {{ entityName }}Controller
             //验证
             if (Validator::validate($data, self::getRules('update'))) {
 
-                $data['updated_at'] = date('Y-m-d H:i:s');
+                $data['updated_at'] = Carbon::now();
 
                 //更新
                 if (DB::table({{ entityName }}::tableName())->wherePk($entity->id)->update($data)) {
