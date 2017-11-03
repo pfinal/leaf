@@ -45,7 +45,7 @@ class {{ entityName }}Controller
         $dataProvider = DB::table({{ entityName }}::tableName())
             ->where(implode(' and ', $condition), $params)
             ->asEntity({{ entityName }}::className())
-            ->orderBy($request->get('sort', '-id'))
+            ->orderBy($request->get('sort', 'id desc'))
             ->paginate();
 
         //视图
