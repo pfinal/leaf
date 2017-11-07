@@ -36,10 +36,10 @@ class {{ entityName }}Controller
             $params[':id'] = $search['id'];
         }
 
-        /*if (!empty($search['name'])) {
-            $condition[] = 'name like :name';
-            $params[':name'] = '%' . $search['name'] . '%';
-        }*/
+        //if (!empty($search['name'])) {
+        //    $condition[] = 'name like :name';
+        //    $params[':name'] = '%' . trim($search['name']) . '%';
+        //}
 
         //数据
         $dataProvider = DB::table({{ entityName }}::tableName())
@@ -98,7 +98,9 @@ class {{ entityName }}Controller
     public function update(Request $request, Application $app)
     {
         //查询
-        $entity = self::findOrFail($request->get('id'));
+        $entity = DB::table({{ entityName }}::tableName())
+            ->asEntity({{ entityName }}::className())
+            ->findByPkOrFail($request->get('id'));
 
         //保存
         $error = '';
@@ -139,11 +141,13 @@ class {{ entityName }}Controller
     public function delete(Request $request)
     {
         $result = DB::table({{ entityName }}::tableName())->wherePk($request->get('id'))->delete();
+
         if ($result) {
             Session::setFlash('message', '删除成功');
         } else {
             Session::setFlash('message', '删除失败');
         }
+
         return Redirect::back();
     }
 
@@ -154,7 +158,9 @@ class {{ entityName }}Controller
 //    public function getView(Request $request, Application $app)
 //    {
 //        //查询
-//        $entity = self::findOrFail($request->get('id'));
+//        $entity = DB::table({{ entityName }}::tableName())
+//            ->asEntity({{ entityName }}::className())
+//            ->findByPkOrFail($request->get('id'));
 //
 //        //视图
 //        return View::render('@{{ bundleName }}/{{ middleName }}/view.twig', [
@@ -174,24 +180,6 @@ class {{ entityName }}Controller
         ];
 
         return $rules;
-    }
-
-    /**
-     * 根据主键查询单条
-     * @param int $id
-     * @return {{ entityName }}
-     */
-    protected function findOrFail($id)
-    {
-        $entity = DB::table({{ entityName }}::tableName())
-            ->asEntity({{ entityName }}::className())
-            ->findByPk($id);
-
-        if ($entity == null) {
-            throw new HttpException(500, "数据不存在: #" . $id);
-        }
-
-        return $entity;
     }
 
 }
