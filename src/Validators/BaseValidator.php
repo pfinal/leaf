@@ -54,6 +54,7 @@ class BaseValidator
         'exist' => 'Leaf\Validators\ExistValidator',
         'unique' => 'Leaf\Validators\UniqueValidator',
         'image' => 'Leaf\Validators\ImageValidator',
+        'inline' => 'Leaf\Validators\InlineValidator',
     ];
 
     /**
@@ -120,6 +121,13 @@ class BaseValidator
         $errors = [];
         $obj = new self;
         foreach ($rules as $rule) {
+
+            //inline
+            if ($rule[1] instanceof \Closure) {
+                $rule['method'] = $rule[1];
+                $rule[1] = 'inline';
+            }
+
             $validator = self::createValidator($rule[1], array_slice($rule, 2));
 
             if (!is_array($rule[0])) {

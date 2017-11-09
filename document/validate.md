@@ -122,7 +122,8 @@ if (Validator::validate($data, $rule, $labels)) {
     exist       存在
     image       图片
     safe        标记为安全(不对数据做验证)
-
+    inline      行内验证(使用匿名函数)
+    
 ####required
 
 ```php
@@ -388,6 +389,22 @@ if (Validator::validate($data, $rule, $labels)) {
 * maxWidth：图片的最大宽度。默认为 null，代表无上限。
 * minHeight：图片的最小高度。 默认为 null，代表无下限。
 * maxHeight：图片的最大高度。默认为 null，代表无上限。
+
+#### inline
+
+```php
+[
+    // 验证身份证格式
+    ['idcard', function($idcard){
+         //composer require pfinal/identity-card
+         if (!\PFinal\IdentityCard\IDCard::validate($idcard)) { 
+             return '{attribute}验证未通过';
+         }
+    }],
+]
+
+```
+
 
 #### safe
 
