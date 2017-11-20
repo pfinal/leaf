@@ -53,7 +53,9 @@ class UploadedFile
     );
 
     private $message;
+
     private $files = array();
+
     /**
      * @var Request
      */
@@ -72,13 +74,21 @@ class UploadedFile
         return $this->$name;
     }
 
-    public function __construct($config = array())
+    /**
+     * UploadedFile constructor.
+     *
+     * @param array $config
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     */
+    public function __construct($config = array(), $request = null)
     {
         foreach ($config as $key => $value) {
             $this->$key = $value;
         }
 
-        $this->request = Application::$app['request'];
+        if ($request == null) {
+            $this->request = Application::$app['request'];
+        }
 
         if ($this->baseUrl === null) {
             $this->baseUrl = $this->request->getBasePath();
