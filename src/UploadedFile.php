@@ -62,7 +62,7 @@ class UploadedFile
     public function __set($name, $value)
     {
         //$rootPath、$basePath、$subPath
-        if (substr($name, -4) === 'Path') {
+        if (!empty($name) && substr($name, -4) === 'Path') {
             $this->$name = rtrim($value, '/\\') . '/';
         }
     }
@@ -94,7 +94,7 @@ class UploadedFile
 
         if ($this->subPath === null) {
             $this->subPath = @date('Ym') . '/' . @date('d') . '/';
-        } else {
+        } else if ($this->subPath !== '') {
             $this->subPath = rtrim($this->subPath, '/\\') . '/';
         }
 
