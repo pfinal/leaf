@@ -63,6 +63,8 @@ class AuthManager
             Session::set(static::getSessionKey(), $user->getId());
         }
 
+        static::afterLogin($fromCookie, $once);
+
         return true;
     }
 
@@ -254,5 +256,14 @@ class AuthManager
     protected static function retrieveById($id)
     {
         throw new \Exception('Call to undefined method ' . get_called_class() . '::retrieveById()');
+    }
+
+    /**
+     * 登录成功
+     * @param bool $fromCookie
+     * @param bool $once
+     */
+    protected static function afterLogin($fromCookie = false, $once = false)
+    {
     }
 }
