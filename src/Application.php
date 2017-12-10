@@ -98,6 +98,8 @@ class Application extends Container
 
         date_default_timezone_set($this['timezone']);
 
+        ini_set('session.cookie_httponly', 1);
+
         if ($this['debug'] && class_exists('Whoops\\Run')) {
             $whoops = new \Whoops\Run();
             $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler());
