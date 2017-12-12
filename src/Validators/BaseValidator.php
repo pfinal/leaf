@@ -30,12 +30,12 @@ class BaseValidator
         'in' => 'Leaf\Validators\RangeValidator',
         'date' => 'Leaf\Validators\DateValidator',
         'datetime' => [
-            'class' => 'Leaf\Validators\RegularExpressionValidator',
+            'class' => 'Leaf\Validators\DateValidator',
             'format' => 'Y-m-d H:i:s',
             'message' => '{attribute}不是有效的日期时间'
         ],
         'time' => [
-            'class' => 'Leaf\Validators\RegularExpressionValidator',
+            'class' => 'Leaf\Validators\DateValidator',
             'format' => 'H:i:s',
             'message' => '{attribute}不是有效的时间'
         ],
