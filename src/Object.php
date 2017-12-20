@@ -51,6 +51,17 @@ class Object implements \ArrayAccess, \JsonSerializable
      */
     public function jsonSerialize()
     {
-        return (array)$this;
+        $arr = array();
+
+        //过滤掉protected和private的属性
+        //protected的属性，转为数组后，key开头字符为 \u0000*\u0000
+        //private的属性，转为数组后，key开头字符为： \u0000ClassName\u0000  "ClassName"为实际完整类名
+        foreach ((array)$this as $k => $v) {
+            if (substr($k, 0, 1) !== chr(0)) {
+                $arr[$k] = $v;
+            }
+        }
+
+        return $arr;
     }
 }
