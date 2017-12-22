@@ -96,19 +96,19 @@ class ErrorHandler
 
         if ($ex instanceof HttpException) {                    //业务逻辑抛出的异常
             $this->_error['code'] = $ex->getStatusCode();
-            $this->_error['trace'] = $ex->getTraceAsString();
+            $this->_error['trace'] = $this->getTraceString($ex);//$ex->getTraceAsString();
             $this->writeToFile = false;
         } else if ($ex instanceof ExceptionInterface) {        //路由异常(页面不存在或方法不允许)
             $this->_error['code'] = 404;
-            $this->_error['trace'] = $ex->getTraceAsString();
+            $this->_error['trace'] = $this->getTraceString($ex);// $ex->getTraceAsString();
             $this->writeToFile = false;
         } else if ($ex instanceof NotFoundException) {
             $this->_error['code'] = 404;
-            $this->_error['trace'] = $ex->getTraceAsString();
+            $this->_error['trace'] = $this->getTraceString($ex);// $ex->getTraceAsString();
             $this->writeToFile = false;
         } else {
-            $this->_error['code'] = 500;                       //Internal Server Error
-            $this->_error['trace'] = $ex->getTraceAsString();
+            $this->_error['code'] = 500;                       // Internal Server Error
+            $this->_error['trace'] = $this->getTraceString($ex);// $ex->getTraceAsString();
         }
 
         $this->_error['message'] = $ex->getMessage();
@@ -301,5 +301,105 @@ TAG;
     {
         $str = isset($_SERVER['HTTP_X_REQUESTED_WITH']) ? $_SERVER['HTTP_X_REQUESTED_WITH'] : '';
         return strtolower($str) == 'xmlhttprequest';
+    }
+
+    /**
+     * @param \Exception $ex
+     * @return string
+     */
+    public function getTraceString($ex)
+    {
+        $traceInfo = [];
+        foreach ($ex->getTrace() as $ind => $trace) {
+
+            if (isset($trace['file'])) {
+                $file = substr($trace['file'], strlen(Application::$app['path']));
+            } else {
+                $file = '[internal function]';
+            }
+
+            //if (strpos($file, '/pfinal/routing/src/Router.php') !== false) {
+            //    break;
+            //}
+
+            $args = [];
+            foreach ($trace['args'] as $arg) {
+                $args[] = $this->replaceNewlines($this->varToString($arg));
+            }
+            $traceInfo[] = sprintf('#%s %s%s: %s(%s)',
+                $ind,
+                $file,
+                isset($trace['line']) ? ('(' . $trace['line'] . ')') : '',
+                isset($trace['class']) ? ($trace['class'] . '::' . $trace['function']) : $trace['function'],
+                join(', ', $args)
+            );
+        }
+
+        return join("\n", $traceInfo);
+    }
+
+    public function varToString($var)
+    {
+        if (is_object($var)) {
+            if ($var instanceof Object) {
+                return sprintf('#%s(%s)', get_class($var), $this->jsonEncode($var));
+            }
+            return sprintf('#%s', get_class($var));
+        }
+
+        if (is_array($var)) {
+            $isIndexed = $this->isIndexed($var);
+            $arr = array();
+            foreach ($var as $k => $v) {
+                if ($isIndexed) {
+                    $arr[] = static::varToString($v);
+                } else {
+                    $arr[] = sprintf('%s=>%s', static::varToString($k), static::varToString($v));
+                }
+            }
+            return sprintf("[%s]", implode(',', $arr));
+        }
+
+        if (is_resource($var)) {
+            return sprintf('#resource(%s)', get_resource_type($var));
+        }
+
+        if (null === $var || is_bool($var)) {
+            return var_export($var, true);
+        }
+
+        if (is_string($var)) {
+            if (mb_strlen($var) > 255) {
+                $var = mb_substr($var, 0, 255) . '...';
+            }
+            return "'" . addcslashes($var, "'\\\r\n") . "'";
+        }
+
+        return (string)$var;
+    }
+
+    /**
+     * 是否索引数组
+     * @param array $array
+     * @return bool
+     */
+    private function isIndexed(array $array)
+    {
+        $keys = array_keys($array);
+        return $keys === array_keys($keys);
+    }
+
+    private function replaceNewlines($str)
+    {
+        return str_replace(array("\r\n", "\r", "\n"), ' ', $str);
+    }
+
+    private function jsonEncode($data)
+    {
+        if (version_compare(PHP_VERSION, '5.4.0', '>=')) {
+            return @json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        }
+
+        return @json_encode($data);
     }
 }
