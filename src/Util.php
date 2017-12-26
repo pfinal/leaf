@@ -234,13 +234,12 @@ class Util
     }
 
     /**
-     * 检测当前是否在微信浏览器
+     * 检测是否在微信浏览器
      */
     public static function isWechatBrowser()
     {
-        //iphone Mozilla/5.0 (iPhone; CPU iPhone OS 9_0_2 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13A452 MicroMessenger/6.3.5 NetType/WIFI Language/zh_CN
         $userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
-        return strpos($userAgent, 'MicroMessenger') !== false;
+        return strpos(strtolower($userAgent), 'micromessenger') !== false;
     }
 
     /**
