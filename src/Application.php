@@ -120,6 +120,13 @@ class Application extends Container
 
         $this['router'] = new \PFinal\Routing\Router($this);
 
+        //$app['router.config'] = array('routeVar' => 'r');
+        if (isset($this['router.config'])) {
+            foreach ($this['router.config'] as $k => $v) {
+                $this['router']->$k = $v;
+            }
+        }
+
         if ($request === null) {
             $this['request'] = \Leaf\Request::createFromGlobals();
         } else {

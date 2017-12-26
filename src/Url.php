@@ -25,6 +25,20 @@ class Url
             $script = basename($_SERVER['SCRIPT_NAME']);
         }
 
+        $routeVar = Application::$app['router']->routeVar;
+
+        if ($routeVar !== null) {
+
+            if (array_key_exists($routeVar, $params)) {
+                unset($params[$routeVar]);
+            }
+            $params = array($routeVar => ltrim($path, '/')) + $params;
+
+            $pathInfo = '';
+        } else {
+            $pathInfo = '/' . ltrim($path, '/');
+        }
+
         $query = '';
         if (count($params) > 0) {
             $query = '?' . http_build_query($params);
@@ -35,7 +49,7 @@ class Url
             $host = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
         }
 
-        return $host . static::asset($script) . '/' . ltrim($path, '/') . $query;
+        return $host . static::asset($script) . $pathInfo . $query;
     }
 
     /**
