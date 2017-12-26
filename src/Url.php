@@ -32,9 +32,14 @@ class Url
             if (array_key_exists($routeVar, $params)) {
                 unset($params[$routeVar]);
             }
-            $params = array($routeVar => ltrim($path, '/')) + $params;
+            $params = array($routeVar => '/' . ltrim($path, '/')) + $params;
 
             $pathInfo = '';
+
+            //example.com/index.php
+            //example.com/            如果没有index.php必须有斜线，避免服务端301跳转
+            $script = '/' . $script;
+
         } else {
             $pathInfo = '/' . ltrim($path, '/');
         }
