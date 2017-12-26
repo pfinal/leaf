@@ -58,7 +58,7 @@ class Url
     }
 
     /**
-     * 生成入口文件所在目录为基础目录的url，默认最后没有斜线"/"
+     * 生成入口文件所在目录为基础目录的url
      * 例如 Url::asset('images/logo.png')
      * @param string $asset
      * @param bool $absoluteUrl 是否生成绝对url(http开头)
