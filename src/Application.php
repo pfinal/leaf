@@ -57,6 +57,12 @@ class Application extends Container
             'Leaf\Request' => function () {
                 return static::$app['request'];
             },
+            'Psr\Http\Message\ServerRequestInterface' => function () {
+                // composer require symfony/psr-http-message-bridge
+                // composer require zendframework/zend-diactoros
+                $psr7Factory = new \Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory();
+                return $psr7Factory->createRequest(static::$app['request']);
+            },
             'PFinal\Container\Container' => static::$app,
             'Leaf\Application' => static::$app,
         );
@@ -79,7 +85,7 @@ class Application extends Container
      */
     public static function getVersion()
     {
-        return '2.4.14';
+        return '2.5.0';
     }
 
     /**
