@@ -150,17 +150,16 @@ if (!function_exists('hash_equals')) { // PHP 5 < 5.6.0
     }
 }
 
-
 if (!function_exists('imageflip')) { //PHP < 5.5.0
 
-    define('IMG_FLIP_HORIZONTAL', 0);
-    define('IMG_FLIP_VERTICAL', 1);
-    define('IMG_FLIP_BOTH', 2);
+    defined('IMG_FLIP_HORIZONTAL') or define('IMG_FLIP_HORIZONTAL', 0);
+    defined('IMG_FLIP_VERTICAL') or define('IMG_FLIP_VERTICAL', 1);
+    defined('IMG_FLIP_BOTH') or define('IMG_FLIP_BOTH', 2);
 
     function imageflip($image, $mode)
     {
         switch ($mode) {
-            case IMG_FLIP_HORIZONTAL: {
+            case IMG_FLIP_HORIZONTAL:
                 $max_x = imagesx($image) - 1;
                 $half_x = $max_x / 2;
                 $sy = imagesy($image);
@@ -171,8 +170,7 @@ if (!function_exists('imageflip')) { //PHP < 5.5.0
                     imagecopy($image, $temp_image, $max_x - $x, 0, 0, 0, 1, $sy);
                 }
                 break;
-            }
-            case IMG_FLIP_VERTICAL: {
+            case IMG_FLIP_VERTICAL:
                 $sx = imagesx($image);
                 $max_y = imagesy($image) - 1;
                 $half_y = $max_y / 2;
@@ -183,79 +181,76 @@ if (!function_exists('imageflip')) { //PHP < 5.5.0
                     imagecopy($image, $temp_image, 0, $max_y - $y, 0, 0, $sx, 1);
                 }
                 break;
-            }
-            case IMG_FLIP_BOTH: {
+            case IMG_FLIP_BOTH:
                 $sx = imagesx($image);
                 $sy = imagesy($image);
                 $temp_image = imagerotate($image, 180, 0);
                 imagecopy($image, $temp_image, 0, 0, 0, 0, $sx, $sy);
                 break;
-            }
-            default: {
+            default:
                 return;
-            }
         }
         imagedestroy($temp_image);
     }
 }
 
 //打印变量
-if (!function_exists('dump')) {
-    function dump($arg, $return = false, $layer = 1)
-    {
-        $html = '';
-
-        //字符串
-        if (is_string($arg)) {
-            $len = strlen($arg);
-            $html .= "<small>string</small> <font color='#cc0000'>'{$arg}'</font>(length={$len})";
-        } else if (is_float($arg)) {
-            $html .= "<small>float</small> <font color='#f57900'>{$arg}</font>";
-        } //布尔
-        else if (is_bool($arg)) {
-            $html .= "<small>boolean</small> <font color='#75507b'>" . ($arg ? 'true' : 'false') . "</font>";
-        } //null
-        else if (is_null($arg)) {
-            $html .= "<font color='#3465a4'>null</font>";
-        } //资源
-        else if (is_resource($arg)) {
-            $type = get_resource_type($arg);
-            $html .= "<small>resource</small>(<i>{$type}</i>)";
-        } //整型
-        else if (is_int($arg)) {
-            $html .= "<small>int</small> <font color='#4e9a06'>" . $arg . "</font>";
-        } //数组
-        else if (is_array($arg)) {
-            $count = count($arg);
-            $html .= "<b>array</b> (size={$count})";
-            if (count($arg) == 0) {
-                $html .= "\n" . str_pad(' ', $layer * 4) . "empty";
-            }
-
-            foreach ($arg as $key => $value) {
-                $html .= "\n" . str_pad(' ', $layer * 4) . "'{$key}' => ";
-                $html .= dump($value, true, $layer + 1);
-            }
-        } //对象
-        else if (is_object($arg)) {
-
-            ob_start();
-            var_dump($arg);
-            $html .= ob_get_clean();
-
-        } //未知
-        else {
-            ob_start();
-            var_dump($arg);
-            $html .= ob_get_clean();
-        }
-
-        if ($return === true) {
-            return $html;
-        } else {
-            echo '<pre>';
-            echo $html;
-            echo '</pre>';
-        }
-    }
-}
+//if (!function_exists('dump')) {
+//    function dump($arg, $return = false, $layer = 1)
+//    {
+//        $html = '';
+//
+//        //字符串
+//        if (is_string($arg)) {
+//            $len = strlen($arg);
+//            $html .= "<small>string</small> <font color='#cc0000'>'{$arg}'</font>(length={$len})";
+//        } else if (is_float($arg)) {
+//            $html .= "<small>float</small> <font color='#f57900'>{$arg}</font>";
+//        } //布尔
+//        else if (is_bool($arg)) {
+//            $html .= "<small>boolean</small> <font color='#75507b'>" . ($arg ? 'true' : 'false') . "</font>";
+//        } //null
+//        else if (is_null($arg)) {
+//            $html .= "<font color='#3465a4'>null</font>";
+//        } //资源
+//        else if (is_resource($arg)) {
+//            $type = get_resource_type($arg);
+//            $html .= "<small>resource</small>(<i>{$type}</i>)";
+//        } //整型
+//        else if (is_int($arg)) {
+//            $html .= "<small>int</small> <font color='#4e9a06'>" . $arg . "</font>";
+//        } //数组
+//        else if (is_array($arg)) {
+//            $count = count($arg);
+//            $html .= "<b>array</b> (size={$count})";
+//            if (count($arg) == 0) {
+//                $html .= "\n" . str_pad(' ', $layer * 4) . "empty";
+//            }
+//
+//            foreach ($arg as $key => $value) {
+//                $html .= "\n" . str_pad(' ', $layer * 4) . "'{$key}' => ";
+//                $html .= dump($value, true, $layer + 1);
+//            }
+//        } //对象
+//        else if (is_object($arg)) {
+//
+//            ob_start();
+//            var_dump($arg);
+//            $html .= ob_get_clean();
+//
+//        } //未知
+//        else {
+//            ob_start();
+//            var_dump($arg);
+//            $html .= ob_get_clean();
+//        }
+//
+//        if ($return === true) {
+//            return $html;
+//        } else {
+//            echo '<pre>';
+//            echo $html;
+//            echo '</pre>';
+//        }
+//    }
+//}

@@ -1,6 +1,6 @@
 <?php
 
-include __DIR__ . '/../vendor/autoload.php';
+//include __DIR__ . '/../vendor/autoload.php';
 
 //$bool = \Leaf\Image::thumbCut('./bmw.jpeg', './cat_mm.png', 100, 100);
 //$bool = \Leaf\Image::thumb('./bmw.jpeg', './cat_1.png', 200, 100, 0xF67518);

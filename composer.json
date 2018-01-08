@@ -19,7 +19,8 @@
         "twig/extensions": ">=1.0"
     },
     "require-dev": {
-        "filp/whoops": "^2.1"
+        "filp/whoops": "^2.1",
+        "symfony/var-dumper": "*"
     },
     "autoload": {
         "files": [
