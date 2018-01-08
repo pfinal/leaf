@@ -369,8 +369,8 @@ TAG;
         }
 
         if (is_string($var)) {
-            if (mb_strlen($var) > 255) {
-                $var = mb_substr($var, 0, 255) . '...';
+            if (mb_strlen($var) > 500) {
+                $var = mb_substr($var, 0, 500) . '...';
             }
             return "'" . addcslashes($var, "'\\\r\n") . "'";
         }
