@@ -320,6 +320,7 @@ TAG;
             }
 
             if (strpos($file, '/pfinal/routing/src/Router.php') !== false) {
+                $traceInfo = array_slice($traceInfo, 0, count($traceInfo) - 1);
                 break;
             }
 
