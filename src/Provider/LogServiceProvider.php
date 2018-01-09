@@ -20,7 +20,7 @@ class LogServiceProvider implements ServiceProviderInterface
     {
         $app['Psr\\Log\\LoggerInterface'] = $app['log'] = function () use ($app) {
             $config = isset($app['log.config']) ? $app['log.config'] : array();
-            $config += array('class' => 'Leaf\Log\FileTarget');
+            $config += array('class' => 'Leaf\Log\Logger');
             $class = $config['class'];
             unset($config['class']);
             return $app->make($class, array('config' => $config));

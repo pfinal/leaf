@@ -13,6 +13,8 @@ class Logger extends \Monolog\Logger
         $config = $config + [
                 'name' => 'app', //channel
                 'level' => Application::$app['debug'] ? Logger::DEBUG : Logger::INFO
+                //handlers => [],
+                //processors => [],
             ];
 
         $logPath = Application::$app->getRuntimePath() . '/logs/';
