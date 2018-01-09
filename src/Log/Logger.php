@@ -3,25 +3,38 @@
 namespace Leaf\Log;
 
 use Leaf\Application;
+use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\RotatingFileHandler;
 
 class Logger extends \Monolog\Logger
 {
-    public function __construct($name, $handlers = array(), $processors = array())
+    public function __construct($config = array())
     {
-        parent::__construct($name, $handlers, $processors);
+        $config = $config + [
+                'name' => 'app', //channel
+                'level' => Application::$app['debug'] ? Logger::DEBUG : Logger::INFO
+            ];
 
-        $name = preg_replace('/[^\w]/', '_', $name);
+        $logPath = Application::$app->getRuntimePath() . '/logs/';
+        $filename = $config['name'] . '.log';
 
-        $file = Application::$app->getRuntimePath() . '/logs/' . $name . '.log';
+        $formatter = new Formatter();
+        //$formatter = new LineFormatter();
+        //$formatter->includeStacktraces();
 
-        $sh = new RotatingFileHandler($file, 30);
+        $handler = new RotatingFileHandler($logPath . $filename, 30, $config['level']);
+        $handler->setFormatter($formatter);
 
-        $sh->setFormatter(new MultiLineFormatter());
+        $config = $config + [
+                'handlers' => array($handler),
+                'processors' => array(
+                    new \Monolog\Processor\WebProcessor(),
+                    new \Monolog\Processor\IntrospectionProcessor($config['level'], ['Leaf\\Facade\\LogFacade'])
+                ),
+            ];
 
-        $this->pushHandler($sh);
-
-        $this->pushProcessor(new \Monolog\Processor\WebProcessor());
-        $this->pushProcessor(new \Monolog\Processor\IntrospectionProcessor(Logger::DEBUG, ['Leaf\\Facade\\LogFacade']));
+        foreach ($config as $key => $value) {
+            $this->{$key} = $value;
+        }
     }
 }

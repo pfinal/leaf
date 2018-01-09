@@ -4,7 +4,7 @@ namespace Leaf\Log;
 
 use Monolog\Formatter\LineFormatter;
 
-class MultiLineFormatter extends LineFormatter
+class Formatter extends LineFormatter
 {
     /**
      * {@inheritdoc}
@@ -25,19 +25,19 @@ class MultiLineFormatter extends LineFormatter
             isset($vars['channel']) ? $this->stringify($vars['message']) : ''
         );
 
-        if (!empty($vars['extra'])) {
-            $output .= "\n" . $this->stringify($vars['extra']);
+        if (!empty($vars['context'])) {
+            $output .= " " . $this->stringify($vars['context']);
         }
 
-        if (!empty($vars['context'])) {
-            $output .= "\n" . $this->stringify($vars['context']);
+        if (!empty($vars['extra'])) {
+            $output .= " " . $this->stringify($vars['extra']);
         }
 
         if (isset($exception['stacktrace'])) {
-            $output .= "\n" . $exception['stacktrace'];
+            $output .= "\n[stacktrace]\n" . $exception['stacktrace'] . "\n";
         }
 
-        return $output . "\n\n";
+        return $output . "\n";
     }
 
 
