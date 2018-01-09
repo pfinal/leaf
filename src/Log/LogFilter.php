@@ -2,7 +2,9 @@
 
 namespace Leaf\Log;
 
-abstract class LogFilter
+use Psr\Log\LoggerInterface;
+
+abstract class LogFilter implements LoggerInterface
 {
     protected $messages = array();
 
@@ -14,26 +16,6 @@ abstract class LogFilter
     }
 
     public abstract function export();
-
-    public function debug($message, array $context = array())
-    {
-        static::write('debug', $message, $context);
-    }
-
-    public function info($message, array $context = array())
-    {
-        static::write('info', $message, $context);
-    }
-
-    public function warning($message, array $context = array())
-    {
-        static::write('warning', $message, $context);
-    }
-
-    public function error($message, array $context = array())
-    {
-        static::write('error', $message, $context);
-    }
 
     public function write($level, $message, array $context = array(), $channel = null)
     {
@@ -94,5 +76,50 @@ abstract class LogFilter
         }
 
         return (string)$var;
+    }
+
+    public function debug($message, array $context = array())
+    {
+        static::write('debug', $message, $context);
+    }
+
+    public function info($message, array $context = array())
+    {
+        static::write('info', $message, $context);
+    }
+
+    public function warning($message, array $context = array())
+    {
+        static::write('warning', $message, $context);
+    }
+
+    public function error($message, array $context = array())
+    {
+        static::write('error', $message, $context);
+    }
+
+    public function emergency($message, array $context = array())
+    {
+        static::write('emergency', $message, $context);
+    }
+
+    public function alert($message, array $context = array())
+    {
+        static::write('alert', $message, $context);
+    }
+
+    public function critical($message, array $context = array())
+    {
+        static::write('critical', $message, $context);
+    }
+
+    public function notice($message, array $context = array())
+    {
+        static::write('notice', $message, $context);
+    }
+
+    public function log($level, $message, array $context = array())
+    {
+        static::write(strtolower($level), $message, $context);
     }
 }

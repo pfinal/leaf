@@ -16,7 +16,9 @@
         "pfinal/database": "*",
         "pfinal/session": "*",
         "pfinal/routing": "*",
-        "twig/extensions": ">=1.0"
+        "twig/extensions": ">=1.0",
+        "psr/log": "~1.0",
+        "monolog/monolog": "^1.0"
     },
     "require-dev": {
         "filp/whoops": "^2.1",
