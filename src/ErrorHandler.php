@@ -137,8 +137,9 @@ class ErrorHandler
         $log .= "\n";
         $log .= "Trace\n" . $this->_error['trace'];
 
-        if ($this->writeToFile && isset(Application::$app['log'])) {
-            Application::$app['log']->write('app', $log);
+        if ($this->writeToFile) {
+            $logger = new \Leaf\Log\FileTarget();
+            $logger->write('sys', $log);
         }
 
         if (php_sapi_name() === 'cli') {
@@ -318,9 +319,9 @@ TAG;
                 $file = '[internal function]';
             }
 
-            //if (strpos($file, '/pfinal/routing/src/Router.php') !== false) {
-            //    break;
-            //}
+            if (strpos($file, '/pfinal/routing/src/Router.php') !== false) {
+                break;
+            }
 
             $args = [];
             foreach ($trace['args'] as $arg) {
