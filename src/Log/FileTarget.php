@@ -3,6 +3,7 @@
 namespace Leaf\Log;
 
 use Leaf\Application;
+use Leaf\Json;
 
 class FileTarget extends LogFilter
 {
@@ -66,7 +67,7 @@ class FileTarget extends LogFilter
         @flock($fp, LOCK_EX);
         clearstatcache();
 
-        $text = $log['datetime'] . "\n" . $log['message'] . "\n\n";
+        $text = '[' . $log['datetime'] . "]\n" . $log['message'] . "\n" . Json::encode($log['context']) . "\n\n";
 
         if (@filesize($logFile) > $this->maxFileSize * 1024) {
             $this->rotateFiles($logFile);
