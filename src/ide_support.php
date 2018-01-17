@@ -331,49 +331,36 @@ namespace Leaf {
     class Cache
     {
         /**
-         * @return mixed | false
+         * @return mixed
          */
-        public static function get($id)
+        public static function get($key, $default = null)
         {
-            return (new FileCache())->get($id);
+            return (new FileCache())->get($key, $default);
         }
 
-        /**
-         * @return array | false
-         */
-        public static function mget($ids)
-        {
-            return (new FileCache())->mget($ids);
-        }
 
         /**
-         * @param $id
+         * @param $key
          * @param mixed $value
-         * @param int $expire 缓存过期时间(多少秒后过期)，0表示永不过期.
+         * @param int ttl 缓存过期时间(多少秒后过期)，0表示永不过期.
          * @return bool
          */
-        public static function set($id, $value, $expire)
+        public static function set($key, $value, $ttl = null)
         {
-            return (new FileCache())->set($id, $value, $expire);
-        }
-
-        /**
-         * @param $id
-         * @param $value
-         * @param int $expire 缓存过期时间(多少秒后过期)，0表示永不过期.
-         * @return bool
-         */
-        public static function add($id, $value, $expire)
-        {
-            return (new FileCache())->add($id, $value, $expire);
+            return (new FileCache())->set($key, $value, $ttl);
         }
 
         /**
          * @return bool
          */
-        public static function delete($id)
+        public static function delete($key)
         {
-            return (new FileCache())->delete($id);
+            return (new FileCache())->delete($key);
+        }
+
+        public static function increment($key, $value = 1)
+        {
+            return (new FileCache())->increment($key, $value);
         }
     }
 
