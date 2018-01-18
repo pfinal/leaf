@@ -33,7 +33,7 @@ class ErrorResponseGenerator
     protected function log($ex, $request)
     {
         if ($ex instanceof \ErrorException || $ex instanceof \LogicException) {
-            Log::error($ex->getMessage(), ['exception' => $ex]);
+            Log::error(get_class($ex) . ' ' . $ex->getMessage(), ['exception' => $ex]);
         }
     }
 
