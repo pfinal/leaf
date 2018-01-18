@@ -68,7 +68,10 @@ class Formatter extends LineFormatter
             }
         }
 
-        $data['stacktrace'] = $this->getTraceString($e);
+        $stacktrace = $this->getTraceString($e);
+        if (trim($stacktrace) != '') {
+            $data['stacktrace'] = $stacktrace;
+        }
 
         if ($previous = $e->getPrevious()) {
             $data['previous'] = $this->normalizeException($previous);
