@@ -7,7 +7,15 @@ class HttpException extends \RuntimeException
     protected $statusCode;
     protected $headers;
 
-    public function __construct($statusCode, $message = null, \Exception $previous = null, array $headers = array(), $code = 0)
+    /**
+     * HttpException constructor.
+     * @param $statusCode
+     * @param null $message
+     * @param \Throwable $previous
+     * @param array $headers
+     * @param int $code
+     */
+    public function __construct($statusCode, $message = null, $previous = null, array $headers = array(), $code = 0)
     {
         $this->statusCode = $statusCode;
         $this->headers = $headers;
