@@ -2,10 +2,7 @@
 
 namespace Leaf;
 
-use Leaf\Application;
 use Leaf\Exception\HttpException;
-use Leaf\Json;
-use Leaf\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class ErrorResponseGenerator
