@@ -31,6 +31,9 @@ class Application extends Container
             'debug' => false,
             'env' => 'local',
             'params' => array(),
+            'middleware' => array( //global HTTP middleware stack
+                'Leaf\Middleware\CheckForMaintenanceMode',
+            ),
             'aliases' => array(
                 'Leaf\Cache' => 'Leaf\Facade\CacheFacade',
                 'Leaf\Queue' => 'Leaf\Facade\QueueFacade',
@@ -159,19 +162,23 @@ class Application extends Container
             return;
         }
 
-        //基础路由文件
-        $routeFile = isset($app['router.file']) ? $app['router.file'] : $app['path'] . '/config/routes.php';
+        //全局中间件
+        Route::group(['middleware' => $app['middleware']], function () use ($app) {
 
-        if (file_exists($routeFile)) {
-            require $routeFile;
-        }
+            //基础路由文件
+            $routeFile = isset($app['router.file']) ? $app['router.file'] : $app['path'] . '/config/routes.php';
 
-        //Bundle中的路由文件
-        foreach ($this->bundles as $bundle) {
-            if (file_exists($bundle->getPath() . '/resources/routes.php')) {
-                require $bundle->getPath() . '/resources/routes.php';
+            if (file_exists($routeFile)) {
+                require $routeFile;
             }
-        }
+
+            //Bundle中的路由文件
+            foreach ($this->bundles as $bundle) {
+                if (file_exists($bundle->getPath() . '/resources/routes.php')) {
+                    require $bundle->getPath() . '/resources/routes.php';
+                }
+            }
+        });
 
         if ($useCache) {
             file_put_contents($cacheFile, serialize($app['router']->getNodeData()), LOCK_EX);
@@ -227,7 +234,7 @@ class Application extends Container
      *
      * @return string
      */
-    public function getRuntimePath()
+    public function getRuntimePath($path = '')
     {
         if (!$this->offsetExists('runtime.path')) {
             $this['runtime.path'] = $this['path'] . DIRECTORY_SEPARATOR . 'runtime';
@@ -237,7 +244,7 @@ class Application extends Container
             Util::createDirectory($this['runtime.path']);
         }
 
-        return $this['runtime.path'];
+        return $this['runtime.path'] . DIRECTORY_SEPARATOR . $path;
     }
 
     /**
