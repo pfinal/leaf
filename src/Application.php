@@ -244,7 +244,11 @@ class Application extends Container
             Util::createDirectory($this['runtime.path']);
         }
 
-        return $this['runtime.path'] . DIRECTORY_SEPARATOR . $path;
+        if (strlen($path) > 0) {
+            $path = DIRECTORY_SEPARATOR . ltrim($path, '/\\');
+        }
+
+        return $this['runtime.path'] . $path;
     }
 
     /**
