@@ -15,11 +15,11 @@ use Pimple\ServiceProviderInterface;
  *     // @var $gate  \Leaf\Auth\Gate
  *
  *     $gate->define('delete', function (\Entity\User $user) {
- *         return $user->isSupper();
+ *         return $user->isSuper();
  *     });
  *
  *     $gate->define('update', function (\Entity\User $user, $post) {
- *         return $user->isSupper() || $post->user_id = $user->id;
+ *         return $user->isSuper() || $post->user_id = $user->id;
  *     });
  *
  *     return $gate;
