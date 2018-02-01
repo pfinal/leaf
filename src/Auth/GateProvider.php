@@ -47,6 +47,7 @@ class GateProvider implements ServiceProviderInterface
                 $authClass = $config['authClass'];
                 return forward_static_call(array($authClass, 'getUser'));
             });
+
             $class = $config['class'];
             unset($config['class']);
             return $app->make($class, $config);
