@@ -3,7 +3,7 @@
 namespace Entity;
 
 use Leaf\DB;
-use Leaf\Object;
+use Leaf\BaseObject;
 
 /**
  * {{ tableComment }}
@@ -12,7 +12,7 @@ use Leaf\Object;
  * @property {{ value }} ${{ key }}
 {% endfor %}
  */
-class {{ entityName }} extends Object
+class {{ entityName }} extends BaseObject
 {
 
     public static function tableName()

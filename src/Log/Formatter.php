@@ -119,7 +119,7 @@ class Formatter extends LineFormatter
     private function varToString($var)
     {
         if (is_object($var)) {
-            if ($var instanceof \Leaf\Object) {
+            if ($var instanceof \Leaf\BaseObject) {
                 return sprintf('#%s(%s)', get_class($var), $this->jsonEncode($var));
             }
             return sprintf('#%s', get_class($var));
