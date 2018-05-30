@@ -8,7 +8,7 @@ use Exception;
  * Object类是实现了动态调用属性功能和数组方式访问的基类
  * @author  Zou Yiliang
  */
-class Object implements \ArrayAccess, \JsonSerializable
+class BaseObject implements \ArrayAccess, \JsonSerializable
 {
     use ArrayAccessTrait;
 

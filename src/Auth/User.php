@@ -3,9 +3,9 @@
 namespace Leaf\Auth;
 
 use Leaf\Application;
-use Leaf\Object;
+use Leaf\BaseObject;
 
-class User extends Object implements Authenticatable
+class User extends BaseObject implements Authenticatable
 {
     /**
      * 返回数据库的表名
