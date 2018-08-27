@@ -239,7 +239,8 @@ class UploadedFile
             try {
 
                 //文件名
-                $basename = uniqid() . '.' . strtolower($originalExtension);
+                //$basename = uniqid() . '.' . strtolower($originalExtension);
+                $basename = str_replace('-', '', Util::guid()) . '.' . strtolower($originalExtension);
 
                 $file->move($this->rootPath . $this->basePath . $this->subPath, $basename);
 
