@@ -25,6 +25,7 @@ class Application extends Container
     {
         $config = array_replace_recursive([
             'id' => null,
+            'name' => null,
             'path' => null,
             'timezone' => 'Asia/Chongqing',
             'charset' => 'UTF-8',
@@ -88,7 +89,7 @@ class Application extends Container
      */
     public static function getVersion()
     {
-        return '2.5.0';
+        return '2.5.1';
     }
 
     /**
@@ -103,6 +104,10 @@ class Application extends Container
 
         if (is_null($this['id'])) {
             $this['id'] = md5($this['path']);
+        }
+
+        if (is_null($this['name'])) {
+            $this['name'] = basename($this['path']);
         }
 
         date_default_timezone_set($this['timezone']);
