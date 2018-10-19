@@ -10,14 +10,15 @@ class Logger extends \Monolog\Logger
 {
     public function __construct($config = array())
     {
+        $app = Application::$app;
         $config = $config + [
-                'name' => 'app', //channel
-                'level' => Application::$app['debug'] ? Logger::DEBUG : Logger::INFO
+                'name' => $app['name'], //channel
+                'level' => $app['debug'] ? Logger::DEBUG : Logger::INFO
                 //handlers => [],
                 //processors => [],
             ];
 
-        $logPath = Application::$app->getRuntimePath() . '/logs/';
+        $logPath = $app->getRuntimePath() . '/logs/';
         $filename = $config['name'] . '.log';
 
         $formatter = new Formatter();
@@ -38,5 +39,6 @@ class Logger extends \Monolog\Logger
         foreach ($config as $key => $value) {
             $this->{$key} = $value;
         }
+
     }
 }
