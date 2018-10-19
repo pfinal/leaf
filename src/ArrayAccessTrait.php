@@ -2,10 +2,6 @@
 
 namespace Leaf;
 
-/**
- * 实现Object的数组方式访问
- * @author  Zou Yiliang
- */
 trait ArrayAccessTrait
 {
     public function offsetExists($offset)
@@ -15,7 +11,7 @@ trait ArrayAccessTrait
 
     public function offsetGet($offset)
     {
-        if (isset($this->$offset)) {
+        if (property_exists($this, $offset)) {
             return $this->$offset;
         }
         return $this->__get($offset);
