@@ -83,6 +83,39 @@ class {{ entityName }}Controller
         return Json::renderWithTrue($dataProvider);
     }
 
+   /**
+     * 详情
+     * @Route {{ bundleMiddleName }}{{ middleName }}/detail
+     * @Method get
+     *
+     * @api {get} {{ bundleMiddleName }}{{ middleName }}/detail
+     * @apiParam {int} id
+     * @apiSuccess
+     *
+     * ```
+     * {
+     *   "status": true,
+     *   "data": {
+{% for key, value in allAttributes %}
+     *      "{{ key }}" => "{{ value }}",
+{% endfor %}
+     *   },
+     *   "code": "0"
+     * }
+     * ```
+     * @apiError {"status":true,"data":"原因", code: "-1"}
+     */
+    public function detail(Request $request)
+    {
+        $entity = DB::table({{ entityName }}::tableName())->asEntity({{ entityName }}::className())->findByPk($request->get('id'));
+
+        if ($entity == null) {
+            return Json::renderWithFalse('指定数据不存在');
+        }
+
+        return Json::renderWithTrue($entity);
+    }
+
     /**
      * 新增
      * @Route {{ bundleMiddleName }}{{ middleName }}/create
@@ -131,7 +164,7 @@ class {{ entityName }}Controller
      */
     public function update(Request $request)
     {
-        $data = $request->only(['name', 'status']);
+        $data = $request->only([{% for key,value in attributes  %}'{{ key }}', {% endfor %}]);
 
         $entity = DB::table({{ entityName }}::tableName())->asEntity({{ entityName }}::className())->findByPk($request->get('id'));
 
@@ -160,7 +193,7 @@ class {{ entityName }}Controller
      * @Route {{ bundleMiddleName }}{{ middleName }}/delete
      * @Method post
      *
-     * @api {post} city/update
+     * @api {post} {{ bundleMiddleName }}{{ middleName }}/delete
      * @apiParam {int} id
      * @apiSuccess {"status":true,"data":"操作成功", code: "0"}
      * @apiError {"status":true,"data":"原因", code: "-1"}
@@ -176,39 +209,6 @@ class {{ entityName }}Controller
         }
     }
 
-   /**
-     * 详情
-     * @Route {{ bundleMiddleName }}{{ middleName }}/detail
-     * @Method get
-     *
-     * @api {get} {{ bundleMiddleName }}{{ middleName }}/detail
-     * @apiParam {int} id
-     * @apiSuccess
-     *
-     * ```
-     * {
-     *   "status": true,
-     *   "data": {
-{% for key, value in allAttributes %}
-     *      "{{ key }}" => "{{ value }}",
-{% endfor %}
-     *   },
-     *   "code": "0"
-     * }
-     * ```
-     * @apiError {"status":true,"data":"原因", code: "-1"}
-     */
-    public function detail(Request $request)
-    {
-        $entity = DB::table({{ entityName }}::tableName())->asEntity({{ entityName }}::className())->findByPk($request->get('id'));
-
-        if ($entity == null) {
-            return Json::renderWithFalse('指定数据不存在');
-        }
-
-        return Json::renderWithTrue($entity);
-    }
-
     /**
      * 验证规则
      * @param string $scene create|update
@@ -217,7 +217,7 @@ class {{ entityName }}Controller
     protected function getRules($scene)
     {
         $rules = [
-            [[{% for key,value in attributes  %}'{{ key }}',{% endfor %}], 'safe'],
+            [[{% for key,value in attributes  %}'{{ key }}', {% endfor %}], 'safe'],
         ];
 
         return $rules;

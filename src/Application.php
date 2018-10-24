@@ -114,6 +114,7 @@ class Application extends Container
 
         ini_set('session.cookie_httponly', 1);
 
+        //composer require filp/whoops
         if ($this['debug'] && class_exists('Whoops\\Run')) {
             $whoops = new \Whoops\Run();
             $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler());
