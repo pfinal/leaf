@@ -4,6 +4,7 @@ namespace Entity;
 
 use Leaf\DB;
 use Leaf\BaseObject;
+use PFinal\Database\ModelTrait;
 
 /**
  * {{ tableComment }}
@@ -14,6 +15,7 @@ use Leaf\BaseObject;
  */
 class {{ entityName }} extends BaseObject
 {
+    use ModelTrait;
 
     public static function tableName()
     {

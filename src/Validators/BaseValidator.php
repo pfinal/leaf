@@ -103,7 +103,14 @@ class BaseValidator
      */
     public $when;
 
-    public static function runValidate($rules, &$data, $labels)
+    /**
+     * @param $rules
+     * @param $data
+     * @param $labels
+     * @param bool $inputOnly 只验证输入的数据(不验证缺少的字段)
+     * @return array
+     */
+    public static function runValidate($rules, &$data, $labels, $inputOnly = false)
     {
         $allow = array(
             'string', 'email', 'match', 'date', 'url',
@@ -143,7 +150,7 @@ class BaseValidator
                     if ($rule['1'] === 'default') {
                         $data[$attribute] = null;
                     } else {
-                        if (!isset($errors[$attribute])) {
+                        if (!$inputOnly && !isset($errors[$attribute])) {
                             $errors[$attribute] = [$attribute . ' 未传入值'];
                         }
                         continue;

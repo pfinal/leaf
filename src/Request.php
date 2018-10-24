@@ -14,6 +14,26 @@ class Request extends \Symfony\Component\HttpFoundation\Request
         return $this->isMethod('GET') ? $this->query->all() : ($this->request->all() + $this->query->all());
     }
 
+    public function only($keys)
+    {
+        $keys = (array)$keys;
+        return array_filter($this->all(), function ($k) use ($keys) {
+            return in_array($k, $keys);
+        }, ARRAY_FILTER_USE_KEY);
+    }
+
+    /**
+     * Content-Type: application/json
+     */
+    public function input()
+    {
+        if (strcasecmp($this->headers->get('content-type'), 'application/json') != 0) {
+            return [];
+        }
+        $content = file_get_contents('php://input');
+        return json_decode($content, true);
+    }
+
     /**
      * @return \Closure
      */

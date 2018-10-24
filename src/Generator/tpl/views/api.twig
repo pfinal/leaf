@@ -1,0 +1,226 @@
+<?php
+
+namespace {{ bundleName }}\Controller;
+
+use Carbon\Carbon;
+use {{ entityNamespace }}{{ entityName }};
+use Leaf\Application;
+use Leaf\DB;
+use Leaf\Json;
+use Leaf\Request;
+use Leaf\Validator;
+
+/**
+ * {{ tableComment }}管理
+ * @author  curd generator
+ * @since   1.0
+ */
+class {{ entityName }}Controller
+{
+    /**
+     * 列表
+     *
+     * @Route {{ bundleMiddleName }}{{ middleName }}
+     * @Method get
+     * 
+     * @api {get} {{ bundleMiddleName }}{{ middleName }}
+     *
+     * @apiParam {int} page 页码 [可选] 默认1 eg. 1
+     * @apiParam {int} page_size 每页记录数 [可选] 每页查询的条数,默认为20,最大不超过100 eg. 20
+     * @apiSuccess
+     *
+     * ```
+     * {
+     *   "status": true,
+     *   "data": {
+     *     "page": {
+     *       "itemCount": 总记录数,
+     *       "currentPage": 当前页码,
+     *       "pageSize": 每页条数,
+     *       "pageCount": 共多少页,
+     *     },
+     *     "data": [
+     *       {
+{% for key, value in allAttributes %}
+     *         "{{ key }}" => {{ value }},
+{% endfor %}
+     *       }
+     *     ]
+     *   },
+     *   "code": "0"
+     * }
+     * ```
+     * @apiError {"status":true,"data":"原因", code: "-1"}
+     */
+    public function index(Request $request)
+    {
+        //过滤条件
+        $condition = [];
+        $params = [];
+        $search = $request->all();
+
+        //if (!empty($search['id'])) {
+        //    $condition[] = 'id = :id';
+        //    $params[':id'] = $search['id'];
+        //}
+
+        //if (!empty($search['name'])) {
+        //    $condition[] = 'name like :name';
+        //    $params[':name'] = '%' . trim($search['name']) . '%';
+        //}
+
+        $pageSize = min(100, $request->get('page_size', 20));
+        $sortBy = $request->get('sortby', 'id desc');
+        $order = $request->get('order'); // asc、desc
+
+        //数据
+        $dataProvider = DB::table({{ entityName }}::tableName())
+            ->where(implode(' and ', $condition), $params)
+            ->asEntity({{ entityName }}::className())
+            ->orderBy($sortBy . ' ' . $order)
+            ->paginate($pageSize);
+
+        return Json::renderWithTrue($dataProvider);
+    }
+
+    /**
+     * 新增
+     * @Route {{ bundleMiddleName }}{{ middleName }}/create
+     * @Method post
+     *
+     * @api {post} {{ bundleMiddleName }}{{ middleName }}/create
+{% for key, value in attributes %}
+     * @apiParam {string} {{ key }} {{ value }}
+{% endfor %}
+     * @apiSuccess {"status":true,"data": {"id": ID}}
+     * @apiError {"status":true,"data":"原因", code: "-1"}
+     */
+    public function create(Request $request)
+    {
+        $data = $request->all();
+
+        if (empty($data)) {
+            return Json::renderWithFalse('您未传入数据');
+        }
+
+        if (!Validator::validate($data, self::getRules('create'), {{ entityName }}::labels())) {
+            return Json::renderWithFalse(Validator::getFirstError());
+        }
+
+        $data['created_at'] = $data['updated_at'] = Carbon::now();
+        $id = DB::table({{ entityName }}::tableName())->insertGetId($data);
+        if ($id > 0) {
+            return Json::renderWithTrue(['id' => $id]);
+        }
+
+        return Json::renderWithFalse('系统错误');
+    }
+
+    /**
+     * 更新
+     * @Route {{ bundleMiddleName }}{{ middleName }}/update
+     * @Method post
+     *
+     * @api {post} city/update
+     * @apiParam {int} id
+{% for key, value in attributes %}
+     * @apiParam {string} {{ key }} {{ value }}
+{% endfor %}
+     * @apiSuccess {"status":true,"data":"操作成功", code: "0"}
+     * @apiError {"status":true,"data":"原因", code: "-1"}
+     */
+    public function update(Request $request)
+    {
+        $data = $request->only(['name', 'status']);
+
+        $entity = DB::table({{ entityName }}::tableName())->asEntity({{ entityName }}::className())->findByPk($request->get('id'));
+
+        if ($entity == null || empty($data)) {
+            return Json::renderWithFalse('指定数据不存在或未传入数据');
+        }
+
+        //验证
+        if (!Validator::validateOnly($data, self::getRules('update'))) {
+            return Json::renderWithFalse(Validator::getFirstError());
+        }
+
+        //更新
+        $data['updated_at'] = Carbon::now();
+        if (DB::table({{ entityName }}::tableName())->wherePk($entity->id)->update($data)) {
+            return Json::renderWithTrue('操作成功');
+        } else {
+            $error = '系统错误';
+        }
+
+        return Json::renderWithFalse($error);
+    }
+
+    /**
+     * 删除
+     * @Route {{ bundleMiddleName }}{{ middleName }}/delete
+     * @Method post
+     *
+     * @api {post} city/update
+     * @apiParam {int} id
+     * @apiSuccess {"status":true,"data":"操作成功", code: "0"}
+     * @apiError {"status":true,"data":"原因", code: "-1"}
+     */
+    public function delete(Request $request)
+    {
+        $result = DB::table({{ entityName }}::tableName())->wherePk($request->get('id'))->delete();
+
+        if ($result) {
+            return Json::renderWithTrue('操作成功');
+        } else {
+            return Json::renderWithFalse('操作失败');
+        }
+    }
+
+   /**
+     * 详情
+     * @Route {{ bundleMiddleName }}{{ middleName }}/detail
+     * @Method get
+     *
+     * @api {get} {{ bundleMiddleName }}{{ middleName }}/detail
+     * @apiParam {int} id
+     * @apiSuccess
+     *
+     * ```
+     * {
+     *   "status": true,
+     *   "data": {
+{% for key, value in allAttributes %}
+     *      "{{ key }}" => "{{ value }}",
+{% endfor %}
+     *   },
+     *   "code": "0"
+     * }
+     * ```
+     * @apiError {"status":true,"data":"原因", code: "-1"}
+     */
+    public function detail(Request $request)
+    {
+        $entity = DB::table({{ entityName }}::tableName())->asEntity({{ entityName }}::className())->findByPk($request->get('id'));
+
+        if ($entity == null) {
+            return Json::renderWithFalse('指定数据不存在');
+        }
+
+        return Json::renderWithTrue($entity);
+    }
+
+    /**
+     * 验证规则
+     * @param string $scene create|update
+     * @return array
+     */
+    protected function getRules($scene)
+    {
+        $rules = [
+            [[{% for key,value in attributes  %}'{{ key }}',{% endfor %}], 'safe'],
+        ];
+
+        return $rules;
+    }
+
+}

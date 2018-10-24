@@ -13,11 +13,14 @@ class Validator
     public static $errors = [];
 
     /**
-     * @param array $data
-     * @param $rules
+     * 验证
+     * @param $data
+     * @param array $rules
+     * @param array $labels
+     * @param bool $inputOnly 只验证输入的数据(不验证缺少的字段)
      * @return bool
      */
-    public static function validate(&$data, array $rules, array $labels = array())
+    public static function validate(&$data, array $rules, array $labels = array(), $inputOnly = false)
     {
         $temp = [];
         foreach ($rules as $k => $v) {
@@ -28,8 +31,19 @@ class Validator
             }
         }
 
-        self::$errors = BaseValidator::runValidate($temp, $data, $labels);
+        self::$errors = BaseValidator::runValidate($temp, $data, $labels, $inputOnly);
         return count(self::$errors) === 0;
+    }
+
+    /**
+     * @param $data
+     * @param array $rules
+     * @param array $labels
+     * @return bool
+     */
+    public static function validateOnly(&$data, array $rules, array $labels = array())
+    {
+        return self::validate($data, $rules, $labels, true);
     }
 
     /**
