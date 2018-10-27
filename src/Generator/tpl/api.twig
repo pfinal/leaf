@@ -19,7 +19,7 @@ class {{ entityName }}Controller
     /**
      * 列表
      *
-     * @Route {{ bundleMiddleName }}{{ middleName }}
+     * @Route /{{ bundleMiddleName }}{{ middleName }}
      * @Method get
      * 
      * @api {get} /{{ bundleMiddleName }}{{ middleName }}
@@ -80,9 +80,9 @@ class {{ entityName }}Controller
         return Json::renderWithTrue($dataProvider);
     }
 
-   /**
+    /**
      * 详情
-     * @Route {{ bundleMiddleName }}{{ middleName }}/detail
+     * @Route /{{ bundleMiddleName }}{{ middleName }}/detail
      * @Method get
      *
      * @api {get} /{{ bundleMiddleName }}{{ middleName }}/detail
@@ -116,7 +116,7 @@ class {{ entityName }}Controller
 
     /**
      * 新增
-     * @Route {{ bundleMiddleName }}{{ middleName }}/create
+     * @Route /{{ bundleMiddleName }}{{ middleName }}/create
      * @Method post
      *
      * @api {post} /{{ bundleMiddleName }}{{ middleName }}/create
@@ -149,7 +149,7 @@ class {{ entityName }}Controller
 
     /**
      * 更新
-     * @Route {{ bundleMiddleName }}{{ middleName }}/update
+     * @Route /{{ bundleMiddleName }}{{ middleName }}/update
      * @Method post
      *
      * @api {post} /city/update
@@ -188,7 +188,7 @@ class {{ entityName }}Controller
 
     /**
      * 删除
-     * @Route {{ bundleMiddleName }}{{ middleName }}/delete
+     * @Route /{{ bundleMiddleName }}{{ middleName }}/delete
      * @Method post
      *
      * @api {post} /{{ bundleMiddleName }}{{ middleName }}/delete
