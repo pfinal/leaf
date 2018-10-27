@@ -22,7 +22,7 @@ class {{ entityName }}Controller
      * @Route {{ bundleMiddleName }}{{ middleName }}
      * @Method get
      * 
-     * @api {get} {{ bundleMiddleName }}{{ middleName }}
+     * @api {get} /{{ bundleMiddleName }}{{ middleName }}
      *
      * @apiParam {int} page 页码 [可选] 默认1 eg. 1
      * @apiParam {int} page_size 每页记录数 [可选] 每页查询的条数,默认为20,最大不超过100 eg. 20
@@ -41,7 +41,7 @@ class {{ entityName }}Controller
      *     "data": [
      *       {
 {% for key, value in allAttributes %}
-     *         "{{ key }}" => {{ value }},
+     *         "{{ key }}": {{ value }},
 {% endfor %}
      *       }
      *     ]
@@ -73,9 +73,7 @@ class {{ entityName }}Controller
         $order = $request->get('order'); // asc、desc
 
         //数据
-        $dataProvider = DB::table({{ entityName }}::tableName())
-            ->where(implode(' and ', $condition), $params)
-            ->asEntity({{ entityName }}::className())
+        $dataProvider = {{ entityName }}::where(implode(' and ', $condition), $params)
             ->orderBy($sortBy . ' ' . $order)
             ->paginate($pageSize);
 
@@ -87,7 +85,7 @@ class {{ entityName }}Controller
      * @Route {{ bundleMiddleName }}{{ middleName }}/detail
      * @Method get
      *
-     * @api {get} {{ bundleMiddleName }}{{ middleName }}/detail
+     * @api {get} /{{ bundleMiddleName }}{{ middleName }}/detail
      * @apiParam {int} id
      * @apiSuccess
      *
@@ -96,7 +94,7 @@ class {{ entityName }}Controller
      *   "status": true,
      *   "data": {
 {% for key, value in allAttributes %}
-     *      "{{ key }}" => "{{ value }}",
+     *      "{{ key }}": {{ value }},
 {% endfor %}
      *   },
      *   "code": "0"
@@ -106,7 +104,8 @@ class {{ entityName }}Controller
      */
     public function detail(Request $request)
     {
-        $entity = DB::table({{ entityName }}::tableName())->asEntity({{ entityName }}::className())->findByPk($request->get('id'));
+        /** @var {{ entityName }} $entity */
+        $entity = {{ entityName }}::findByPk($request->get('id'));
 
         if ($entity == null) {
             return Json::renderWithFalse('指定数据不存在');
@@ -120,7 +119,7 @@ class {{ entityName }}Controller
      * @Route {{ bundleMiddleName }}{{ middleName }}/create
      * @Method post
      *
-     * @api {post} {{ bundleMiddleName }}{{ middleName }}/create
+     * @api {post} /{{ bundleMiddleName }}{{ middleName }}/create
 {% for key, value in attributes %}
      * @apiParam {string} {{ key }} {{ value }}
 {% endfor %}
@@ -153,7 +152,7 @@ class {{ entityName }}Controller
      * @Route {{ bundleMiddleName }}{{ middleName }}/update
      * @Method post
      *
-     * @api {post} city/update
+     * @api {post} /city/update
      * @apiParam {int} id
 {% for key, value in attributes %}
      * @apiParam {string} {{ key }} {{ value }}
@@ -192,7 +191,7 @@ class {{ entityName }}Controller
      * @Route {{ bundleMiddleName }}{{ middleName }}/delete
      * @Method post
      *
-     * @api {post} {{ bundleMiddleName }}{{ middleName }}/delete
+     * @api {post} /{{ bundleMiddleName }}{{ middleName }}/delete
      * @apiParam {int} id
      * @apiSuccess {"status":true,"data":"操作成功", code: "0"}
      * @apiError {"status":true,"data":"原因", code: "-1"}
