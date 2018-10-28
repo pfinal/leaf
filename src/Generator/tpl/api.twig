@@ -26,6 +26,8 @@ class {{ entityName }}Controller
      *
      * @apiParam {int} page 页码 [可选] 默认1 eg. 1
      * @apiParam {int} page_size 每页记录数 [可选] 每页查询的条数,默认为20,最大不超过100 eg. 20
+     * @apiParam {string} sortby 排序字段 [可选] 默认按id降序 支持排序的字段: id
+     * @apiParam {string} order 排序方式 asc升序 desc降序
      * @apiSuccess
      *
      * ```
@@ -68,9 +70,21 @@ class {{ entityName }}Controller
         //    $params[':name'] = '%' . trim($search['name']) . '%';
         //}
 
+        //分页与排序
         $pageSize = min(100, $request->get('page_size', 20));
-        $sortBy = $request->get('sortby', 'id desc');
-        $order = $request->get('order'); // asc、desc
+        $sortBy = $request->get('sortby');
+        $order = strtolower($request->get('order'));
+
+        if (!in_array($sortBy, ['id'])) {
+            return Json::renderWithFalse('指定的排序字段不支持');
+        }
+        if (!in_array($order, ['asc', 'desc'])) {
+            return Json::renderWithFalse('指定的排序方式不支持');
+        }
+        if ($sortBy == null) {
+            $sortBy = 'id';
+            $order = 'desc';
+        }
 
         //数据
         $dataProvider = {{ entityName }}::where(implode(' and ', $condition), $params)
