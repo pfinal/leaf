@@ -198,7 +198,7 @@ class {{ entityName }}Controller
      */
     public function delete(Request $request)
     {
-        $result = DB::table({{ entityName }}::tableName())->wherePk($request->get('id'))->delete();
+        $result = {{ entityName }}::wherePk($request->get('id'))->delete();
 
         if ($result) {
             return Json::renderWithTrue('操作成功');
