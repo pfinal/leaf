@@ -31,13 +31,15 @@ class ErrorHandler
     {
         restore_exception_handler();
 
-        if (Application::$app->has('Leaf\ErrorResponseGenerator')) {
+        $app = Application::$app;
+
+        if ($app->has('Leaf\ErrorResponseGenerator')) {
             $generator = Application::$app->get('Leaf\ErrorResponseGenerator');
         } else {
             $generator = new ErrorResponseGenerator();
         }
 
-        $response = $generator($ex, Application::$app['request']);
+        $response = $generator($ex, $app->has('request') ? $app->get('request') : null);
 
         if ($response instanceof \Symfony\Component\HttpFoundation\Response) {
             $response->send();

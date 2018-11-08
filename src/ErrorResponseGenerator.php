@@ -15,7 +15,7 @@ class ErrorResponseGenerator
      * @return \Symfony\Component\HttpFoundation\Response | string
      * @throws \Throwable
      */
-    public function __invoke($ex, $request)
+    public function __invoke($ex, $request = null)
     {
         $this->log($ex, $request);
 
@@ -30,7 +30,7 @@ class ErrorResponseGenerator
         return $this->renderHtml($ex);
     }
 
-    protected function log($ex, $request)
+    protected function log($ex, $request = null)
     {
         if ($ex instanceof \ErrorException || $ex instanceof \LogicException) {
             Log::error(get_class($ex) . ' ' . $ex->getMessage(), ['exception' => $ex]);
