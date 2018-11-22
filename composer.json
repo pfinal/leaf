@@ -22,7 +22,12 @@
     },
     "require-dev": {
         "filp/whoops": "^2.1",
-        "symfony/var-dumper": "*"
+        "symfony/var-dumper": "*",
+        "robmorgan/phinx": "0.9.*",
+        "nesbot/carbon": "~1.0",
+        "mtdowling/cron-expression": "^1.2",
+        "symfony/process": "2.*",
+        "phpmyadmin/sql-parser": "^4.2"
     },
     "autoload": {
         "files": [
