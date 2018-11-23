@@ -31,9 +31,21 @@ class {{ entityName }} extends BaseObject
         ];
     }
 
-    public function loadDefaultValues()
-    {
-        return DB::table(static::tableName())->loadDefaultValues($this);
-    }
-
+//    /**
+//     * @param bool $returnAll
+//     * @return array|string
+//     */
+//    public function statusAlias($returnAll = false)
+//    {
+//        $map = [
+//            self::STATUS_YES => '有效',
+//            self::STATUS_NO => '禁用',
+//        ];
+//
+//        if ($returnAll) {
+//            return $map;
+//        }
+//
+//        return isset($map[$this->status]) ? $map[$this->status] : '';
+//    }
 }

@@ -1,3 +1,5 @@
+{#{{ app.html.dropDownList('<?php echo $entityName; ?>[status]', app.request.get('Search').status|default(entity.status), entity.statusAlias(true), {'class':'form-control', 'prompt': '请选择'}) }}#}
+
 <input type="hidden" name="_token" value="{{ csrf_token()}}">
 
 <?php unset($attributes['id']); foreach ($attributes as $key=>$value){ ?>
