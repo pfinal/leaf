@@ -24,8 +24,8 @@ class Crontab extends Command
         //异常处理
         $this->getApplication()->setCatchExceptions(false);
 
-        //mtdowling/cron-expression
-        //symfony/process
+        //"mtdowling/cron-expression": "^1.2",
+        //symfony/process": "2.*",
 
         // DROP TABLE IF EXISTS pre_crontab;
         // CREATE TABLE `pre_crontab` (

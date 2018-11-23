@@ -42,9 +42,7 @@ class {{ entityName }}Controller
         //}
 
         //数据
-        $dataProvider = DB::table({{ entityName }}::tableName())
-            ->where(implode(' and ', $condition), $params)
-            ->asEntity({{ entityName }}::className())
+        $dataProvider = {{ entityName }}::where(implode(' and ', $condition), $params)
             ->orderBy($request->get('sort', 'id desc'))
             ->paginate();
 
@@ -98,9 +96,7 @@ class {{ entityName }}Controller
     public function update(Request $request, Application $app)
     {
         //查询
-        $entity = DB::table({{ entityName }}::tableName())
-            ->asEntity({{ entityName }}::className())
-            ->findByPkOrFail($request->get('id'));
+        $entity = {{ entityName }}::findByPkOrFail($request->get('id'));
 
         //保存
         $error = '';
@@ -140,7 +136,7 @@ class {{ entityName }}Controller
      */
     public function delete(Request $request)
     {
-        $result = DB::table({{ entityName }}::tableName())->wherePk($request->get('id'))->delete();
+        $result = {{ entityName }}::wherePk($request->get('id'))->delete();
 
         if ($result) {
             Session::setFlash('message', '删除成功');
