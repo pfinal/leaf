@@ -1,4 +1,4 @@
-{#{{ app.html.dropDownList('<?php echo $entityName; ?>[status]', app.request.get('Search').status|default(entity.status), entity.statusAlias(true), {'class':'form-control', 'prompt': '请选择'}) }}#}
+{#{{ app.html.dropDownList('<?php echo $entityName; ?>[status]', app.request.get('<?php echo $entityName; ?>').status|default(entity.status), entity.statusAlias(true), {'class':'form-control', 'prompt': '请选择'}) }}#}
 
 <input type="hidden" name="_token" value="{{ csrf_token()}}">
 
