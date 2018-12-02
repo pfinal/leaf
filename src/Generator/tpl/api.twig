@@ -51,7 +51,7 @@ class {{ entityName }}Controller
      *   "code": "0"
      * }
      * ```
-     * @apiError {"status":true,"data":"原因", code: "-1"}
+     * @apiError {"status":false,"data":"原因", code: "-1"}
      */
     public function index(Request $request)
     {
@@ -110,7 +110,7 @@ class {{ entityName }}Controller
      *   "code": "0"
      * }
      * ```
-     * @apiError {"status":true,"data":"原因", code: "-1"}
+     * @apiError {"status":false,"data":"原因", code: "-1"}
      */
     public function detail(Request $request)
     {
@@ -134,7 +134,7 @@ class {{ entityName }}Controller
      * @apiParam {string} {{ key }} {{ value }}
 {% endfor %}
      * @apiSuccess {"status":true,"data": {"id": ID}}
-     * @apiError {"status":true,"data":"原因", code: "-1"}
+     * @apiError {"status":false,"data":"原因", code: "-1"}
      */
     public function create(Request $request)
     {
@@ -168,7 +168,7 @@ class {{ entityName }}Controller
      * @apiParam {string} {{ key }} {{ value }}
 {% endfor %}
      * @apiSuccess {"status":true,"data":"操作成功", code: "0"}
-     * @apiError {"status":true,"data":"原因", code: "-1"}
+     * @apiError {"status":false,"data":"原因", code: "-1"}
      */
     public function update(Request $request)
     {
@@ -204,7 +204,7 @@ class {{ entityName }}Controller
      * @api {post} /{{ bundleMiddleName }}{{ middleName }}/delete
      * @apiParam {int} id
      * @apiSuccess {"status":true,"data":"操作成功", code: "0"}
-     * @apiError {"status":true,"data":"原因", code: "-1"}
+     * @apiError {"status":false,"data":"原因", code: "-1"}
      */
     public function delete(Request $request)
     {
