@@ -89,7 +89,7 @@ class Application extends Container
      */
     public static function getVersion()
     {
-        return '2.5.2';
+        return '2.5';
     }
 
     /**
@@ -160,9 +160,10 @@ class Application extends Container
      */
     private function route($app)
     {
-        //使用缓存
-        $cacheFile = $this->getRuntimePath() . '/routes/_cache';
+        //缓存(如果使用了闭包路由，不支持缓存)
+        $cacheFile = $this->getRuntimePath() . '/route.cache';
         $useCache = isset($app['router.cache']) ? $app['router.cache'] : false;
+
         if ($useCache && file_exists($cacheFile)) {
             $app['router']->setNodeData(unserialize(file_get_contents($cacheFile)));
             return;

@@ -62,7 +62,7 @@ class {{ entityName }}Controller
 
         //if (!empty($search['id'])) {
         //    $condition[] = 'id = :id';
-        //    $params[':id'] = $search['id'];
+        //    $params[':id'] = trim($search['id']);
         //}
 
         //if (!empty($search['name'])) {
@@ -149,7 +149,7 @@ class {{ entityName }}Controller
         }
 
         $data['created_at'] = $data['updated_at'] = Carbon::now();
-        $id = DB::table({{ entityName }}::tableName())->insertGetId($data);
+        $id = {{ entityName }}::insertGetId($data);
         if ($id > 0) {
             return Json::renderWithTrue(['id' => $id]);
         }
@@ -174,7 +174,7 @@ class {{ entityName }}Controller
     {
         $data = $request->only([{% for key,value in attributes  %}'{{ key }}', {% endfor %}]);
 
-        $entity = DB::table({{ entityName }}::tableName())->asEntity({{ entityName }}::className())->findByPk($request->get('id'));
+        $entity = {{ entityName }}::findByPk($request->get('id'));
 
         if ($entity == null || empty($data)) {
             return Json::renderWithFalse('指定数据不存在或未传入数据');
@@ -187,7 +187,7 @@ class {{ entityName }}Controller
 
         //更新
         $data['updated_at'] = Carbon::now();
-        if (DB::table({{ entityName }}::tableName())->wherePk($entity->id)->update($data)) {
+        if ({{ entityName }}::wherePk($entity->id)->update($data)) {
             return Json::renderWithTrue('操作成功');
         } else {
             $error = '系统错误';
@@ -225,6 +225,7 @@ class {{ entityName }}Controller
     protected function getRules($scene)
     {
         $rules = [
+            [[{% for key,value in attributes  %}'{{ key }}', {% endfor %}], 'trim'],
             [[{% for key,value in attributes  %}'{{ key }}', {% endfor %}], 'safe'],
         ];
 
