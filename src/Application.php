@@ -162,7 +162,7 @@ class Application extends Container
     {
         //缓存(如果使用了闭包路由，不支持缓存)
         $cacheFile = $this->getRuntimePath() . '/route.cache';
-        $useCache = isset($app['router.cache']) ? $app['router.cache'] : false;
+        $useCache = isset($app['route.cache']) ? $app['route.cache'] : false;
 
         if ($useCache && file_exists($cacheFile)) {
             $app['router']->setNodeData(unserialize(file_get_contents($cacheFile)));
@@ -173,7 +173,7 @@ class Application extends Container
         Route::group(['middleware' => $app['middleware']], function () use ($app) {
 
             //基础路由文件
-            $routeFile = isset($app['router.file']) ? $app['router.file'] : $app['path'] . '/config/routes.php';
+            $routeFile = isset($app['route.file']) ? $app['route.file'] : $app['path'] . '/config/routes.php';
 
             if (file_exists($routeFile)) {
                 require $routeFile;
