@@ -16,11 +16,6 @@ class {{ entityName }} extends BaseObject
 {
     use ModelTrait;
 
-    public static function tableName()
-    {
-        return '{{ '{{' }}%{{ tableName }}{{ '}}' }}';
-    }
-
     public static function labels()
     {
         return [
