@@ -196,7 +196,6 @@ class Image
             //切割点
             $y = (int)($imgArr['height'] - $h) / 2;
             $x = 0;
-
         }
 
         $basePath = dirname($dstName);
@@ -261,7 +260,7 @@ class Image
      * @param $filename string 原始图片文件名
      * @param $dstName string 生成的目标文件
      * @param $water string 水印图片
-     * @param $pos int 水印位置  1右下  2 中中  3左上
+     * @param $pos int|array 水印位置  1右下  2 中中  3左上 传数组[x, y]
      * @return bool
      */
     public static function waterMark($filename, $dstName, $water, $pos = 1)
@@ -281,19 +280,24 @@ class Image
         $x = imagesx($img_w);
         $y = imagesy($img_w);
 
-        //根据$pos来决定目标的位置
-        switch ($pos) {
-            case 1:
-                $w = $src_x - $x;
-                $h = $src_y - $y;
-                break;
-            case 2:
-                $w = ($src_x - $x) / 2;
-                $h = ($src_y - $y) / 2;
-                break;
-            default:
-                $w = 0;
-                $h = 0;
+        if (is_numeric($pos)) {
+            //根据$pos来决定目标的位置
+            switch ($pos) {
+                case 1:
+                    $w = $src_x - $x;
+                    $h = $src_y - $y;
+                    break;
+                case 2:
+                    $w = ($src_x - $x) / 2;
+                    $h = ($src_y - $y) / 2;
+                    break;
+                default:
+                    $w = 0;
+                    $h = 0;
+            }
+        } else {
+            $w = $pos[0];
+            $h = $pos[1];
         }
 
         //将水印复制到另一个画板中
@@ -305,6 +309,44 @@ class Image
         //释放资源
         imagedestroy($img);
         imagedestroy($img_w);
+
+        return $result;
+    }
+
+    /**
+     * 在图片上写字
+     * @param $filename
+     * @param $dstName
+     * @param $letter
+     * @param $x
+     * @param $y
+     * @param int $foreColor
+     * @param string $fontFile 字体文件
+     * @param int $fontSize
+     * @return bool
+     */
+    public static function writeText($filename, $dstName, $letter, $x, $y, $foreColor = 0xFFFFFF, $fontFile = null, $fontSize = 12)
+    {
+        $image = self::createImage($filename);
+
+        $foreColor = imagecolorallocate($image,
+            (int)($foreColor % 0x1000000 / 0x10000),
+            (int)($foreColor % 0x10000 / 0x100),
+            (int)$foreColor % 0x100);
+
+        if ($fontFile != null && function_exists('imagettftext')) {
+            $angle = 0;
+            imagettftext($image, $fontSize, $angle, $x, $y, $foreColor, $fontFile, $letter);
+        } else {
+            //mac的gd库默认缺少freetype时，可用imagestring，方便开发环境使用
+            imagestring($image, 5, $x, $y, $letter, $foreColor);
+        }
+
+        //保存文件
+        $result = self::saveToFile($image, $dstName);
+
+        //释放资源
+        imagedestroy($image);
 
         return $result;
     }
