@@ -104,12 +104,16 @@ class CaptchaProvider implements ServiceProviderInterface
      * 直接输出图像
      * @return StreamedResponse
      */
-    public function create()
+    public function create($code = null)
     {
-        $header = array('Content-type' => 'image/png');
+        $header = array(
+            'Content-type' => 'image/png',
+            'Expires' => '0',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+        );
 
-        return new StreamedResponse(function () {
-            $this->renderImage($this->getVerifyCode(true));
+        return new StreamedResponse(function () use ($code) {
+            $this->renderImage(empty($code) ? $this->getVerifyCode(true) : $code);
         }, 200, $header);
     }
 
