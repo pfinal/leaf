@@ -71,7 +71,7 @@ class CurdCommand extends Command
             $bundleMiddleName = $this->convertToMiddle(substr($bundleName, 0, strlen($bundleName) - 6), false) . '/';
         }
 
-        $tableComment = self::getTableComment($tableName);
+        $tableComment = self::getTableComment($tableName, $entityName);
 
         $attributes = $allAttributes = self::getField($tableName);
         unset($attributes['created_at']);
@@ -303,7 +303,7 @@ class CurdCommand extends Command
         }
     }
 
-    protected function getTableComment($tableName)
+    protected function getTableComment($tableName, $defualtValue)
     {
         $config = Application::$app['db.config'];
 
@@ -317,17 +317,30 @@ class CurdCommand extends Command
             $database = $config['database'];
         }
 
+        //去掉占位符 例如 "{{%user}}" 得到 "user"
+        $tableName = preg_replace_callback(
+            '/(\\{\\{(%?[\w\-\.\$ ]+%?)\\}\\}|\\[\\[([\w\-\. ]+)\\]\\])/',
+            function ($matches) use ($config) {
+                if (isset($matches[3])) {
+                    return $matches[3];
+                } else {
+                    return str_replace('%', $config['tablePrefix'], $matches[2]);
+                }
+            },
+            $tableName
+        );
+
         //SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE table_name = 'pre_point' AND table_schema = 'shop_dev'
         $sql = 'SELECT * FROM ';
         $sql .= 'INFORMATION_SCHEMA.TABLES WHERE ';
         $sql .= "table_name = '{$tableName}' AND table_schema = '{$database}'";
 
-        $arr = DB::table($tableName)->findOneBySql($sql);
+        $arr = DB::table('')->findOneBySql($sql);
 
         if (isset($arr['TABLE_COMMENT'])) {
             return $arr['TABLE_COMMENT'];
         }
-        return $tableName;
+        return $defualtValue;
     }
 
     protected static function renderPHP($____tpl____, $____data____ = [])
