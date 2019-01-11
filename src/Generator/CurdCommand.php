@@ -48,18 +48,18 @@ class CurdCommand extends Command
         //获取表名 User::tableName()
         $tableName = call_user_func(array($entityNamespace . $entityName, 'tableName'));
 
-        //去掉占位符 例如 "{{%user}}" 得到 "user"
-        $tableName = preg_replace_callback(
-            '/(\\{\\{(%?[\w\-\.\$ ]+%?)\\}\\}|\\[\\[([\w\-\. ]+)\\]\\])/',
-            function ($matches) {
-                if (isset($matches[3])) {
-                    return $matches[3];
-                } else {
-                    return str_replace('%', '', $matches[2]);
-                }
-            },
-            $tableName
-        );
+//        //去掉占位符 例如 "{{%user}}" 得到 "user"
+//        $tableName = preg_replace_callback(
+//            '/(\\{\\{(%?[\w\-\.\$ ]+%?)\\}\\}|\\[\\[([\w\-\. ]+)\\]\\])/',
+//            function ($matches) {
+//                if (isset($matches[3])) {
+//                    return $matches[3];
+//                } else {
+//                    return str_replace('%', '', $matches[2]);
+//                }
+//            },
+//            $tableName
+//        );
 
         $middleName = $this->convertToMiddle($entityName);
         $bundlePath = $bundle->getPath() . DIRECTORY_SEPARATOR;
@@ -191,7 +191,7 @@ class CurdCommand extends Command
     protected function getField($tableName)
     {
         //提取MySQL的Comment
-        $fieldArr = DB::table('')->findAllBySql('show full fields from {{%' . $tableName . '}}');
+        $fieldArr = DB::table('')->findAllBySql('show full fields from ' . $tableName);
 
         //["Type"]=>
         //  int(11)
@@ -320,7 +320,7 @@ class CurdCommand extends Command
         //SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE table_name = 'pre_point' AND table_schema = 'shop_dev'
         $sql = 'SELECT * FROM ';
         $sql .= 'INFORMATION_SCHEMA.TABLES WHERE ';
-        $sql .= "table_name = '{$config['tablePrefix']}{$tableName}' AND table_schema = '{$database}'";
+        $sql .= "table_name = '{$tableName}' AND table_schema = '{$database}'";
 
         $arr = DB::table($tableName)->findOneBySql($sql);
 
