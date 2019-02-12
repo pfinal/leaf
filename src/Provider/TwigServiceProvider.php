@@ -2,6 +2,7 @@
 
 namespace Leaf\Provider;
 
+use Leaf\Html;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Leaf\Application;
@@ -98,6 +99,30 @@ class TwigServiceProvider implements ServiceProviderInterface
 
             $twig->addFunction(new \Twig_SimpleFunction('asset', function ($asset = '', $absoluteUrl = false) use ($app) {
                 return new \Twig_Markup(\Leaf\Url::asset($asset, $absoluteUrl), 'utf-8');
+            }));
+
+            //生成排序超链接
+            //{{ sort_by('username', '用户名') }}
+            $twig->addFunction(new \Twig_SimpleFunction('sort_by', function ($sort = '', $text = '') use ($app) {
+                $url = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+                $current = Application::$app['request']->get('sort');
+
+                if (!empty($current)) {
+
+                    if ($sort === ltrim($current, '-')) {
+
+                        if ($current[0] === '-') {
+                            $text = $text . ' <span class="glyphicon glyphicon-sort-by-attributes-alt"></span>';
+                        } else {
+                            $sort = "-$sort";
+                            $text = $text . ' <span class="glyphicon glyphicon-sort-by-attributes"></span>';
+                        }
+                    }
+                    $url = preg_replace('/([\?&]sort=)[\-]?[\w]+/', "$1$sort", $url);
+                } else {
+                    $url = $url . ((strpos($url, '?') === false) ? '?' : '&') . 'sort=' . $sort;
+                }
+                return new \Twig_Markup(Html::link($text, $url), 'utf-8');
             }));
 
             if (isset($app['debug']) && $app['debug']) {

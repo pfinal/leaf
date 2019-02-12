@@ -55,7 +55,7 @@
                             <thead>
                                 <tr>
 <?php  $i = 0; foreach ($attributes as $key => $value) {  if ($i++ > 0) { break; } ?>
-                                    <th>ID</th>
+                                    <th>{{ sort_by('id', 'ID') }}</th>
 <?php } ?>
 <?php  $i = 0; foreach ($attributesNoId as $key => $value) {  if ($i++ > 2) { break; } ?>
                                     <th><?php echo $value; ?></th>
