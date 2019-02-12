@@ -105,7 +105,7 @@ class TwigServiceProvider implements ServiceProviderInterface
             //{{ sort_by('username', '用户名') }}
             $twig->addFunction(new \Twig_SimpleFunction('sort_by', function ($sort = '', $text = '') use ($app) {
                 $url = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-                $current = Application::$app['request']->get('sort');
+                $current = Application::$app['request']->get('sortby');
 
                 if (!empty($current)) {
 
@@ -118,9 +118,9 @@ class TwigServiceProvider implements ServiceProviderInterface
                             $text = $text . ' <span class="glyphicon glyphicon-sort-by-attributes"></span>';
                         }
                     }
-                    $url = preg_replace('/([\?&]sort=)[\-]?[\w]+/', "$1$sort", $url);
+                    $url = preg_replace('/([\?&]sortby=)[\-]?[\w]+/', "$1$sort", $url);
                 } else {
-                    $url = $url . ((strpos($url, '?') === false) ? '?' : '&') . 'sort=' . $sort;
+                    $url = $url . ((strpos($url, '?') === false) ? '?' : '&') . 'sortby=' . $sort;
                 }
                 return new \Twig_Markup(Html::link($text, $url), 'utf-8');
             }));
