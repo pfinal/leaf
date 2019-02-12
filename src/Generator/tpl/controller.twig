@@ -41,7 +41,6 @@ class {{ entityName }}Controller
         //}
 
         $sortBy = $request->get('sortby', '-id');
-
         if (!in_array(ltrim($sortBy, '-'), ['id'])) {
             Session::setFlash('message', '指定字段不支持排序');
             return Redirect::back();
@@ -49,7 +48,7 @@ class {{ entityName }}Controller
 
         //数据
         $dataProvider = {{ entityName }}::where(implode(' and ', $condition), $params)
-            ->orderBy($request->get('sort', $sortBy))
+            ->orderBy($sortBy)
             ->paginate();
 
         //视图
