@@ -40,9 +40,16 @@ class {{ entityName }}Controller
         //    $params[':name'] = '%' . trim($search['name']) . '%';
         //}
 
+        $sortBy = $request->get('sortby', '-id');
+
+        if (!in_array(ltrim($sortBy, '-'), ['id'])) {
+            Session::setFlash('message', '指定字段不支持排序');
+            return Redirect::back();
+        }
+
         //数据
         $dataProvider = {{ entityName }}::where(implode(' and ', $condition), $params)
-            ->orderBy($request->get('sort', 'id desc'))
+            ->orderBy($request->get('sort', $sortBy))
             ->paginate();
 
         //视图
