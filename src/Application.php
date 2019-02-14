@@ -267,4 +267,14 @@ class Application extends Container
     {
         return $this['env'];
     }
+
+    public function getParam($key, $defaultVal = null)
+    {
+        if (key_exists($key, $this['params'])) {
+            return $this['params'][$key];
+        }
+
+        return $defaultVal;
+    }
+
 }
