@@ -136,7 +136,7 @@ class Util
     }
 
     /**
-     * 字符串截取(utf-8) 主要用于标题处理
+     * 字符串截取 主要用于标题处理
      *
      * @param $string
      * @param int $length 截取长度(字节数,一个汉字两个字节长度,英文数字一个字节长)
@@ -149,17 +149,10 @@ class Util
         if ($strip_tags) {
             $string = strip_tags($string);
         }
-        $pa = "/[\x01-\x7f]|[\xc2-\xdf][\x80-\xbf]|\xe0[\xa0-\xbf][\x80-\xbf]|[\xe1-\xef][\x80-\xbf][\x80-\xbf]|\xf0[\x90-\xbf][\x80-\xbf][\x80-\xbf]|[\xf1-\xf7][\x80-\xbf][\x80-\xbf][\x80-\xbf]/";
-        preg_match_all($pa, $string, $t_string);
-        $str = "";
-        for ($i = 0; $i < count($t_string[0]); $i++) {
-            $str .= $t_string[0][$i];
-            if (strlen(@iconv('utf-8', 'gbk', $str)) >= $length) { // gbk一个汉字长度为2
-                if ($i != count($t_string[0]) - 1) $str .= $append;
-                break;
-            }
-        }
-        return $str;
+
+        $arr = self::strSplitWithGbkLength($string, $length, $cut);
+
+        return join('', $arr) . ($cut ? $append : '');
     }
 
     /**
@@ -169,37 +162,121 @@ class Util
      */
     public static function stringLengthGBK($str)
     {
-        return strlen(@iconv('utf-8', 'gbk', $str));
+        //Wrong charset, conversion from `UTF-8' to `GBK' is not allowed
+        //return strlen(iconv('UTF-8', 'GBK', $str));
+
+        $pa = "/[\x01-\x7f]|[\xc2-\xdf][\x80-\xbf]|\xe0[\xa0-\xbf][\x80-\xbf]|[\xe1-\xef][\x80-\xbf][\x80-\xbf]|\xf0[\x90-\xbf][\x80-\xbf][\x80-\xbf]|[\xf1-\xf7][\x80-\xbf][\x80-\xbf][\x80-\xbf]/";
+        preg_match_all($pa, $str, $t_string);
+
+        $len = 0;
+        for ($i = 0; $i < count($t_string[0]); $i++) {
+            $tmp = ord($t_string[0][$i]) < 128 ? 1 : 2;
+            $len += $tmp;
+        }
+
+        return $len;
     }
 
     /**
      * 字符串分割到数组中
      * @param $string
-     * @param int $length 字节长度(字节数,一个汉字用两个字节长度,英文数字一个字节长)
+     * @param int $maxLength 截取的最大长度(一个汉字用两个字节长度,英文数字一个字节长)  传0表示不截取
+     * @param bool $cut 是否发生了截取
      * @return array
      */
-    public static function strSplitWithGbkLength($string, $length)
+    public static function strSplitWithGbkLength($string, $maxLength = 0, &$cut = false)
     {
-        $arr = array();
         $pa = "/[\x01-\x7f]|[\xc2-\xdf][\x80-\xbf]|\xe0[\xa0-\xbf][\x80-\xbf]|[\xe1-\xef][\x80-\xbf][\x80-\xbf]|\xf0[\x90-\xbf][\x80-\xbf][\x80-\xbf]|[\xf1-\xf7][\x80-\xbf][\x80-\xbf][\x80-\xbf]/";
         preg_match_all($pa, $string, $t_string);
 
-        $str = '';
+        if ($maxLength == 0) {
+            return $t_string[0];
+        }
+
+        $len = 0;
+
+        $res = array();
         for ($i = 0; $i < count($t_string[0]); $i++) {
-            if (self::stringLengthGBK($str . $t_string[0][$i]) <= $length) { // gbk一个汉字长度为2
-                $str .= $t_string[0][$i];
+
+            $tmp = ord($t_string[0][$i]) < 128 ? 1 : 2;
+
+            if ($len + $tmp <= $maxLength) {
+                $res[] = $t_string[0][$i];
+                $len += $tmp;
             } else {
-                $arr[] = $str;
-                $str = $t_string[0][$i];
+                $cut = true;
+                return $res;
             }
         }
 
-        if (strlen($str) > 0) {
-            $arr[] = $str;
-        }
-
-        return $arr;
+        return $res;
     }
+
+//    /**
+//     * 字符串截取(utf-8) 主要用于标题处理
+//     *
+//     * @param $string
+//     * @param int $length 截取长度(字节数,一个汉字两个字节长度,英文数字一个字节长)
+//     * @param bool $strip_tags 是否去掉标签
+//     * @param string $append 附加字符
+//     * @return string
+//     */
+//    public static function cutStringUtf8($string, $length, $strip_tags = true, $append = '...')
+//    {
+//        if ($strip_tags) {
+//            $string = strip_tags($string);
+//        }
+//        $pa = "/[\x01-\x7f]|[\xc2-\xdf][\x80-\xbf]|\xe0[\xa0-\xbf][\x80-\xbf]|[\xe1-\xef][\x80-\xbf][\x80-\xbf]|\xf0[\x90-\xbf][\x80-\xbf][\x80-\xbf]|[\xf1-\xf7][\x80-\xbf][\x80-\xbf][\x80-\xbf]/";
+//        preg_match_all($pa, $string, $t_string);
+//        $str = "";
+//        for ($i = 0; $i < count($t_string[0]); $i++) {
+//            $str .= $t_string[0][$i];
+//            if (strlen(@iconv('utf-8', 'gbk', $str)) >= $length) { // gbk一个汉字长度为2
+//                if ($i != count($t_string[0]) - 1) $str .= $append;
+//                break;
+//            }
+//        }
+//        return $str;
+//    }
+//
+//    /**
+//     * 按GBK方式计算字符串长度(一个汉字长度为2，英文字符为1)
+//     * @param $str
+//     * @return int
+//     */
+//    public static function stringLengthGBK($str)
+//    {
+//        return strlen(@iconv('utf-8', 'gbk', $str));
+//    }
+//
+//    /**
+//     * 字符串分割到数组中
+//     * @param $string
+//     * @param int $length 字节长度(字节数,一个汉字用两个字节长度,英文数字一个字节长)
+//     * @return array
+//     */
+//    public static function strSplitWithGbkLength($string, $length)
+//    {
+//        $arr = array();
+//        $pa = "/[\x01-\x7f]|[\xc2-\xdf][\x80-\xbf]|\xe0[\xa0-\xbf][\x80-\xbf]|[\xe1-\xef][\x80-\xbf][\x80-\xbf]|\xf0[\x90-\xbf][\x80-\xbf][\x80-\xbf]|[\xf1-\xf7][\x80-\xbf][\x80-\xbf][\x80-\xbf]/";
+//        preg_match_all($pa, $string, $t_string);
+//
+//        $str = '';
+//        for ($i = 0; $i < count($t_string[0]); $i++) {
+//            if (self::stringLengthGBK($str . $t_string[0][$i]) <= $length) { // gbk一个汉字长度为2
+//                $str .= $t_string[0][$i];
+//            } else {
+//                $arr[] = $str;
+//                $str = $t_string[0][$i];
+//            }
+//        }
+//
+//        if (strlen($str) > 0) {
+//            $arr[] = $str;
+//        }
+//
+//        return $arr;
+//    }
 
     /**
      * 是否Email
