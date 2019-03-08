@@ -295,11 +295,12 @@ namespace Leaf {
          * 如果不希望添加表前缀，使用'{{user}}'
          * 如果使用自定义表前缀，使用'{{wp_user}}'
          * @param string $tableName
+         * @param string $asName
          * @return \PFinal\Database\Builder
          */
-        public static function table($tableName = '')
+        public static function table($tableName = '', $asName = null)
         {
-            return (new Builder())->table($tableName);
+            return (new Builder())->table($tableName, $asName);
         }
 
         /**
