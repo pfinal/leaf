@@ -61,7 +61,7 @@ class ApiCommand extends CurdCommand
             $bundleMiddleName = $this->convertToMiddle(substr($bundleName, 0, strlen($bundleName) - 6), false) . '/';
         }
 
-        $tableComment = self::getTableComment($tableName);
+        $tableComment = self::getTableComment($tableName, $entityName);
 
         $attributes = $allAttributes = self::getField($tableName);
         unset($attributes['created_at']);
