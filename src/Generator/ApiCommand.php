@@ -38,18 +38,18 @@ class ApiCommand extends CurdCommand
         //获取表名 User::tableName()
         $tableName = call_user_func(array($entityNamespace . $entityName, 'tableName'));
 
-        //去掉占位符 例如 "{{%user}}" 得到 "user"
-        $tableName = preg_replace_callback(
-            '/(\\{\\{(%?[\w\-\.\$ ]+%?)\\}\\}|\\[\\[([\w\-\. ]+)\\]\\])/',
-            function ($matches) {
-                if (isset($matches[3])) {
-                    return $matches[3];
-                } else {
-                    return str_replace('%', '', $matches[2]);
-                }
-            },
-            $tableName
-        );
+//        //去掉占位符 例如 "{{%user}}" 得到 "user"
+//        $tableName = preg_replace_callback(
+//            '/(\\{\\{(%?[\w\-\.\$ ]+%?)\\}\\}|\\[\\[([\w\-\. ]+)\\]\\])/',
+//            function ($matches) {
+//                if (isset($matches[3])) {
+//                    return $matches[3];
+//                } else {
+//                    return str_replace('%', '', $matches[2]);
+//                }
+//            },
+//            $tableName
+//        );
 
         $middleName = $this->convertToMiddle($entityName);
         $bundlePath = $bundle->getPath() . DIRECTORY_SEPARATOR;
