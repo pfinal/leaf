@@ -28,6 +28,8 @@
                 {# 表单 #}
                 <form class="form-horizontal mt15" action="{{ url('<?php echo $bundleMiddleName; ?><?php echo $middleName; ?>/update',{'id': entity.id}) }}" method="post">
 
+                    <input type="hidden" name="returnUrl" value="{{ app.request.get('returnUrl', '')}}">
+
                     {{ include('@<?php echo $bundleName; ?>/<?php echo $middleName; ?>/_form.twig') }}
 
                     <div class="form-group">

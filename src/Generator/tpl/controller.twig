@@ -117,7 +117,7 @@ class {{ entityName }}Controller
                 //更新
                 if (DB::table({{ entityName }}::tableName())->wherePk($entity->id)->update($data)) {
                     Session::setFlash('message', '修改成功');
-                    return Redirect::to('{{ bundleMiddleName }}{{ middleName }}');
+                    return Redirect::to($request->get('returnUrl', '{{ bundleMiddleName }}{{ middleName }}'));
                 } else {
                     $error = '系统错误';
                 }

@@ -72,7 +72,7 @@
 <?php } ?>
                                     <td>
                                         {#<a href="{{ url('<?php echo $bundleMiddleName; ?><?php echo $middleName; ?>/view', {'id':item.id}) }}">详情</a>#}
-                                        <a href="{{ url('<?php echo $bundleMiddleName; ?><?php echo $middleName; ?>/update', {'id':item.id}) }}">修改</a>
+                                        <a href="{{ url('<?php echo $bundleMiddleName; ?><?php echo $middleName; ?>/update', {'id':item.id, returnUrl:app.request.getRequestUri()}) }}">修改</a>
                                         <a href="{{ url('<?php echo $bundleMiddleName; ?><?php echo $middleName; ?>/delete', {'id':item.id, _token:csrf_token() }) }}" class="leaf-confirm" data-method="post" data-dialog-content="您确定要删除吗?">删除</a>
                                     </td>
                                 </tr>
