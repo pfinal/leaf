@@ -4,7 +4,6 @@ namespace {{ bundleName }}\Controller;
 
 use Carbon\Carbon;
 use {{ entityNamespace }}{{ entityName }};
-use Leaf\DB;
 use Leaf\Json;
 use Leaf\Request;
 use Leaf\Validator;
@@ -162,7 +161,7 @@ class {{ entityName }}Controller
      * @Route /{{ bundleMiddleName }}{{ middleName }}/update
      * @Method post
      *
-     * @api {post} /city/update
+     * @api {post} /{{ bundleMiddleName }}{{ middleName }}/update
      * @apiParam {int} id
 {% for key, value in attributes %}
      * @apiParam {string} {{ key }} {{ value }}
