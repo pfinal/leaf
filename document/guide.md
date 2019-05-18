@@ -460,13 +460,15 @@ DBQuery连惯操作方法，返回DBQuery对象:
 
 手动分页
 
-    $query = DB::select('user')->where($condition, $params);
+```php
+$query = DB::select('user')->where($condition, $params);
 
-    $page = new Pagination();
-    $queryCount = clone $query;
-    $page->itemCount = $queryCount->count();
+$page = new Pagination();
+$queryCount = clone $query;
+$page->itemCount = $queryCount->count();
 
-    $query->limit($page->limit)->findAll();
+$query->limit($page->limit)->findAll();
+```
 
 ## 系统服务
 
