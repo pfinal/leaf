@@ -678,4 +678,4 @@ $app['Leaf\Pagination'] = function () {
 * [Excel操作](https://github.com/pfinal/excel)
 * [微信公众平台](https://github.com/pfinal/wechat)
 * [手机验证码](https://github.com/pfinal/sms)
-* [http客户端](https://github.com/pfinal/http)
+* [Http客户端](https://github.com/pfinal/http)
