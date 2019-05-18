@@ -1,7 +1,5 @@
 # Leafphp 快速入门
 
-===
-
 ## 交流QQ群 
 
     17778706
@@ -474,7 +472,7 @@ DBQuery连惯操作方法，返回DBQuery对象:
 
 会话，调用Session相关方法时，会自动开启Session
 
-```
+```php
 use Leaf\Session;
 
 //设置Session
@@ -501,7 +499,7 @@ $message = Session::getFlash('message');
    
 表单验证
 
-```
+```php
 $data = [
     'username' => 'jack',
     'email' => 'jack@b.c',
@@ -547,7 +545,7 @@ if (!Validator::validate($data, $rules, $labels)) {
 
 验证码
 
-```
+```php
 //注册
 $app->register(new \Leaf\Provider\CaptchaProvider());
 
@@ -588,7 +586,7 @@ return $obj->create('1234');
 文件上传
 
 
-```
+```php
 use Leaf\UploadedFile;
 $up = new UploadedFile($config);
 if ($up->doUpload($name)) {
@@ -598,19 +596,18 @@ if ($up->doUpload($name)) {
 ```
 认证
 
-```
+```php
 use Service\Auth
 Auth::onceUsingId($userId);
 Auth::loginUsingId($userId);
 
 Auth::getUser()
 Auth::getId()
-
 ```
 
 权限
 
-```
+```php
 $app->register(new \Leaf\Auth\GateProvider(), ['gate.config' => ['authClass' => 'Service\Auth']]);
 
 $app['gate'] = $app->extend('gate', function ($gate, $app) {
@@ -637,7 +634,7 @@ $bool = Auth::user()->can('task', $taskCode);
 
 自定义分页样式
 
-```
+```php
 $app['Leaf\Pagination'] = function () {
     $page = new \Leaf\Pagination();
     $page->pageSize = 15;
