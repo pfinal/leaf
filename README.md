@@ -434,14 +434,14 @@ php console make:bundle
 ```php
 $conn = DB::getConnection();
 
-$conn->execute()             执行SQL(INSERT、UPDATE、DELETE)
-$conn->query()               执行SQL(SELECT)
-$conn->queryScalar()         执行SQL,查询单一的值(SELECT COUNT)
-$conn->getLastInsertId()     返回自增id
-$conn->beginTransaction()    开启事务
-$conn->commit()              提交事务
-$conn->rollBack()            回滚事务
-$conn->getLastSql()          最近执行的SQL
+$conn->execute()             // 执行SQL(INSERT、UPDATE、DELETE)
+$conn->query()               // 执行SQL(SELECT)
+$conn->queryScalar()         // 执行SQL,查询单一的值(SELECT COUNT)
+$conn->getLastInsertId()     // 返回自增id
+$conn->beginTransaction()    // 开启事务
+$conn->commit()              // 提交事务
+$conn->rollBack()            // 回滚事务
+$conn->getLastSql()          // 最近执行的SQL
 ```
 
 查询构造器
@@ -671,6 +671,19 @@ $app['Leaf\Pagination'] = function () {
 };
 ```
 
+命令行
+
+```shell
+php console down              # 维护模式
+php console up                # 退出维护模式
+php console make:bundle       # 创建bundle
+php console make:entity       # 创建实体类
+php console make:curd         # 创建增删改查控制器和视图
+php console make:api          # 创建Api控制器
+php console migrate           # 执行数据迁移
+php console migrate:create    # 创建数据迁移文件
+php console migrate:rollback  # 回滚数据迁移
+```
 
 更多扩展
 
