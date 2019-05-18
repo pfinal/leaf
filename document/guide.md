@@ -7,6 +7,7 @@
 
 ## 编码规范
 
+* 遵循PSR-1、PSR-2、PSR3、PSR-4、PSR-16 等标准
 * PHP代码文件必须以 `<?php` 标签开始，不写PHP结束标记: `?>`
 * PHP代码文件必须使用 不带BOM的 UTF-8 编码
 * 命名空间与目录对应，文件名采用"类名.php"格式，目录大小写与命令空间相同，类名大小写与文件名相同(PSR-4规范)
@@ -27,7 +28,7 @@
 
 ## 安装
 
-    composer create-project pfinal/leafphp --prefer-dist
+    composer create-project pfinal/leafphp
 
 ## 目录结构
 
@@ -148,7 +149,7 @@ Route::any('foo', function(Request $request){
 use Leaf\Url;
 $url = Url::to('foo');                 /demo/web/foo
 $url = Url::to('foo', ['id' => 1]);    /demo/web/foo?id=1
-$url = Url::to('foo', [], true);       http://localhost/demo/web/foo
+$url = Url::to('foo', true);           http://localhost/demo/web/foo
 ```
 如果访问时url中没有隐藏入口文件`index.php`,则生成的url也会自动包含`index.php`
 
@@ -188,7 +189,7 @@ Route::any('/', function(){
     return View::render('home.twig'); // 输出views/home.twig模板中内容
     
     //json
-    return Json::render(['data' => 'SUCCESS']);
+    return Json::render(['status' => true, 'data' => 'SUCCESS']);
     return Json::renderWithTrue('SUCCESS');
     return Json::renderWithTrue('ERROR');
 });
@@ -197,11 +198,10 @@ Route::any('/', function(){
 重定向
 
 ```
-use Leaf\RedirectResponse;
-$url = Url::to('foo');
-return new RedirectResponse($url);
-
-return new RedirectResponse('http://www.leafphp.com');
+use Leaf\Redirect;
+return Redirect::to('foo');                    // 跳转到 Url::to('foo') 
+return Redirect::to('/');                      // 项目的根目录
+return Redirect::to('http://www.example.com'); // 外部链接
 ```
 
 ## 中间件
@@ -259,7 +259,7 @@ Route::group(['middleware' => 'test'], function () {
 ```
 
 如果希望中间件,在执行之后生效,可以使用下面的方式,
-`$next()`返回值可能是`Symfony\Component\HttpFoundation\Response`对象或`string`
+`$next()`返回值可能是`Request\Response`对象或`string`
 
 ```
 use Leaf\Request;
@@ -298,7 +298,6 @@ Route::get('home','Controller\SiteController@home');
 浏览器访问  `http://localhost/demo/web/home`
 
 如果需要包含多个字词，建议在 URI 中使用`中杠`来分隔,例如`user-profile`
-
 
 使用注解语法注册路由,自动注册路由。class上的`Middleware`,将对整个控制器生效
 
@@ -350,7 +349,7 @@ return View::render('home', [
 将变量共享给所有模板
 
 ```
-\Leaf\View::share('url', 'http://leafphp.com');
+\Leaf\View::share('url', 'http://example.com');
 ```
 
 扩展twig模板 增加一个count函数,用于在模板中统计数组成员数量(twig提供了length过滤器)
@@ -367,7 +366,7 @@ $app->extend('twig', function ($twig, $app) {
 twig中使用自定义的count函数
 
 ```
-{{ count([1,3,5]) }} 或  {{ count({"id":1,"name":"Ethan"}) }}
+{{ count([1, 3, 5]) }} 或  {{ count({"id":1, "name":"Ethan"}) }}
 ```
 
 
@@ -449,6 +448,7 @@ DBQuery返回数据的方法:
     findAll
     findAllBySql
     count
+    paginate($pageSize)
 
 DBQuery连惯操作方法，返回DBQuery对象:
 
@@ -460,7 +460,7 @@ DBQuery连惯操作方法，返回DBQuery对象:
     asEntity
     lockForUpdate
 
-分页
+手动分页
 
     $query = DB::select('user')->where($condition, $params);
 

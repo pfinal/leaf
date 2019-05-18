@@ -8,16 +8,18 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 class Redirect
 {
     /**
-     * 重定向到指定路由
+     * 重定向到指定路由或绝对地址
      * @param $url
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public static function to($url)
+    public static function to($url, $params = array())
     {
-        if (!(stripos($url, '/') === 0 || preg_match('/^http(s)?:\/\//i', $url))) { //  "/" "http://" "https://"
-            $url = Url::to($url);
+        // 以这些开头的直接跳转: "/"、"http://"、"https://"
+        if (stripos($url, '/') === 0 || preg_match('/^http(s)?:\/\//i', $url)) {
+            return new RedirectResponse($url);
         }
 
+        $url = Url::to($url, $params);
         return new RedirectResponse($url);
     }
 
