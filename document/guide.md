@@ -32,7 +32,6 @@
 
 ## 目录结构
 
-
 * config 配置文件目录
     * app.php 应用配置文件
     * routes.php 路由
@@ -547,17 +546,102 @@ if (!Validator::validate($data, $rules, $labels)) {
 
 验证码
 
+```
+//注册
+$app->register(new \Leaf\Provider\CaptchaProvider());
+
+//生成验证码图片
+\Leaf\Route::get('captcha', function (\Leaf\Application $app) {
+    return $app['captcha']->create();
+});
+
+//表单中使用验证码
+\Leaf\Route::any('show', function () {
+    $html = <<<TAG
+<form method="post" action="{{ url('validate') }}">
+    <img src="{{ url('captcha') }}" onclick="this.src='{{ url('captcha') }}?refresh='+Math.random()" style="cursor:pointer" alt="captcha">
+    <input name="code">
+    <button type="submit">提交</button>
+</form>
+TAG;
+    return View::renderText($html);
+});
+
+//提交表单时验证输入是否正确
+\Leaf\Route::post('validate', function (\Leaf\Application $app, \Leaf\Request $request) {
+    if ($app['captcha']->validate($request->get('code'))) {
+        // 'success';
+    } else {
+        // 'Verification code is invalid.';
+    }
+});
+
+
+// 显示指定内容验证码图片
+$obj = new \Leaf\Provider\CaptchaProvider();
+
+return $obj->create('1234');
+        
+```
+
 文件上传
 
+
+```
+use Leaf\UploadedFile;
+$up = new UploadedFile($config);
+if ($up->doUpload($name)) {
+    //上传后的文件信息
+    $file = $up->getFile();
+}
+```
 认证
+
+```
+use Service\Auth
+Auth::onceUsingId($userId);
+Auth::loginUsingId($userId);
+
+Auth::getUser()
+Auth::getId()
+
+```
 
 权限
 
-//分页样式
-$app['Leaf\\Pagination'] = function () {
+```
+$app->register(new \Leaf\Auth\GateProvider(), ['gate.config' => ['authClass' => 'Service\Auth']]);
+
+$app['gate'] = $app->extend('gate', function ($gate, $app) {
+
+    /** @var $app \Leaf\Application */
+    /** @var $gate \Leaf\Auth\Gate */
+
+    //用户是否有执行某个task的权限
+    $gate->define('task', function (\Entity\User $user, $taskCode) {
+        // 判断权限
+        if (xxx){
+            return true;
+        }else{
+            return false;
+        }
+    });
+
+    return $gate;
+});
+
+// 判断是否有权限
+$bool = Auth::user()->can('task', $taskCode);
+```
+
+自定义分页样式
+
+```
+$app['Leaf\Pagination'] = function () {
     $page = new \Leaf\Pagination();
     $page->pageSize = 15;
     $page->prevPageLabel = '<span class="glyphicon glyphicon-chevron-left"></span>';
     $page->nextPageLabel = '<span class="glyphicon glyphicon-chevron-right"></span>';
     return $page;
 };
+```
