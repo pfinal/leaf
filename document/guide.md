@@ -423,40 +423,44 @@ php console make:bundle
 
 基本用法
 
-    DB::getConnection()
+```php
+$conn = DB::getConnection();
 
-    execute             执行SQL(INSERT、UPDATE、DELETE)
-    query               执行SQL(SELECT)
-    queryScalar         执行SQL,查询单一的值(SELECT COUNT)
-    getLastInsertId     返回自增id
-    beginTransaction    开启事务
-    commit              提交事务
-    rollBack            回滚事务
-    getLastSql          最近执行的SQL
+$conn->execute()             执行SQL(INSERT、UPDATE、DELETE)
+$conn->query()               执行SQL(SELECT)
+$conn->queryScalar()         执行SQL,查询单一的值(SELECT COUNT)
+$conn->getLastInsertId()     返回自增id
+$conn->beginTransaction()    开启事务
+$conn->commit()              提交事务
+$conn->rollBack()            回滚事务
+$conn->getLastSql()          最近执行的SQL
+```
 
 查询构造器
 
-    DBQuery DB::table()
+```php
+DBQuery DB::table()
 
-DBQuery返回数据的方法:
+// DBQuery返回数据的方法:
 
-    findOne
-    findByPk
-    findOneBySql
-    findAll
-    findAllBySql
-    count
-    paginate($pageSize)
+findOne()
+findByPk()
+findOneBySql()
+findAll()
+findAllBySql()
+count()
+paginate($pageSize)
 
-DBQuery连惯操作方法，返回DBQuery对象:
+//DBQuery连惯操作方法，返回DBQuery对象:
 
-    where
-    whereIn
-    limit
-    offset
-    orderBy
-    asEntity
-    lockForUpdate
+where()
+whereIn()
+limit()
+offset()
+orderBy()
+asEntity()
+lockForUpdate()
+```
 
 手动分页
 
@@ -532,21 +536,24 @@ if (!Validator::validate($data, $rules, $labels)) {
 ```
 
 错误
-	
-    use Leaf\Exception\HttpException;
 
-    throw new HttpException(400, '您访问的页面不存在');
-    throw new HttpException(500, '服务器内部错误');
+```php
+use Leaf\Exception\HttpException;
+
+throw new HttpException(400, '您访问的页面不存在');
+throw new HttpException(500, '服务器内部错误');
+```
 
 日志
 
-    use Leaf\Log;
-	
-    Log::debug("日志内容");
-    Log::info("日志内容");
-    Log::warning("日志内容");
-    Log::error("日志内容");
+```php
+use Leaf\Log;
 
+Log::debug("日志内容");
+Log::info("日志内容");
+Log::warning("日志内容");
+Log::error("日志内容");
+```
 
 验证码
 
