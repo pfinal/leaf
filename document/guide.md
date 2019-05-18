@@ -57,7 +57,7 @@
     
 ## nginx配置
 
-```
+```nginx
 # ... 
 
 server{
@@ -94,7 +94,7 @@ server{
 	
 基本 GET 路由，浏览器访问 `http://localhost/demo/web`
 
-```
+```php
 use Leaf\Route;
 Route::get('/', function(){
     return 'Hello Leafphp!';
@@ -103,7 +103,7 @@ Route::get('/', function(){
 
 只允许POST请求的路由，以POST方法访问 `http://localhost/demo/web/foo`
 
-```
+```php
 Route::post('foo', function(){
     return 'post only';
 });
@@ -111,7 +111,7 @@ Route::post('foo', function(){
 
 注册路由响应任意方式的HTTP请求，不对请求方法进行限制，post或get均可，浏览器访问 `http://localhost/demo/web/bar`
 
-```
+```php
 Route::any('bar', function(){
     return 'any';
 });
@@ -119,7 +119,7 @@ Route::any('bar', function(){
 
 基础路由参数 浏览器访问 `http://localhost/demo/web/user/1`
 
-```
+```php
 Route::get('user/:id', function($id){
     return 'user id: ' . $id;
 });
@@ -128,7 +128,7 @@ Route::get('user/:id', function($id){
 方法注入，框架将自动注入`Leaf\Request`实例，浏览器访问 `http://localhost/demo/web/foo?name=leaf`
 
 
-```
+```php
 use Leaf\Request;
 Route::any('foo', function(Request $request){
     $name = $request->get('name');
@@ -143,7 +143,7 @@ Route::any('foo', function(Request $request){
 
 生成URL
 
-```
+```php
 use Leaf\Url;
 $url = Url::to('foo');                 /demo/web/foo
 $url = Url::to('foo', ['id' => 1]);    /demo/web/foo?id=1
@@ -155,7 +155,7 @@ $url = Url::to('foo', true);           http://localhost/demo/web/foo
 
 ### Request
 
-```
+```php
 use Leaf\Request;
 Route::any('test', function (Request $request) {
 
@@ -173,7 +173,7 @@ Route::any('test', function (Request $request) {
 
 ### Response
 
-```
+```php
 use Leaf\View;
 use Leaf\Response;
 use Leaf\Json;
@@ -195,7 +195,7 @@ Route::any('/', function(){
 
 重定向
 
-```
+```php
 use Leaf\Redirect;
 return Redirect::to('foo');                    // 跳转到 Url::to('foo') 
 return Redirect::to('/');                      // 项目的根目录
@@ -206,7 +206,7 @@ return Redirect::to('http://www.example.com'); // 外部链接
 
 编写中间件类 `src/Middleware/TestMiddleware.php`
 
-```
+```php
 <?php
 namespace Middleware;
 use Leaf\Request;
@@ -225,12 +225,12 @@ class TestMiddleware
 
 注册一个名为`test`的中间件
 
-```
+```php
 $app['test'] = 'Middleware\TestMiddleware';
 ```
 为路由绑定这个`test`中间件
 
-```
+```php
 use Leaf\Request;
 Route::any('info', function (Request $request) {
     return $request->get('age');
@@ -244,7 +244,7 @@ Route::any('info', function (Request $request) {
 
 为一组路由绑定中间件 (绑定多个中间件，传入数组即可)
 
-```
+```php
 use Leaf\Request;
 Route::group(['middleware' => 'test'], function () {
 
@@ -259,7 +259,7 @@ Route::group(['middleware' => 'test'], function () {
 如果希望中间件,在执行之后生效,可以使用下面的方式,
 `$next()`返回值可能是`Request\Response`对象或`string`
 
-```
+```php
 use Leaf\Request;
 public function handle(Request $request, \Closure $next)
 {
@@ -275,7 +275,7 @@ public function handle(Request $request, \Closure $next)
 
 任何PHP类均可作为控制器
 
-```
+```php
 <?php
 namespace Controller;
 class SiteController
@@ -289,7 +289,7 @@ class SiteController
 
 路由指向控制器中的方法
 
-```
+```php
 Route::get('home','Controller\SiteController@home');
 
 ```
@@ -299,7 +299,7 @@ Route::get('home','Controller\SiteController@home');
 
 使用注解语法注册路由,自动注册路由。class上的`Middleware`,将对整个控制器生效
 
-```
+```php
 <?php
 // src/Controller/UserController.php
 /**
@@ -329,7 +329,7 @@ twig
 
 blade	[http://laravel.com/docs/5.1/blade](http://laravel.com/docs/5.1/blade)
 
-```
+```php
 use Leaf\View;
 
 // views/index.twig
@@ -346,13 +346,13 @@ return View::render('home', [
 
 将变量共享给所有模板
 
-```
+```php
 \Leaf\View::share('url', 'http://example.com');
 ```
 
 扩展twig模板 增加一个count函数,用于在模板中统计数组成员数量(twig提供了length过滤器)
 
-```
+```php
 $app->extend('twig', function ($twig, $app) {
     /** @var $twig \Twig_Environment */
     $twig->addFunction(new \Twig_SimpleFunction('count', function ($arr) use ($app) {
@@ -374,7 +374,7 @@ Bundle可以更好的组织功能模块
  
 目录结构
 
-```
+```php
 src/
     FooBundle/           Bundle总目录
         FooBundle.php    Bundle类文件
@@ -386,7 +386,7 @@ src/
  
 Bundle类,继承自`Leaf\Bundle`类即可,主要用于定位Bundle所在目录
 
-```
+```php
 // src/FooBundle/FooBundle.php
 class FooBundle extends \Leaf\Bundle
 {
@@ -395,7 +395,7 @@ class FooBundle extends \Leaf\Bundle
 
 注册Bundle
 
-```
+```php
 $app->registerBundle(new \FooBundle\FooBundle());
 ```
 
@@ -403,7 +403,7 @@ $app->registerBundle(new \FooBundle\FooBundle());
 
 Bundle的视图文件位于Bundle的resources/views目录中
 
-```
+```php
 return View::render('@FooBundle/home.twig');
 ```
 顶级views目录中,与Bundle同名目录下的视图文件,将优先使用。
@@ -415,7 +415,7 @@ Bundle注册后,Bundle的路由文件会自动加载,例如`FooBundle/resources/
 
 自动生成Bundle
 
-```
+```php
 php console make:bundle
 ```
 
@@ -469,6 +469,9 @@ $page->itemCount = $queryCount->count();
 
 $query->limit($page->limit)->findAll();
 ```
+
+[数据库操作详细文档](https://github.com/pfinal/database/blob/master/doc/index.md)
+
 
 ## 系统服务
 

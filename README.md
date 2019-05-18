@@ -9,4 +9,3 @@ composer create-project pfinal/leafphp
 
 [快速上手](document/guide.md)
 
-[数据库操作](https://github.com/pfinal/database/blob/master/doc/index.md)
