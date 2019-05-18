@@ -439,27 +439,32 @@ $conn->getLastSql()          最近执行的SQL
 查询构造器
 
 ```php
-DBQuery DB::table()
+$query = DB::table()
 
 // DBQuery返回数据的方法:
 
-findOne()
-findByPk()
-findOneBySql()
-findAll()
-findAllBySql()
-count()
-paginate($pageSize)
+$query->findOne()
+$query->findByPk()
+$query->findOneBySql()
+$query->findAll()
+$query->findAllBySql()
+$query->count()
+$query->paginate($pageSize)
 
 //DBQuery连惯操作方法，返回DBQuery对象:
 
-where()
-whereIn()
-limit()
-offset()
-orderBy()
-asEntity()
-lockForUpdate()
+$query->where()
+$query->whereIn()
+$query->limit()
+$query->offset()
+$query->orderBy()
+$query->asEntity()
+$query->lockForUpdate()
+$query->lockInShareMode()
+
+//分块操作
+$query->chunk()
+$query->chunkById()
 ```
 
 手动分页
