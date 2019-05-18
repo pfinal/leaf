@@ -2,7 +2,7 @@
 
 ## 安装
 
-```shell
+```
 // php >= 5.4
 composer create-project pfinal/leafphp
 ```
