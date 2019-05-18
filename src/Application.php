@@ -94,6 +94,7 @@ class Application extends Container
 
     /**
      * 初始化
+     * @throws \Exception
      */
     public function init()
     {
@@ -128,6 +129,7 @@ class Application extends Container
      * Start
      *
      * @param null $request
+     * @throws \Exception
      */
     public function run($request = null)
     {
@@ -276,5 +278,4 @@ class Application extends Container
 
         return $defaultVal;
     }
-
 }

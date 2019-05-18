@@ -144,8 +144,10 @@ Route::any('foo', function(Request $request){
 
 支持注入的对象
 
-    Leaf\Request
-    Leaf\Application
+```php
+Leaf\Request
+Leaf\Application
+```
 
 生成URL
 
