@@ -540,6 +540,8 @@ if (!Validator::validate($data, $rules, $labels)) {
 }
 ```
 
+[验证器详细文档](document/validate.md)
+
 错误
 
 ```php
