@@ -52,14 +52,7 @@ class Url
         $host = '';
         if ($absoluteUrl) {
 
-            //$_SERVER['REQUEST_SCHEME']
-            if (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
-                $proto = strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']);
-            } else {
-                $proto = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off' ? 'https' : 'http';
-            }
-
-            $host = $proto . '://' . $_SERVER['HTTP_HOST'];
+            $host = self::getScheme() . '://' . $_SERVER['HTTP_HOST'];
         }
 
         return $host . static::asset($script) . $pathInfo . $query;
@@ -88,5 +81,22 @@ class Url
         }
 
         return $host . Application::$app['request']->getBasePath() . $asset;
+    }
+
+    private static function getScheme()
+    {
+        //$_SERVER['REQUEST_SCHEME']
+        if (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
+            $proto = strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']);
+        } else {
+            $proto = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off' ? 'https' : 'http';
+        }
+
+        return $proto;
+    }
+
+    public static function current()
+    {
+        return self::getScheme() . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     }
 }
