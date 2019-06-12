@@ -12,17 +12,15 @@ class Util
     /**
      * 精度计算
      * 默认使用bcmath扩展
-     * 如果没有启用bcmath扩展: 比较大小时转为整数比较、计算时使用number_format格式化返回值
      *
      * var_dump(floor((0.1 + 0.7) * 10)); // 7
-     * var_dump(floor(\Rain\Util::calc(\Rain\Util::calc(0.1, 0.7, '+'), 10, '*'))); // 8
+     * var_dump(floor(Util::calc(Util::calc(0.1, 0.7, '+'), 10, '*'))); // 8
      *
      * @param string $a
      * @param string $b
      * @param string $operator 操作符 支持: "+"、 "-"、 "*"、 "/"、 "comp"
      * @param int $scale 小数精度位数，默认2位
      * @return string|int 加减乖除运算，返回string。比较大小时，返回int(相等返回0, $a大于$b返回1, 否则返回-1)
-     * @throws \Exception
      */
     public static function calc($a, $b, $operator, $scale = 2)
     {
@@ -38,7 +36,7 @@ class Util
         );
 
         if (!array_key_exists($operator, $bc)) {
-            throw new \Exception('operator error');
+            throw new \Exception('operator invalid');
         }
 
         if (function_exists($bc[$operator])) {
@@ -62,10 +60,14 @@ class Util
             case 'comp':
 
                 // 按指定精度，去掉小数点，放大为整数字符串
-                $a = ltrim(number_format((float)$a, $scale, '', ''), '0');
-                $b = ltrim(number_format((float)$b, $scale, '', ''), '0');
-                $a = $a === '' ? '0' : $a;
-                $b = $b === '' ? '0' : $b;
+                //$a = ltrim(number_format((float)$a, $scale, '', ''), '0');  //echo number_format(2.609, 2, '.', '');  => 2.61
+                //$b = ltrim(number_format((float)$b, $scale, '', ''), '0');
+
+                //$a = $a === '' ? '0' : $a;
+                //$b = $b === '' ? '0' : $b;
+
+                $a = self::numberCut($a, $scale);
+                $b = self::numberCut($b, $scale);
 
                 if ($a === $b) {
                     return 0;
@@ -74,12 +76,46 @@ class Util
                 return $a > $b ? 1 : -1;
 
             default:
-                throw new \Exception('operator error');
+                throw new \Exception('operator invalid');
         }
 
-        $c = number_format($c, $scale, '.', '');
+        // $c = number_format($c, $scale, '.', '');
+        $c = self::numberCut($c, $scale);
 
         return $c;
+    }
+
+    /**
+     * 保留指定精度的小数位，超出部份直接舍去
+     * @param string $v
+     * @param $scale
+     * @return string
+     */
+    public static function numberCut($v, $scale)
+    {
+        $scale = (int)$scale;
+        if ($scale < 0) {
+            throw new \Exception('scale invalid');
+        }
+
+        $v = (string)$v;
+        $dot = strpos($v, '.');
+
+        //确保小数点后有足够位数的"0"
+        $append = str_repeat('0', $scale);
+
+        if ($dot === false) {          // "123" => "123.00"
+            $dot = strlen($v);
+            $v = $v . '.' . $append;
+        } else {                       // "0.123" => "0.12300"
+            $v = $v . $append;
+        }
+
+        if ($scale === 0) {
+            return substr($v, 0, $dot);
+        }
+
+        return substr($v, 0, $dot + 1 + $scale);
     }
 
     /**
