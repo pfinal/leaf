@@ -4,6 +4,7 @@ namespace Leaf\Provider;
 
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
+use PFinal\Database\Builder;
 
 /**
  * 数据库
@@ -18,8 +19,10 @@ class DatabaseServiceProvider implements ServiceProviderInterface
      */
     public function register(Container $app)
     {
-        $app['db'] = function () use ($app) {
-            return new \PFinal\Database\Builder($app['db.config']);
+        $app['db'] = $app['PFinal\Database\Builder'] = function () use ($app) {
+            return new Builder($app['db.config']);
         };
+
+        Builder::setContainer($app);
     }
 }
