@@ -19,7 +19,7 @@ class DatabaseServiceProvider implements ServiceProviderInterface
      */
     public function register(Container $app)
     {
-        $app['db'] = $app['PFinal\Database\Builder'] = function () use ($app) {
+        $app['PFinal\Database\Builder'] = function () use ($app) {
             return new Builder($app['db.config']);
         };
 
