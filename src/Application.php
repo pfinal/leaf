@@ -3,6 +3,7 @@
 namespace Leaf;
 
 use PFinal\Container\Container;
+use PFinal\Pipeline\Pipeline;
 
 class Application extends Container
 {
@@ -89,12 +90,11 @@ class Application extends Container
      */
     public static function getVersion()
     {
-        return '2.5';
+        return '2.6';
     }
 
     /**
      * 初始化
-     * @throws \Exception
      */
     public function init()
     {
@@ -129,7 +129,6 @@ class Application extends Container
      * Start
      *
      * @param null $request
-     * @throws \Exception
      */
     public function run($request = null)
     {
@@ -152,7 +151,13 @@ class Application extends Container
 
         $this->route($this);
 
-        $this['router']->dispatch($this['request'])->send();
+        //全局中间件
+        $pipeline = new Pipeline($this);
+        $response = $pipeline->send($this['request'])->through($this['middleware'])->then(function (Request $request) {
+            return $this['router']->dispatch($request);
+        });
+
+        $response->send();
     }
 
     /**
@@ -171,23 +176,19 @@ class Application extends Container
             return;
         }
 
-        //全局中间件
-        Route::group(['middleware' => $app['middleware']], function () use ($app) {
+        //基础路由文件
+        $routeFile = isset($app['route.file']) ? $app['route.file'] : $app['path'] . '/config/routes.php';
 
-            //基础路由文件
-            $routeFile = isset($app['route.file']) ? $app['route.file'] : $app['path'] . '/config/routes.php';
+        if (file_exists($routeFile)) {
+            require $routeFile;
+        }
 
-            if (file_exists($routeFile)) {
-                require $routeFile;
+        //Bundle中的路由文件
+        foreach ($this->bundles as $bundle) {
+            if (file_exists($bundle->getPath() . '/resources/routes.php')) {
+                require $bundle->getPath() . '/resources/routes.php';
             }
-
-            //Bundle中的路由文件
-            foreach ($this->bundles as $bundle) {
-                if (file_exists($bundle->getPath() . '/resources/routes.php')) {
-                    require $bundle->getPath() . '/resources/routes.php';
-                }
-            }
-        });
+        }
 
         if ($useCache) {
             file_put_contents($cacheFile, serialize($app['router']->getNodeData()), LOCK_EX);
@@ -278,4 +279,5 @@ class Application extends Container
 
         return $defaultVal;
     }
+
 }
