@@ -13,7 +13,7 @@ class DBFacade
 {
     public static function __callStatic($name, $arguments)
     {
-        $db = Application::$app['db'];
+        $db = Application::$app['PFinal\Database\Builder'];
 
         if (method_exists($db, $name)) {
             return call_user_func_array([$db, $name], $arguments);
