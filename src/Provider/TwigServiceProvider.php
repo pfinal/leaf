@@ -118,7 +118,7 @@ class TwigServiceProvider implements ServiceProviderInterface
                             $text = $text . ' <span class="glyphicon glyphicon-sort-by-attributes"></span>';
                         }
                     }
-                    $url = preg_replace('/([\?&]sortby=)[\-]?[\w]+/', "$1$sort", $url);
+                    $url = preg_replace('/([\?&]sortby=)[\-]?[\w\.]+/', "$1$sort", $url);
                 } else {
                     $url = $url . ((strpos($url, '?') === false) ? '?' : '&') . 'sortby=' . $sort;
                 }
