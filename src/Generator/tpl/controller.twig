@@ -76,7 +76,7 @@ class {{ entityName }}Controller
 
                 $data['created_at'] = $data['updated_at'] = Carbon::now();
 
-                if (DB::table({{ entityName }}::tableName())->insert($data)) {
+                if ({{ entityName }}::insert($data)) {
                     Session::setFlash('message', '添加成功');
                     return Redirect::to('{{ bundleMiddleName }}{{ middleName }}');
                 } else {
@@ -115,7 +115,7 @@ class {{ entityName }}Controller
                 $data['updated_at'] = Carbon::now();
 
                 //更新
-                if (DB::table({{ entityName }}::tableName())->wherePk($entity->id)->update($data)) {
+                if ({{ entityName }}::wherePk($entity->id)->update($data)) {
                     Session::setFlash('message', '修改成功');
                     return Redirect::to($request->get('returnUrl', '{{ bundleMiddleName }}{{ middleName }}'));
                 } else {
@@ -159,9 +159,7 @@ class {{ entityName }}Controller
 //    public function view(Request $request, Application $app)
 //    {
 //        //查询
-//        $entity = DB::table({{ entityName }}::tableName())
-//            ->asEntity({{ entityName }}::className())
-//            ->findByPkOrFail($request->get('id'));
+//        $entity = {{ entityName }}::findByPkOrFail($request->get('id'));
 //
 //        //视图
 //        return View::render('@{{ bundleName }}/{{ middleName }}/view.twig', [
