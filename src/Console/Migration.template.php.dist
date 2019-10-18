@@ -1,0 +1,32 @@
+<?php
+$namespaceDefinition
+
+use $useClassName;
+
+class $className extends $baseClassName
+{
+    //php console migrate -x   (--dry-run)
+    //php console migrate
+    public function up()
+    {
+        // alter table {{%user}} add `test` INT NOT NULL DEFAULT 0 COMMENT '测试' after `id`;
+        $sql = <<<SQL
+
+SQL;
+
+        $sql = \Leaf\DB::getConnection()->quoteSql($sql);
+        $parser = new \PhpMyAdmin\SqlParser\Parser($sql);
+
+        foreach ($parser->errors as $error) {
+            throw $error;
+        }
+
+        foreach ($parser->statements as $statement) {
+            $this->execute($statement->build());
+        }
+    }
+
+    public function down()
+    {
+    }
+}

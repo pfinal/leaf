@@ -3,7 +3,7 @@
 ## 安装
 
 ```
-composer create-project pfinal/leafphp
+composer create-project pfinal/leafphp demo
 ```
 
 ## 交流QQ群 

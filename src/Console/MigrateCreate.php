@@ -15,4 +15,9 @@ class MigrateCreate extends \Phinx\Console\Command\Create
         parent::configure();
         $this->setName('migrate:create');
     }
+
+    protected function getMigrationTemplateFilename()
+    {
+        return __DIR__ . '/Migration.template.php.dist';
+    }
 }
