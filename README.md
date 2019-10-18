@@ -31,10 +31,6 @@ composer create-project pfinal/leafphp demo
 * 路由 route
 
 
-## 安装
-
-    composer create-project pfinal/leafphp
-
 ## 目录结构
 
 * config 配置文件目录
