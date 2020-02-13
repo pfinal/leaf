@@ -77,7 +77,8 @@ class Url
 
         $host = '';
         if ($absoluteUrl) {
-            $host = Application::$app['request']->getSchemeAndHttpHost();
+            // $host = Application::$app['request']->getSchemeAndHttpHost();
+            $host = self::getScheme() . '://' . $_SERVER['HTTP_HOST'];
         }
 
         return $host . Application::$app['request']->getBasePath() . $asset;
