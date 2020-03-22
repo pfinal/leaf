@@ -11,6 +11,14 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class Json
 {
+    protected static $cb = null;
+
+    public static function setResultHandle($cb)
+    {
+        static::$cb = $cb;
+    }
+
+
     /**
      * json encode
      * @param $data
@@ -42,7 +50,15 @@ class Json
      */
     public static function renderWithTrue($data = null, $code = '0')
     {
-        return static::render(array('status' => true, 'data' => $data, 'code' => (string)$code));
+
+        if (static::$cb) {
+            return static::render(call_user_func_array(static::$cb, array(true, $data, (string)$code)));
+
+        } else {
+            return static::render(array('status' => true, 'data' => $data, 'code' => (string)$code));
+        }
+
+        return static::render($arr);
     }
 
     /**
@@ -53,6 +69,10 @@ class Json
      */
     public static function renderWithFalse($data = null, $code = '-1')
     {
-        return static::render(array('status' => false, 'data' => $data, 'code' => (string)$code));
+        if (static::$cb) {
+            return static::render(call_user_func_array(static::$cb, array(false, $data, (string)$code)));
+        } else {
+            return static::render(array('status' => false, 'data' => $data, 'code' => (string)$code));
+        }
     }
 }
