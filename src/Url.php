@@ -49,13 +49,7 @@ class Url
             $query = '?' . http_build_query($params);
         }
 
-        $host = '';
-        if ($absoluteUrl) {
-
-            $host = self::getScheme() . '://' . $_SERVER['HTTP_HOST'];
-        }
-
-        return $host . static::asset($script) . $pathInfo . $query;
+        return static::asset($script, $absoluteUrl) . $pathInfo . $query;
     }
 
     /**
@@ -67,7 +61,7 @@ class Url
      */
     public static function asset($asset = '', $absoluteUrl = false)
     {
-        if (preg_match('/^http(s)?:\/\//i', $asset)) { // "http://" "https://"
+        if (self::isHttp($asset)) {
             return $asset;
         }
 
@@ -75,13 +69,21 @@ class Url
             $asset = '/' . ltrim($asset, '/');
         }
 
+        $prefix = '';
+        if (Application::$app->has('url.base')) {
+            $prefix = Application::$app['url.base'];
+        }
+
+        if (self::isHttp($prefix)) {
+            return $prefix . Application::$app['request']->getBasePath() . $asset;
+        }
+
         $host = '';
         if ($absoluteUrl) {
-            // $host = Application::$app['request']->getSchemeAndHttpHost();
             $host = self::getScheme() . '://' . $_SERVER['HTTP_HOST'];
         }
 
-        return $host . Application::$app['request']->getBasePath() . $asset;
+        return $host . $prefix . Application::$app['request']->getBasePath() . $asset;
     }
 
     private static function getScheme()
@@ -99,5 +101,13 @@ class Url
     public static function current()
     {
         return self::getScheme() . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    }
+
+    private static function isHttp($url)
+    {
+        if (preg_match('/^http(s)?:\/\//i', $url)) { // "http://" "https://"
+            return true;
+        }
+        return false;
     }
 }
