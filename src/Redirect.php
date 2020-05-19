@@ -15,7 +15,8 @@ class Redirect
     public static function to($url, $params = array())
     {
         // 以这些开头的直接跳转: "/"、"http://"、"https://"
-        if (stripos($url, '/') === 0 || preg_match('/^http(s)?:\/\//i', $url)) {
+        //if (stripos($url, '/') === 0 || preg_match('/^http(s)?:\/\//i', $url)) {
+        if (preg_match('/^http(s)?:\/\//i', $url)) {
             return new RedirectResponse($url);
         }
 
