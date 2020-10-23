@@ -36,7 +36,7 @@ class Util
         );
 
         if (!array_key_exists($operator, $bc)) {
-            throw new \Exception('operator invalid');
+            throw new \RuntimeException('operator invalid');
         }
 
         if (function_exists($bc[$operator])) {
@@ -49,7 +49,7 @@ class Util
                 $c = $a + $b;
                 break;
             case '-':
-                $c = $a - $b;
+                $c = $a - $b;  // todo 在这里会有bug  10.01 - 10  => float(0.0099999999999998)
                 break;
             case '*':
                 $c = $a * $b;
@@ -76,7 +76,7 @@ class Util
                 return $a > $b ? 1 : -1;
 
             default:
-                throw new \Exception('operator invalid');
+                throw new \RuntimeException('operator invalid');
         }
 
         // $c = number_format($c, $scale, '.', '');
@@ -95,7 +95,7 @@ class Util
     {
         $scale = (int)$scale;
         if ($scale < 0) {
-            throw new \Exception('scale invalid');
+            throw new \RuntimeException('scale invalid');
         }
 
         $v = (string)$v;
@@ -494,7 +494,7 @@ class Util
     /**
      * Generate a more truly "random" alpha-numeric string.
      *
-     * @param  int $length
+     * @param int $length
      * @return string
      *
      * @throws \RuntimeException

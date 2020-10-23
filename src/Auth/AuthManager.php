@@ -39,9 +39,9 @@ class AuthManager
         return static::_login($user);
     }
 
-    private static function setCookie($usreId)
+    private static function setCookie($userId)
     {
-        setcookie('remember_token', static::updateRememberToken($usreId), time() + 60 * 60 * 24 * 365, '/');
+        setcookie('remember_token', static::updateRememberToken($userId), time() + 60 * 60 * 24 * 365, '/');
     }
 
     /**
