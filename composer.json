@@ -3,30 +3,25 @@
     "description": "leaf",
     "license": "MIT",
     "homepage": "http://www.pfinal.cn",
-    "authors": [
-        {
-            "name": "Zou Yiliang"
-        }
-    ],
     "require": {
         "php": ">=5.4",
-        "symfony/http-foundation": "2.*",
-        "symfony/console": "2.*",
-        "pfinal/blade": "*",
-        "pfinal/database": "*",
-        "pfinal/session": "*",
-        "pfinal/routing": "*",
-        "twig/extensions": ">=1.0",
-        "psr/log": "~1.0",
+        "symfony/http-foundation": "^2.0",
+        "symfony/console": "^2.0",
+        "pfinal/blade": "^1.0",
+        "pfinal/database": "^1.0",
+        "pfinal/session": "^1.0",
+        "pfinal/routing": "^1.8",
+        "twig/extensions": "^1.0",
+        "psr/log": "^1.0",
         "monolog/monolog": "^1.0"
     },
     "require-dev": {
         "filp/whoops": "^2.1",
-        "symfony/var-dumper": "*",
-        "robmorgan/phinx": "0.9.*",
-        "nesbot/carbon": "~1.0",
+        "symfony/var-dumper": "^3.0",
+        "robmorgan/phinx": "^0.9",
+        "nesbot/carbon": "^1.0",
         "mtdowling/cron-expression": "^1.2",
-        "symfony/process": "2.*",
+        "symfony/process": "^2.0",
         "phpmyadmin/sql-parser": "^4.2"
     },
     "autoload": {
