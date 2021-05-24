@@ -101,8 +101,10 @@ class Formatter extends LineFormatter
             }
 
             $args = [];
-            foreach ($trace['args'] as $arg) {
-                $args[] = $this->replaceNewlines($this->varToString($arg));
+            if (!empty($trace['args'])) {
+                foreach ($trace['args'] as $arg) {
+                    $args[] = $this->replaceNewlines($this->varToString($arg));
+                }
             }
             $traceInfo[] = sprintf('#%s %s%s: %s(%s)',
                 $ind,
