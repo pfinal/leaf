@@ -51,7 +51,7 @@ class Image
 
         //解决透明背景变成黑色
         $color = imagecolorallocate($dstImg, 255, 255, 255);
-        imagecolortransparent($dstImg, $color);
+        //imagecolortransparent($dstImg, $color);
         imagefill($dstImg, 0, 0, $color);
         imagealphablending($dstImg, true);
 
