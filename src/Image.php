@@ -49,6 +49,12 @@ class Image
         //目标图像画板
         $dstImg = imagecreatetruecolor($m, $n);
 
+        //解决透明背景变成黑色
+        $color = imagecolorallocate($dstImg, 255, 255, 255);
+        imagecolortransparent($dstImg, $color);
+        imagefill($dstImg, 0, 0, $color);
+        imagealphablending($dstImg, true);
+
         //复制图片
         imagecopyresampled($dstImg, $srcImg,
             0, 0,             // 目标起始点
