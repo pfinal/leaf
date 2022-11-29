@@ -27,7 +27,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request
      */
     public function input()
     {
-        if (strcasecmp($this->headers->get('content-type'), 'application/json') != 0) {
+        if (stripos($this->headers->get('content-type'), 'application/json') === false) {
             return [];
         }
         $content = file_get_contents('php://input');
@@ -45,7 +45,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request
     }
 
     /**
-     * @param  \Closure $callback
+     * @param \Closure $callback
      * @return $this
      */
     public function setRouteResolver(\Closure $callback)
